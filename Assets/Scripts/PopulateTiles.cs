@@ -15,6 +15,10 @@ public class PopulateTiles : MonoBehaviour
     float lastMouseX;
     public Camera cam;
     public int[] selected;
+    //number of matching squares found on each axis
+    private int verticalCount;
+    private int horizontalCount;
+
 
     // Start is called before the first frame update
     void Start()
@@ -152,6 +156,7 @@ public class PopulateTiles : MonoBehaviour
             Temp = tileArray[x, y];
             tileArray[x, y] = tileArray[x - 1, y];
             tileArray[x - 1, y] = Temp;
+            MatchCheck(x - 1, y);
 
         }
         if (Input.mousePosition.x < lastMouseX)
@@ -159,11 +164,84 @@ public class PopulateTiles : MonoBehaviour
             Temp = tileArray[x, y];
             tileArray[x, y] = tileArray[x + 1, y];
             tileArray[x + 1, y] = Temp;
+            MatchCheck(x + 1, y);
 
         }
+        MatchCheck(x, y); // check moved square for matches
         lastMouseX = Input.mousePosition.x;
         selected[0] = x;
 
+    }
+
+    void MatchCheck(int x, int y)
+    {
+        verticalCount = 0;
+        horizontalCount = 0;
+        if(x == 0)
+        {
+            BreakX(x, y);
+        }
+        else
+        {
+            if (tileArray[x - 1, y] == tileArray[x, y])
+            {
+                MatchCheck(x - 1, y);
+            }
+            else
+            {
+                BreakX(x, y);
+            }
+
+        }
+        if (y == 0)
+        {
+            Breaky(x, y);
+        }
+        else
+        {
+            if (tileArray[x, y - 1] == tileArray[x, y])
+            {
+                MatchCheck(x, y - 1);
+            }
+            else
+            {
+                Breaky(x, y);
+            }
+        }
+    }
+
+    void BreakX(int x,int y)
+    {
+        while (x + horizontalCount < gridX && tileArray[x + horizontalCount, y] == tileArray[x, y])
+        {
+            horizontalCount += 1;
+        }
+
+        if (horizontalCount > 2)
+        {
+            for (int i = 0; i < horizontalCount; i++)
+            {
+                tileArray[x + i, y] = TileStates.blank;
+                AssignColor(x + i, y);
+            }
+        }
+    }
+
+    void Breaky(int x, int y)
+    {
+        Debug.Log(x + " " + y);
+        while (y + verticalCount < gridY && tileArray[x, y + verticalCount] == tileArray[x, y])
+        {
+            verticalCount += 1;
+        }
+        if (verticalCount > 2)
+        {
+            for (int i = 0; i < verticalCount; i++)
+            {
+                tileArray[x, y + i] = TileStates.blank;
+                AssignColor(x, y + i);
+            }
+        }
     }
 
     private bool CheckBounds(int x, int y, Vector3 selectionPoint)
