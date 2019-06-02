@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2422775090767311331}
   - component: {fileID: 1096529779663786644}
   - component: {fileID: 2301911703246289715}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,3 +94,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coords: {x: 0, y: 0}
   type: 0
+  isInteractable: 1
