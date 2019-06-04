@@ -20,11 +20,19 @@ public class MenuScript : MonoBehaviour
     public Button SettingsButton;
     public Button QuitButton;
 
+    public GameObject MainMenu;
+    public GameObject SettingsMenu;
+
+    public AudioSource MusicSource;
+    public AudioSource SFXSource;
+
+    private bool GameOver = false;
     private string Name;
     private Image GetImage;
     private Color TempColour;
+    public InputField.SubmitEvent SubmitEvent;
 
-    public Canvas MenuCanvas;
+    private Canvas MenuCanvas;
 
     private void OnEnable()
     {
@@ -48,6 +56,11 @@ public class MenuScript : MonoBehaviour
         if (SaveButton != null)
         {
             SaveButton.onClick.AddListener(delegate { OnSaveClick(); });
+        }
+
+        if(NameField != null)
+        {
+            SubmitEvent.AddListener(delegate { SubmitScore(); });
         }
 
         if (ColourGrading != null)
@@ -81,9 +94,9 @@ public class MenuScript : MonoBehaviour
             ExposureLevel.onValueChanged.AddListener(delegate { OnExposureChanged(); });
         }
     }
+
     void Start()
     {
-        //Name = GameObject.Find("Canvas").transform.GetChild(6).GetComponent<InputField>().text;
     }
 
     private void ColourGradingToggle()
@@ -133,12 +146,12 @@ public class MenuScript : MonoBehaviour
 
     private void OnMusicVolumeChange()
     {
-
+        MusicSource.volume = MusicVolume.value;
     }
 
     private void OnSFXVolumeChange()
     {
-
+        SFXSource.volume = SFXVolume.value;
     }
 
     private void OnSaturationChanged()
@@ -163,30 +176,50 @@ public class MenuScript : MonoBehaviour
 
     private void OnSettingsClick()
     {
-        MenuCanvas.gameObject.transform.GetChild(1).gameObject.SetActive(false);
-        MenuCanvas.gameObject.transform.GetChild(2).gameObject.SetActive(true);
+        MainMenu.SetActive(false);
+        SettingsMenu.SetActive(true);
     }
 
     private void OnQuitClick()
     {
-
+        if(UnityEditor.EditorApplication.isPlaying)
+        {
+            UnityEditor.EditorApplication.ExitPlaymode();
+        }
+        else
+        {
+            Application.Quit();
+        }
     }
 
     private void OnSaveClick()
     {
-        MenuCanvas.gameObject.transform.GetChild(1).gameObject.SetActive(true);
-        MenuCanvas.gameObject.transform.GetChild(2).gameObject.SetActive(false);
+        MainMenu.SetActive(true);
+        SettingsMenu.SetActive(false);
+    }
+
+    private void SubmitScore()
+    {
+        //GameManager.GetComponent<GameLoader>().GameOver.gameObject.SetActive(false);
+
+        //GameObject.Find("Canvas").transform.GetChild(6).GetComponent<InputField>().text = "";
+
+        //GameObject.Find("Canvas").transform.GetChild(6).gameObject.SetActive(false);
+
+        //GameLoader.GameInstance.Leaderboard.SetActive(true);
+
+        //GameLoader.GameInstance.Leaderboard.transform.GetChild(1).GetComponent<PlayerScoreList>().NewHighScore(Name, Score);
+
+        //GameManager.GetComponent<GameLoader>().GameOver.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //var SubmitEvent = new InputField.SubmitEvent();
-
-        //SubmitEvent.AddListener(delegate { SubmitName(); });
-
-        //Name = GameObject.Find("Canvas").transform.GetChild(6).GetComponent<InputField>().text;
-
-        //GameObject.Find("Canvas").transform.GetChild(6).GetComponent<InputField>().onEndEdit = SubmitEvent;
+        if(GameOver == true)
+        {
+            Name = NameField.text;
+            NameField.onEndEdit = SubmitEvent;
+        }
     }
 }
