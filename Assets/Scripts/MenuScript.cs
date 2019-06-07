@@ -14,15 +14,19 @@ public class MenuScript : MonoBehaviour
     public Slider ContrastLevel;
     public Slider ExposureLevel;
     public Button SaveButton;
-    public AudioClip[] SFX;
-    public AudioClip[] Music;
     public Button PlayButton;
+    public Button ShopButton;
     public Button SettingsButton;
+    public Button ProfileButton;
+    public Button CloseProfileButton;
     public Button QuitButton;
 
     public GameObject MainMenu;
     public GameObject SettingsMenu;
+    public GameObject Profile;
 
+    public AudioClip[] SFX;
+    public AudioClip[] Music;
     public AudioSource MusicSource;
     public AudioSource SFXSource;
 
@@ -43,6 +47,11 @@ public class MenuScript : MonoBehaviour
             PlayButton.onClick.AddListener(delegate { OnPlayClick(); });
         }
 
+        if(ShopButton !=null)
+        {
+            ShopButton.onClick.AddListener(delegate { OnShopClick(); });
+        }
+
         if(SettingsButton != null)
         {
             SettingsButton.onClick.AddListener(delegate { OnSettingsClick(); });
@@ -51,6 +60,16 @@ public class MenuScript : MonoBehaviour
         if(QuitButton !=null)
         {
             QuitButton.onClick.AddListener(delegate { OnQuitClick(); });
+        }
+
+        if(ProfileButton != null)
+        {
+            ProfileButton.onClick.AddListener(delegate { OnProfileClick(); });
+        }
+
+        if(CloseProfileButton != null)
+        {
+            CloseProfileButton.onClick.AddListener(delegate { OnProfileClose(); });
         }
 
         if (SaveButton != null)
@@ -174,10 +193,16 @@ public class MenuScript : MonoBehaviour
         SceneManager.LoadSceneAsync(1,LoadSceneMode.Single);
     }
 
+    private void OnShopClick()
+    {
+
+    }
+
     private void OnSettingsClick()
     {
         MainMenu.SetActive(false);
         SettingsMenu.SetActive(true);
+        Profile.SetActive(false);
     }
 
     private void OnQuitClick()
@@ -192,10 +217,25 @@ public class MenuScript : MonoBehaviour
         }
     }
 
+    private void OnProfileClick()
+    {
+        Profile.SetActive(true);
+        MainMenu.SetActive(false);
+        SettingsMenu.SetActive(false);
+    }
+
+    private void OnProfileClose()
+    {
+        Profile.SetActive(false);
+        MainMenu.SetActive(false);
+        SettingsMenu.SetActive(true);
+    }
+
     private void OnSaveClick()
     {
         MainMenu.SetActive(true);
         SettingsMenu.SetActive(false);
+        Profile.SetActive(false);
     }
 
     private void SubmitScore()
