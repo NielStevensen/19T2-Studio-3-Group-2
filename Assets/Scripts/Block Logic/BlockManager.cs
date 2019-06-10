@@ -46,12 +46,34 @@ public class BlockManager : MonoBehaviour
 	[Tooltip("The number of blocks horizontally (x) and vertically (y) across the field.")]
 	public Vector2 blockCount = new Vector2(8, 8);
 	private Vector2 blockMax;
-	
+
 	//All blocks
 	private GameObject[,] allBlocks;
 
+	[Space(10)]
+
+	//block movement speeds
+	[Tooltip("The time taken to swap 2 blocks.")]
+	public float swapTime = 0.5f;
+	[Tooltip("The fall speed of all blocks.")]
+	public float fallSpeed = 2.5f;
+
+	[Space(10)]
+
+	//Is the player using mouse or cursor control?
+	public bool isCursorControl = true;
+
+	[Space(10)]
+
+	//Cursor
+	public GameObject cursorPrefab;
+	private GameObject cursor;
+	private Vector2 cursorPos;
+	private SpriteRenderer cursorRenderer;
+	private bool canCursorSwap = true;
+	
 	//Selected block
-	public GameObject selectedBlock;
+	private GameObject selectedBlock;
 
 	//Movement coroutines
 	private Coroutine[,] blockCoroutines;
@@ -60,18 +82,17 @@ public class BlockManager : MonoBehaviour
 	private Vector3 clickPos;
 	private Vector3 releasePos;
 
-	//Deadzone
 	[Space(10)]
+
+	//Deadzone
 	[Tooltip("The distance movement must exceed to count as a move.")]
 	public float deadzone = 0.25f;
-
-	//Fall speed
-	[Space(10)]
-	[Tooltip("The fall speed of all blocks.")]
-	public float fallSpeed = 2.5f;
 	
+	//Chain counting list
+	private List<int> allChains = new List<int>();
+
 	//Setup
-    void Start()
+	void Start()
     {
 		bottomLeftExtreme = new Vector2(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom);
 		topRightExtreme = new Vector2(transform.position.x + playFieldBounds.right, transform.position.y + playFieldBounds.top);
@@ -81,6 +102,15 @@ public class BlockManager : MonoBehaviour
 		blockMax = blockCount - new Vector2(1, 1);
 
 		blockCoroutines = new Coroutine[(int)blockCount.x, (int)blockCount.y];
+		
+		if (isCursorControl)
+		{
+			cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2) - 1, Mathf.Min(2, blockCount.y));
+			
+			cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
+
+			cursorRenderer = cursor.GetComponent<SpriteRenderer>();
+		}
 
 		SetupBlocks();
     }
@@ -116,80 +146,177 @@ public class BlockManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetButtonDown("Select") && selectedBlock == null)
+		if (isCursorControl)
 		{
-			clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			
-			if (IsInBounds(new Vector2(clickPos.x, clickPos.y)))
+			if (Input.GetButtonDown("Horizontal"))
 			{
-				Vector2 fixedPos = new Vector2(clickPos.x, clickPos.y) - bottomLeftExtreme;
+				cursorPos.x = Mathf.Clamp(cursorPos.x + 1 * Mathf.Sign(Input.GetAxisRaw("Horizontal")), 0, blockMax.x - 1);
 
-				Vector2 index = new Vector2(Mathf.FloorToInt(fixedPos.x / blockSize), Mathf.FloorToInt(fixedPos.y / blockSize));
-
-				selectedBlock = allBlocks[(int)index.x, (int)index.y];
+				cursor.transform.position = CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true);
 			}
-		}
-		else if(Input.GetButtonUp("Select") && selectedBlock != null)
-		{
-			releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			
-			BlockDetails detailsThis = selectedBlock.GetComponent<BlockDetails>();
-			BlockDetails detailsThat = null;
 
-			if (detailsThis.isInteractable)
+			if (Input.GetButtonDown("Vertical"))
 			{
-				if (Mathf.Abs(clickPos.x - releasePos.x) > deadzone)
+				cursorPos.y = Mathf.Clamp(cursorPos.y + 1 * Mathf.Sign(Input.GetAxisRaw("Vertical")), 0, blockMax.y);
+
+				cursor.transform.position = CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true);
+			}
+
+			if (canCursorSwap && Input.GetButtonDown("Select"))
+			{
+				GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
+				GameObject blockThat = allBlocks[(int)cursorPos.x + 1, (int)cursorPos.y];
+
+				BlockDetails detailsThis = blockThis.GetComponent<BlockDetails>();
+				BlockDetails detailsThat = blockThat.GetComponent<BlockDetails>();
+
+				if(detailsThis.isInteractable && detailsThat.isInteractable)
 				{
-					int alt = 0;
+					Coroutine relevantCoroutine;
+					
+					Vector3 posThis = blockThis.transform.position;
+					Vector3 posThat = blockThat.transform.position;
 
-					if (releasePos.x < clickPos.x)
+					detailsThis.isInteractable = false;
+					detailsThis.coords = detailsThat.coords;
+					allBlocks[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = blockThis;
+
+					relevantCoroutine = blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y];
+
+					if (relevantCoroutine != null)
 					{
-						if(detailsThis.coords.x - 1 >= 0)
-						{
-							detailsThat = allBlocks[(int)detailsThis.coords.x - 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
-
-							if (detailsThis.coords.x > 0 && detailsThat.isInteractable)
-							{
-								alt = -1;
-							}
-						}
-					}
-					else
-					{
-						if(detailsThis.coords.x + 1 <= blockMax.x)
-						{
-							detailsThat = allBlocks[(int)detailsThis.coords.x + 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
-
-							if (detailsThis.coords.x < blockMax.x && detailsThat.isInteractable)
-							{
-								alt = 1;
-							}
-						}
+						StopCoroutine(relevantCoroutine);
 					}
 
-					if(alt != 0)
+					blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = StartCoroutine(SwapBlock(blockThis, detailsThis, posThis, posThat));
+
+					detailsThat.isInteractable = false;
+					detailsThat.coords = detailsThis.coords - new Vector2(1, 0);
+					allBlocks[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = blockThat;
+
+					relevantCoroutine = blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y];
+
+					if (relevantCoroutine != null)
 					{
-						GameObject otherBlock = detailsThat.gameObject;
-
-						Vector3 posThis = selectedBlock.transform.position;
-						Vector3 posThat = otherBlock.transform.position;
-						
-						detailsThis.isInteractable = false;
-						detailsThis.coords = detailsThat.coords;
-						allBlocks[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = selectedBlock;
-						StartCoroutine(SwapBlock(selectedBlock, detailsThis, posThis, posThat));
-
-						detailsThat.isInteractable = false;
-						detailsThat.coords = detailsThis.coords - new Vector2(1, 0) * alt;
-						allBlocks[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = otherBlock;
-						StartCoroutine(SwapBlock(detailsThat.gameObject, detailsThat, posThat, posThis));
+						StopCoroutine(relevantCoroutine);
 					}
+
+					blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = StartCoroutine(SwapBlock(blockThat, detailsThat, posThat, posThis));
+
+					StartCoroutine(CursorCooldown());
 				}
 			}
-			
-			selectedBlock = null;
 		}
-    }
+		else
+		{
+			if (Input.GetButtonDown("Select") && selectedBlock == null)
+			{
+				clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+				if (IsInBounds(new Vector2(clickPos.x, clickPos.y)))
+				{
+					Vector2 fixedPos = new Vector2(clickPos.x, clickPos.y) - bottomLeftExtreme;
+
+					Vector2 index = new Vector2(Mathf.FloorToInt(fixedPos.x / blockSize), Mathf.FloorToInt(fixedPos.y / blockSize));
+
+					selectedBlock = allBlocks[(int)index.x, (int)index.y];
+				}
+			}
+			else if (Input.GetButtonUp("Select") && selectedBlock != null)
+			{
+				releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+				BlockDetails detailsThis = selectedBlock.GetComponent<BlockDetails>();
+				BlockDetails detailsThat = null;
+
+				Coroutine relevantCoroutine;
+
+				if (detailsThis.isInteractable)
+				{
+					if (Mathf.Abs(clickPos.x - releasePos.x) > deadzone)
+					{
+						int alt = 0;
+
+						if (releasePos.x < clickPos.x)
+						{
+							if (detailsThis.coords.x - 1 >= 0)
+							{
+								detailsThat = allBlocks[(int)detailsThis.coords.x - 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
+
+								if (detailsThis.coords.x > 0 && detailsThat.isInteractable)
+								{
+									alt = -1;
+								}
+							}
+						}
+						else
+						{
+							if (detailsThis.coords.x + 1 <= blockMax.x)
+							{
+								detailsThat = allBlocks[(int)detailsThis.coords.x + 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
+
+								if (detailsThis.coords.x < blockMax.x && detailsThat.isInteractable)
+								{
+									alt = 1;
+								}
+							}
+						}
+
+						if (alt != 0)
+						{
+							GameObject otherBlock = detailsThat.gameObject;
+
+							Vector3 posThis = selectedBlock.transform.position;
+							Vector3 posThat = otherBlock.transform.position;
+
+							detailsThis.isInteractable = false;
+							detailsThis.coords = detailsThat.coords;
+							allBlocks[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = selectedBlock;
+
+							relevantCoroutine = blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y];
+
+							if (relevantCoroutine != null)
+							{
+								StopCoroutine(relevantCoroutine);
+							}
+
+							blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = StartCoroutine(SwapBlock(selectedBlock, detailsThis, posThis, posThat));
+
+							detailsThat.isInteractable = false;
+							detailsThat.coords = detailsThis.coords - new Vector2(1, 0) * alt;
+							allBlocks[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = otherBlock;
+
+							relevantCoroutine = blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y];
+
+							if (relevantCoroutine != null)
+							{
+								StopCoroutine(relevantCoroutine);
+							}
+
+							blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = StartCoroutine(SwapBlock(detailsThat.gameObject, detailsThat, posThat, posThis));
+						}
+					}
+				}
+
+				selectedBlock = null;
+			}
+		}
+
+		bool isStillChaining = false;
+
+		for (int i = 0; i < allChains.Count; i++)
+		{
+			if (allChains[i] > -1)
+			{
+				isStillChaining = true;
+			}
+		}
+
+		if (!isStillChaining)
+		{
+			allChains.Clear();
+		}
+	}
 
 	//Get a random type
 	BlockTypes GetRandomType(int input)
@@ -216,27 +343,33 @@ public class BlockManager : MonoBehaviour
 	{
 		return bottomLeftExtreme.x < input.x && input.x < topRightExtreme.x && bottomLeftExtreme.y < input.y && input.y < topRightExtreme.y;
 	}
-
-	//Default move blocks wrapper
-	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination)
+	
+	//Cursor cooldown
+	IEnumerator CursorCooldown()
 	{
-		StartCoroutine(SwapBlock(obj, details, origin, destination, 0.5f));
+		canCursorSwap = false;
 
-		yield return new WaitForEndOfFrame();
+		cursorRenderer.color = Color.black;
+
+		yield return new WaitForSeconds(swapTime);
+
+		canCursorSwap = true;
+
+		cursorRenderer.color = Color.white;
 	}
 
-	//Move blocks
-	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination, float time)
+	//Horizontally swap blocks
+	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination)
 	{
 		float elapsedTime = 0.0f;
 
 		Vector3 direction = destination - origin;
 
-		while (elapsedTime < time)
+		while (elapsedTime < swapTime)
 		{
-			elapsedTime = Mathf.Min(elapsedTime + Time.deltaTime, time);
+			elapsedTime = Mathf.Min(elapsedTime + Time.deltaTime, swapTime);
 
-			obj.transform.position = origin + direction * Mathf.Sin(Mathf.Deg2Rad * 90 * (elapsedTime / time));
+			obj.transform.position = origin + direction * Mathf.Sin(Mathf.Deg2Rad * 90 * (elapsedTime / swapTime));
 
 			yield return new WaitForEndOfFrame();
 		}
@@ -245,39 +378,60 @@ public class BlockManager : MonoBehaviour
 
 		yield return new WaitForEndOfFrame();
 
-		CheckForMatches(details.coords, details.type);
+		CheckForMatches(details.coords, details.type, -1);
 	}
-
-	//Control block falling
-	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination)
+	
+	//Control block falling and align if necessary
+	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex)
 	{
 		Vector3 blockPos = obj.transform.position;
 
-
+		float diff = destination.x - obj.transform.position.x;
+		int alt = (int)Mathf.Sign(diff);
+		
 		while (obj.transform.position.y > destination.y)
 		{
 			blockPos.y = Mathf.Max(blockPos.y - fallSpeed * Time.deltaTime, destination.y);
+
+			if (Mathf.Abs(diff) > 0)
+			{
+				if (alt == 1)
+				{
+					diff = Mathf.Max(0, diff - 0.05f);
+				}
+				else
+				{
+					diff = Mathf.Min(0, diff + 0.05f);
+				}
+				
+				blockPos.x = destination.x - diff;
+			}
 
 			obj.transform.position = blockPos;
 
 			yield return new WaitForEndOfFrame();
 		}
 
+		obj.transform.position = destination;
+
 		details.isInteractable = true;
 
 		yield return new WaitForEndOfFrame();
 
-		CheckForMatches(details.coords, details.type);
+		CheckForMatches(details.coords, details.type, chainIndex);
 	}
 
 	//Checks for matches and move blocks accordingly
-	void CheckForMatches(Vector2 pos, BlockTypes relevantType)
+	void CheckForMatches(Vector2 pos, BlockTypes relevantType, int chainIndex)
 	{
 		BlockDetails details;
+		Coroutine relevantCoroutine;
 
 		List<int> matchingHorizontalIndices = new List<int>();
 		List<int> matchingVerticalIndices = new List<int>() { (int)pos.y };
 		
+		//Count matching blocks
+
 		for (int i = 1; i < blockCount.x; i++)
 		{
 			if(pos.x - i < 0)
@@ -363,10 +517,89 @@ public class BlockManager : MonoBehaviour
 			}
 		}
 
+		//If no vertical match was made, add the swapped block to horizontal matches
+
 		if(matchingHorizontalIndices.Count >= 2 && matchingVerticalIndices.Count < 3)
 		{
 			matchingHorizontalIndices.Add((int)pos.x);
 		}
+
+		//Calculate combos and chains
+
+		int comboCount = 0;
+		int newChainIndex = chainIndex;
+		
+		if(matchingHorizontalIndices.Count >= 2 || matchingVerticalIndices.Count >= 3)
+		{
+			int horizontalMatchCount = matchingHorizontalIndices.Count;
+			int verticalMatchCount = matchingVerticalIndices.Count;
+
+			if (horizontalMatchCount > 2 && verticalMatchCount < 3)
+			{
+				comboCount = horizontalMatchCount;
+			}
+			else if (horizontalMatchCount < 2 && verticalMatchCount > 2)
+			{
+				comboCount = verticalMatchCount;
+			}
+			else if (horizontalMatchCount > 1 && verticalMatchCount > 2)
+			{
+				comboCount = horizontalMatchCount + verticalMatchCount;
+			}
+
+			//to retrieve combo count for current, use comboCount
+			
+			if (chainIndex == -1)
+			{
+				newChainIndex = allChains.Count;
+				
+				allChains.Add(1);
+			}
+			else if(chainIndex > -1)
+			{
+				allChains[chainIndex] += 1;
+			}
+
+			//to retrieve chain count for current swap, use allChains[chainIndex]
+		}
+		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
+		{
+			if(chainIndex > -1)
+			{
+				bool areStillFalling = false;
+
+				details = allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>();
+
+				details.isFalling = false;
+				details.chainIndex = -1;
+
+				for(int x = 0; x < blockCount.x; x++)
+				{
+					for(int y = 0; y < blockCount.y; y++)
+					{
+						details = allBlocks[x, y].GetComponent<BlockDetails>();
+
+						if(details.chainIndex == chainIndex)
+						{
+							if (details.isFalling)
+							{
+								areStillFalling = true;
+							}
+						}
+					}
+				}
+
+				if (!areStillFalling)
+				{
+					if(chainIndex < allChains.Count)
+					{
+						allChains[chainIndex] = -1;
+					}
+				}
+			}
+		}
+
+		//Break matched blocks and drop new blocks
 
 		if (matchingHorizontalIndices.Count >= 2)
 		{
@@ -392,7 +625,21 @@ public class BlockManager : MonoBehaviour
 				blockPos = oldBlock.transform.position;
 				blockPos = CoordToPosition(blockX, (int)blockMax.y);
 				details.gameObject.transform.position = blockPos + new Vector3(0, blockSize, 0);
-				StartCoroutine(DropBlock(details.gameObject, details, blockPos));
+				
+				relevantCoroutine = blockCoroutines[(int)details.coords.x, (int)details.coords.y];
+				
+				if (relevantCoroutine != null)
+				{
+					StopCoroutine(relevantCoroutine);
+				}
+				
+				blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, blockPos, newChainIndex));
+
+				if(details.chainIndex == -1)
+				{
+					details.isFalling = true;
+					details.chainIndex = newChainIndex;
+				}
 
 				if (pos.y < blockMax.y)
 				{
@@ -408,13 +655,21 @@ public class BlockManager : MonoBehaviour
 						details.isInteractable = false;
 						details.coords = new Vector2(blockX, y - 1);
 						allBlocks[blockX, (int)details.coords.y] = details.gameObject;
-
-						if(blockCoroutines[blockX, (int)details.coords.y] != null)
+						
+						relevantCoroutine = blockCoroutines[(int)details.coords.x, (int)details.coords.y];
+						
+						if (relevantCoroutine != null)
 						{
-							StopCoroutine(blockCoroutines[blockX, (int)details.coords.y]);
+							StopCoroutine(relevantCoroutine);
 						}
+						
+						blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(blockX, y - 1), newChainIndex));
 
-						StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(blockX, y - 1)));
+						if (details.chainIndex == -1)
+						{
+							details.isFalling = true;
+							details.chainIndex = newChainIndex;
+						}
 					}
 				}
 			}
@@ -479,13 +734,42 @@ public class BlockManager : MonoBehaviour
 					resetBlockCount++;
 				}
 
-				StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition((int)pos.x, targetIndex)));
+				relevantCoroutine = blockCoroutines[(int)details.coords.x, (int)details.coords.y];
+				
+				if (relevantCoroutine != null)
+				{
+					StopCoroutine(relevantCoroutine);
+				}
+				
+				blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition((int)pos.x, targetIndex), newChainIndex));
+
+				if (details.chainIndex == -1)
+				{
+					details.isFalling = true;
+					details.chainIndex = newChainIndex;
+				}
 			}
 		}
 	}
 
+	//Wrapper for a default location
 	Vector3 CoordToPosition(int x, int y)
 	{
-		return new Vector3((x - (blockCount.x / 2)) * blockSize, (y - (blockCount.y / 2)) * blockSize, 0) + displacement;
+		return CoordToPosition(x, y, false);
+	}
+
+	//Produce a vector 3 based on the coordinates provides
+	Vector3 CoordToPosition(int x, int y, bool useExtraDisplacement)
+	{
+		float extraDisplacement = blockSize / 2;
+		float extraZ = -1.25f;
+
+		if (!useExtraDisplacement)
+		{
+			extraDisplacement = 0;
+			extraZ = 0;
+		}
+
+		return transform.position + new Vector3((x - (blockCount.x / 2)) * blockSize + extraDisplacement, (y - (blockCount.y / 2)) * blockSize, extraZ) + displacement;
 	}
 }

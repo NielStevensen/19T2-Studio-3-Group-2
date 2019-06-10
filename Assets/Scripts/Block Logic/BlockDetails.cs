@@ -18,6 +18,14 @@ public class BlockDetails : MonoBehaviour
 	//Sprite renderer reference
 	private SpriteRenderer spriteRenderer;
 
+	//Is the block falling? Used to count chains
+	[HideInInspector]
+	public bool isFalling = false;
+
+	//Index of current chain
+	[HideInInspector]
+	public int chainIndex = -1;
+
 	//Setup
     void Start()
     {
