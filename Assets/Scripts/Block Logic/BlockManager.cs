@@ -89,7 +89,7 @@ public class BlockManager : MonoBehaviour
 	public float deadzone = 0.25f;
 	
 	//Chain counting list
-	private List<int> allChains = new List<int>();
+	public List<int> allChains = new List<int>();
 
 	//Setup
 	void Start()
