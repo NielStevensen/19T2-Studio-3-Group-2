@@ -207,14 +207,14 @@ public class MenuScript : MonoBehaviour
 
     private void OnQuitClick()
     {
-        if(UnityEditor.EditorApplication.isPlaying)
+        /*if(UnityEditor.EditorApplication.isPlaying)
         {
             UnityEditor.EditorApplication.ExitPlaymode();
         }
         else
         {
             Application.Quit();
-        }
+        }*/
     }
 
     private void OnProfileClick()

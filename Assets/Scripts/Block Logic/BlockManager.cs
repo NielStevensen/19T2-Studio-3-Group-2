@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class BoundingBox
@@ -47,6 +48,12 @@ public class BlockManager : MonoBehaviour
 	public Vector2 blockCount = new Vector2(8, 8);
 	private Vector2 blockMax;
 
+	[Space(10)]
+
+	//Block rarity
+	[Tooltip("The rarity of each block type.")]
+	public int[] blockRarities = new int[5] { 200, 200, 200, 200, 25};
+
 	//All blocks
 	private GameObject[,] allBlocks;
 
@@ -91,9 +98,14 @@ public class BlockManager : MonoBehaviour
 	//Chain counting list
 	private List<int> allChains = new List<int>();
 
+	private MatchUI mui;
+
 	//Setup
 	void Start()
     {
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
+
 		bottomLeftExtreme = new Vector2(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom);
 		topRightExtreme = new Vector2(transform.position.x + playFieldBounds.right, transform.position.y + playFieldBounds.top);
 
@@ -111,6 +123,8 @@ public class BlockManager : MonoBehaviour
 
 			cursorRenderer = cursor.GetComponent<SpriteRenderer>();
 		}
+
+		mui = gameObject.GetComponent<MatchUI>();
 
 		SetupBlocks();
     }
@@ -138,9 +152,70 @@ public class BlockManager : MonoBehaviour
 				BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
 
 				details.coords = new Vector2(x, y);
-				details.type = GetRandomType(Random.Range(0, 5));
+
+				//input code here
+				bool[] typeInclusivity = new bool[5] { true, true, true, true, true };
+				BlockTypes tempType;
+
+				if(x > 1)
+				{
+					tempType = allBlocks[x - 1, y].GetComponent<BlockDetails>().type;
+
+					if(tempType == allBlocks[x - 2, y].GetComponent<BlockDetails>().type)
+					{
+						typeInclusivity[(int)tempType] = false;
+					}
+				}
+
+				if (y > 1)
+				{
+					tempType = allBlocks[x, y - 1].GetComponent<BlockDetails>().type;
+
+					if (tempType == allBlocks[x, y - 2].GetComponent<BlockDetails>().type)
+					{
+						typeInclusivity[(int)tempType] = false;
+					}
+				}
+				
+				details.type = GenerateRandomType(typeInclusivity);
 			}
 		}
+	}
+
+	void GenerateAllBlocks()
+	{
+
+	}
+
+	BlockTypes GenerateRandomType(bool[] typeInclusivity)
+	{
+		int maxChance = 0;
+
+		for(int i = 0; i < typeInclusivity.Length; i++)
+		{
+			if (typeInclusivity[i])
+			{
+				maxChance += blockRarities[i];
+			}
+		}
+
+		int randNum = Random.Range(0, maxChance);
+		int chanceStage = 0;
+
+		for(int i = 0; i < typeInclusivity.Length; i++)
+		{
+			if (typeInclusivity[i])
+			{
+				chanceStage += blockRarities[i];
+
+				if(randNum < chanceStage)
+				{
+					return (BlockTypes)i;
+				}
+			}
+		}
+
+		return BlockTypes.A;
 	}
 
     // Update is called once per frame
@@ -316,6 +391,11 @@ public class BlockManager : MonoBehaviour
 		{
 			allChains.Clear();
 		}
+
+		if (Input.GetKeyDown(KeyCode.P))
+		{
+			SceneManager.LoadScene("main");
+		}
 	}
 
 	//Get a random type
@@ -383,7 +463,32 @@ public class BlockManager : MonoBehaviour
 	
 	//Control block falling and align if necessary
 	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex)
+	//IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex, bool resetBlock)
 	{
+		/*float elapsedTime = 0.0f;
+
+		BlockDetails blockBelow = allBlocks[(int)details.coords.x, Mathf.Max((int)details.coords.y - 1, 0)].GetComponent<BlockDetails>();
+
+		if (!details.isFalling)
+		{
+			while(elapsedTime < 0.5f || !blockBelow.isFalling)
+			{
+				elapsedTime += Time.deltaTime;
+
+				yield return new WaitForEndOfFrame();
+			}
+		}
+
+		details.isInteractable = false;
+
+
+
+		if (details.chainIndex == -1)
+		{
+			details.isFalling = true;
+			details.chainIndex = chainIndex;
+		}*/
+
 		Vector3 blockPos = obj.transform.position;
 
 		float diff = destination.x - obj.transform.position.x;
@@ -560,6 +665,10 @@ public class BlockManager : MonoBehaviour
 				allChains[chainIndex] += 1;
 			}
 
+			//print(allChains[newChainIndex]);
+			mui.UpdateChains(allChains[newChainIndex]);
+			mui.UpdateCombo(comboCount);
+
 			//to retrieve chain count for current swap, use allChains[chainIndex]
 		}
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
@@ -620,20 +729,23 @@ public class BlockManager : MonoBehaviour
 				details.isInteractable = false;
 				details.coords = new Vector2(blockX, blockMax.y);
 				allBlocks[blockX, (int)blockMax.y] = details.gameObject;
-				details.type = GetRandomType(Random.Range(0, 5));
+				//details.type = GetRandomType(Random.Range(0, 5));
+				details.type = GenerateRandomType(new bool[5] { true, true, true, true, true});
 				details.UpdateColour();
 				blockPos = oldBlock.transform.position;
 				blockPos = CoordToPosition(blockX, (int)blockMax.y);
 				details.gameObject.transform.position = blockPos + new Vector3(0, blockSize, 0);
 				
 				relevantCoroutine = blockCoroutines[(int)details.coords.x, (int)details.coords.y];
-				
+
 				if (relevantCoroutine != null)
 				{
 					StopCoroutine(relevantCoroutine);
 				}
-				
+
 				blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, blockPos, newChainIndex));
+				
+				//StartCoroutine(FadeBlock(details.gameObject));
 
 				if(details.chainIndex == -1)
 				{
@@ -646,7 +758,7 @@ public class BlockManager : MonoBehaviour
 					for (int y = (int)blockMax.y; y > pos.y; y--)
 					{
 						details = oldBlock.GetComponent<BlockDetails>();
-
+						
 						if(y - 1 > pos.y)
 						{
 							oldBlock = allBlocks[blockX, y - 1];
@@ -664,7 +776,7 @@ public class BlockManager : MonoBehaviour
 						}
 						
 						blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(blockX, y - 1), newChainIndex));
-
+						
 						if (details.chainIndex == -1)
 						{
 							details.isFalling = true;
@@ -726,7 +838,8 @@ public class BlockManager : MonoBehaviour
 
 				if(i > oldIndices.Count - 1)
 				{
-					details.type = GetRandomType(Random.Range(0, 5));
+					//details.type = GetRandomType(Random.Range(0, 5));
+					details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
 					details.UpdateColour();
 					
 					details.gameObject.transform.position = CoordToPosition((int)pos.x, (int)blockMax.y + resetBlockCount);
@@ -771,5 +884,25 @@ public class BlockManager : MonoBehaviour
 		}
 
 		return transform.position + new Vector3((x - (blockCount.x / 2)) * blockSize + extraDisplacement, (y - (blockCount.y / 2)) * blockSize, extraZ) + displacement;
+	}
+
+	//temp. fade
+	IEnumerator FadeBlock(GameObject obj)
+	{
+		SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
+		Color newColour = sr.color;
+
+		float elapsedTime = 0.0f;
+
+		while(elapsedTime < 0.5f)
+		{
+			elapsedTime = Mathf.Min(elapsedTime + Time.deltaTime, 0.5f);
+
+			newColour.a = 1 - (elapsedTime / 0.5f);
+
+			sr.color = newColour;
+
+			yield return new WaitForEndOfFrame();
+		}
 	}
 }
