@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class ChargeAttack : MonoBehaviour
 {
+    //add to block manager to call
+    //atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount); goes under mui call
+    //private ChargeAttack atkBar; under mui decleration
+    //atkBar = gameObject.GetComponent<ChargeAttack>(); // set on start
 
     public Image Bar;
 
@@ -14,18 +18,23 @@ public class ChargeAttack : MonoBehaviour
     [Tooltip("current capacity of bar")]
     public float Current;
 
+    //[HideInInspector]
     public float aCount;
+    //[HideInInspector]
     public float bCount;
+    //[HideInInspector]
     public float cCount;
+    //[HideInInspector]
     public float dCount;
+    //[HideInInspector]
     public float eCount;
 
-    void FillBar(BlockTypes colour,int chainCount, int comboCount)
+    public void FillBar(BlockTypes colour,int chainCount, int comboCount)
     {
             switch (colour)
             {
                 case BlockTypes.A:
-                aCount += comboCount;
+                    aCount += comboCount;
 
                     break;
                 case BlockTypes.B:
@@ -45,6 +54,8 @@ public class ChargeAttack : MonoBehaviour
 
                     break;
             }
+        Current += comboCount;
+        Bar.fillAmount = Current/capacity;
         
     }
 }
