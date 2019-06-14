@@ -18,15 +18,15 @@ public class ChargeAttack : MonoBehaviour
     [Tooltip("current capacity of bar")]
     public float Current;
 
-    //[HideInInspector]
+    [HideInInspector]
     public float aCount;
-    //[HideInInspector]
+    [HideInInspector]
     public float bCount;
-    //[HideInInspector]
+    [HideInInspector]
     public float cCount;
-    //[HideInInspector]
+    [HideInInspector]
     public float dCount;
-    //[HideInInspector]
+    [HideInInspector]
     public float eCount;
 
     public void FillBar(BlockTypes colour,int chainCount, int comboCount)

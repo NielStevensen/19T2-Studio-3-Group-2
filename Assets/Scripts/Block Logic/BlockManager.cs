@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 [System.Serializable]
@@ -24,7 +25,7 @@ public class BoundingBox
 	}
 }
 
-public class BlockManager : MonoBehaviour
+public class BlockManager : NetworkBehaviour
 {
 	//Play field bounds
 	[Tooltip("The bounds of the play field.")]
@@ -151,7 +152,7 @@ public class BlockManager : MonoBehaviour
 				Vector3 pos = new Vector3(xBase + x * blockSize, yPos, 0) + displacement;
 
 				allBlocks[x, y] = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
-				
+                NetworkServer.Spawn(allBlocks[x, y]);
 				BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
 
 				details.coords = new Vector2(x, y);
@@ -224,7 +225,11 @@ public class BlockManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (isCursorControl)
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+        if (isCursorControl)
 		{
 			if (Input.GetButtonDown("Horizontal"))
 			{
@@ -669,8 +674,8 @@ public class BlockManager : MonoBehaviour
 			}
 
 			//print(allChains[newChainIndex]);
-			mui.UpdateChains(allChains[newChainIndex]);
-			mui.UpdateCombo(comboCount);
+			//mui.UpdateChains(allChains[newChainIndex]);
+			//mui.UpdateCombo(comboCount);
 
 			//to retrieve chain count for current swap, use allChains[chainIndex]
 		}
