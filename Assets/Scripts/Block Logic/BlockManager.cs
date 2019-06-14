@@ -103,8 +103,11 @@ public class BlockManager : MonoBehaviour
 	//Setup
 	void Start()
     {
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Locked;
+        if (isCursorControl)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
 		bottomLeftExtreme = new Vector2(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom);
 		topRightExtreme = new Vector2(transform.position.x + playFieldBounds.right, transform.position.y + playFieldBounds.top);
