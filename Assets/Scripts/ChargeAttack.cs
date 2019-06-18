@@ -56,6 +56,7 @@ public class ChargeAttack : MonoBehaviour
             }
         Current += comboCount;
         Bar.fillAmount = Current/capacity;
+        Bar.material.SetColor("_Colour", Color.red);
         
     }
 }
