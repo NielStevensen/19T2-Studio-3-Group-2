@@ -20,10 +20,13 @@ public class MenuScript : MonoBehaviour
     public Button ProfileButton;
     public Button CloseProfileButton;
     public Button QuitButton;
+    public Button PauseButton;
 
     public GameObject MainMenu;
     public GameObject SettingsMenu;
     public GameObject Profile;
+    public GameObject Shop;
+    public GameObject Pause;
 
     public AudioClip[] SFX;
     public AudioClip[] Music;
@@ -77,7 +80,12 @@ public class MenuScript : MonoBehaviour
             SaveButton.onClick.AddListener(delegate { OnSaveClick(); });
         }
 
-        if(NameField != null)
+        if (PauseButton != null)
+        {
+            PauseButton.onClick.AddListener(delegate { OnPauseClick(); });
+        }
+
+        if (NameField != null)
         {
             SubmitEvent.AddListener(delegate { SubmitScore(); });
         }
@@ -195,47 +203,117 @@ public class MenuScript : MonoBehaviour
 
     private void OnShopClick()
     {
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            MainMenu.SetActive(false);
+            SettingsMenu.SetActive(false);
+            Profile.SetActive(false);
+            Shop.SetActive(true);
+        }
 
+        else
+        {
+            SettingsMenu.SetActive(false);
+            Profile.SetActive(false);
+            Shop.SetActive(true);
+        }
     }
 
     private void OnSettingsClick()
     {
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(true);
-        Profile.SetActive(false);
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            MainMenu.SetActive(false);
+            SettingsMenu.SetActive(true);
+            Profile.SetActive(false);
+            Shop.SetActive(false);
+        }
+
+        else
+        {
+            SettingsMenu.SetActive(true);
+            Profile.SetActive(false);
+            Shop.SetActive(false);
+        }
     }
 
     private void OnQuitClick()
     {
-        /*if(UnityEditor.EditorApplication.isPlaying)
+        if (UnityEditor.EditorApplication.isPlaying)
         {
             UnityEditor.EditorApplication.ExitPlaymode();
         }
         else
         {
             Application.Quit();
-        }*/
+        }
     }
 
     private void OnProfileClick()
     {
-        Profile.SetActive(true);
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(false);
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            Profile.SetActive(true);
+            MainMenu.SetActive(false);
+            SettingsMenu.SetActive(false);
+            Shop.SetActive(false);
+        }
+
+        else
+        {
+            Profile.SetActive(true);
+            SettingsMenu.SetActive(false);
+            Shop.SetActive(false);
+        }
     }
 
     private void OnProfileClose()
     {
-        Profile.SetActive(false);
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(true);
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            Profile.SetActive(false);
+            MainMenu.SetActive(false);
+            SettingsMenu.SetActive(true);
+            Shop.SetActive(false);
+        }
+
+        else
+        {
+            Profile.SetActive(false);
+            SettingsMenu.SetActive(true);
+            Shop.SetActive(false);
+        }
     }
 
     private void OnSaveClick()
     {
-        MainMenu.SetActive(true);
-        SettingsMenu.SetActive(false);
-        Profile.SetActive(false);
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            MainMenu.SetActive(true);
+            SettingsMenu.SetActive(false);
+            Profile.SetActive(false);
+            Shop.SetActive(false);
+        }
+
+        else
+        {
+            SettingsMenu.SetActive(false);
+            Profile.SetActive(false);
+            Shop.SetActive(false);
+        }
+    }
+
+    private void OnPauseClick()
+    {
+        if(!Pause.activeSelf)
+        {
+            Pause.SetActive(true);
+        }
+
+        else
+        {
+            Pause.SetActive(false);
+        }
     }
 
     private void SubmitScore()
@@ -260,6 +338,21 @@ public class MenuScript : MonoBehaviour
         {
             Name = NameField.text;
             NameField.onEndEdit = SubmitEvent;
+        }
+
+        if(Input.GetKeyDown((KeyCode.Escape)))
+        {
+            if (!Pause.activeSelf)
+            {
+                Pause.SetActive(true);
+                Time.timeScale = 0;
+            }
+
+            else
+            {
+                Pause.SetActive(false);
+                Time.timeScale = 1;
+            }
         }
     }
 }
