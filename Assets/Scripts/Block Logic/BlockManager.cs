@@ -55,7 +55,10 @@ public class BlockManager : NetworkBehaviour
 	[Tooltip("The rarity of each block type.")]
 	public int[] blockRarities = new int[5] { 200, 200, 200, 200, 25};
 
-	//All blocks
+    //All blocks
+    [SyncVar]
+    [SerializeField]
+    private SyncListInt generatedTypes = new SyncListInt();
 	private GameObject[,] allBlocks;
 
 	[Space(10)]
@@ -130,7 +133,50 @@ public class BlockManager : NetworkBehaviour
 
 		mui = gameObject.GetComponent<MatchUI>();
 
+        if (isServer)
+        {
+            RandomiseTypes();
+        }
+
 		SetupBlocks();
+    }
+
+    void RandomiseTypes()
+    {
+        int yCoord;
+
+        for (int y = 0; y < blockCount.y; y++)
+        {
+            yCoord = y * (int)blockCount.x;
+
+            for (int x = 0; x < blockCount.x; x++)
+            {
+                bool[] typeInclusivity = new bool[5] { true, true, true, true, true };
+                int tempType;
+
+                if (x > 1)
+                {
+                    tempType = generatedTypes[yCoord + x - 1];
+
+                    if (tempType == generatedTypes[yCoord + x - 2])
+                    {
+                        typeInclusivity[(int)tempType] = false;
+                    }
+                }
+
+                if (y > 1)
+                {
+                    tempType = generatedTypes[yCoord - (int)blockCount.x + x];
+
+                    if (tempType == generatedTypes[yCoord - (int)blockCount.x * 2 + x])
+                    {
+                        typeInclusivity[(int)tempType] = false;
+                    }
+                }
+
+                generatedTypes.Add((int)GenerateRandomType(typeInclusivity));
+            }
+        }
     }
 
 	//Setup initial blocks
@@ -142,53 +188,28 @@ public class BlockManager : NetworkBehaviour
 		float yBase = transform.position.y + playFieldBounds.bottom;
 		
 		float yPos;
+
+        int yCoord;
 		
 		for (int y = 0; y < blockCount.y; y++)
 		{
 			yPos = yBase + y * blockSize;
 
-			for (int x = 0; x < blockCount.x; x++)
+            yCoord = y * (int)blockCount.x;
+
+            for (int x = 0; x < blockCount.x; x++)
 			{
 				Vector3 pos = new Vector3(xBase + x * blockSize, yPos, 0) + displacement;
 
 				allBlocks[x, y] = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
-                NetworkServer.Spawn(allBlocks[x, y]);
+                //NetworkServer.Spawn(allBlocks[x, y]);
+
 				BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
 
 				details.coords = new Vector2(x, y);
-
-				//input code here
-				bool[] typeInclusivity = new bool[5] { true, true, true, true, true };
-				BlockTypes tempType;
-
-				if(x > 1)
-				{
-					tempType = allBlocks[x - 1, y].GetComponent<BlockDetails>().type;
-
-					if(tempType == allBlocks[x - 2, y].GetComponent<BlockDetails>().type)
-					{
-						typeInclusivity[(int)tempType] = false;
-					}
-				}
-
-				if (y > 1)
-				{
-					tempType = allBlocks[x, y - 1].GetComponent<BlockDetails>().type;
-
-					if (tempType == allBlocks[x, y - 2].GetComponent<BlockDetails>().type)
-					{
-						typeInclusivity[(int)tempType] = false;
-					}
-				}
-				
-				details.type = GenerateRandomType(typeInclusivity);
-			}
+                details.type = (BlockTypes)generatedTypes[yCoord + x];
+            }
 		}
-	}
-
-	void GenerateAllBlocks()
-	{
-
 	}
 
 	BlockTypes GenerateRandomType(bool[] typeInclusivity)
@@ -229,6 +250,7 @@ public class BlockManager : NetworkBehaviour
         {
             return;
         }
+
         if (isCursorControl)
 		{
 			if (Input.GetButtonDown("Horizontal"))
@@ -406,26 +428,6 @@ public class BlockManager : NetworkBehaviour
 		}
 	}
 
-	//Get a random type
-	BlockTypes GetRandomType(int input)
-	{
-		switch (input)
-		{
-			case 0:
-				return BlockTypes.A;
-			case 1:
-				return BlockTypes.B;
-			case 2:
-				return BlockTypes.C;
-			case 3:
-				return BlockTypes.D;
-			case 4:
-				return BlockTypes.E;
-			default:
-				return BlockTypes.A;
-		}
-	}
-
 	//Are the supplied co ordinates within the bounds
 	bool IsInBounds(Vector2 input)
 	{
@@ -446,10 +448,17 @@ public class BlockManager : NetworkBehaviour
 		cursorRenderer.color = Color.white;
 	}
 
+
+
 	//Horizontally swap blocks
 	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination)
 	{
-		float elapsedTime = 0.0f;
+        if (hasAuthority)
+        {
+            CmdSwapBlocks((int)details.coords.x, (int)details.coords.y, origin, destination);
+        }
+
+        float elapsedTime = 0.0f;
 
 		Vector3 direction = destination - origin;
 
@@ -468,7 +477,26 @@ public class BlockManager : NetworkBehaviour
 
 		CheckForMatches(details.coords, details.type, -1);
 	}
+
+    [Command]
+    void CmdSwapBlocks(int x, int y, Vector3 destination)
+    {
+        RpcSwapBlocks(x, y, destination);
+    }
 	
+    [ClientRpc]
+    void RpcSwapBlocks(int x, int y, Vector3 destination)
+    {
+        if (hasAuthority)
+        {
+            return;
+        }
+
+        GameObject targetBlock = allBlocks[x, y];
+
+        StartCoroutine(SwapBlock(targetBlock, targetBlock.GetComponent<BlockDetails>(), targetBlock.transform.position, destination));
+    }
+
 	//Control block falling and align if necessary
 	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex)
 	//IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex, bool resetBlock)

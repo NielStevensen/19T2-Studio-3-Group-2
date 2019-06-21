@@ -29,28 +29,33 @@ public class ChargeAttack : MonoBehaviour
     [HideInInspector]
     public float eCount;
 
+    private void Start() 
+    {
+        GetComponentInChildren<Canvas>().worldCamera = Camera.main;
+    }
+
     public void FillBar(BlockTypes colour,int chainCount, int comboCount)
     {
             switch (colour)
             {
                 case BlockTypes.A:
-                    aCount += comboCount;
+                    aCount += comboCount *chainCount + comboCount;
 
                     break;
                 case BlockTypes.B:
-                    bCount += comboCount;
+                    bCount += comboCount * chainCount + comboCount;
 
                     break;
                 case BlockTypes.C:
-                    cCount += comboCount;
+                    cCount += comboCount * chainCount + comboCount;
 
                     break;
                 case BlockTypes.D:
-                    dCount += comboCount;
+                    dCount += comboCount * chainCount + comboCount;
 
                     break;
                 case BlockTypes.E:
-                    eCount += comboCount;
+                    eCount += comboCount * chainCount + comboCount;
 
                     break;
             }

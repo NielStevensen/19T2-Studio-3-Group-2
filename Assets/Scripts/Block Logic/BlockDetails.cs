@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public enum BlockTypes { A = 0, B = 1, C = 2, D = 3, E = 4};
 
-public class BlockDetails : MonoBehaviour
+public class BlockDetails : NetworkBehaviour
 {
 	[Tooltip("Coordinates of the block.")]
 	public Vector2 coords = Vector2.zero;
 
 	[Tooltip("Block type.")]
+    [SyncVar(hook = "OnUpdateColour")]
 	public BlockTypes type = BlockTypes.A;
 
 	[Tooltip("Can the block be clicked on and used?")]
@@ -27,13 +29,29 @@ public class BlockDetails : MonoBehaviour
 	public int chainIndex = -1;
 
 	//Setup
-    void Start()
+    void Awake()
     {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
-		UpdateColour();
+        //UpdateColour();
+
+        StartCoroutine(DelayedColourUpdate());
     }
-	
+
+    IEnumerator DelayedColourUpdate()
+    {
+        yield return new WaitForEndOfFrame();
+
+        UpdateColour();
+    }
+
+    void OnUpdateColour(BlockTypes newType)
+    {
+        type = newType;
+
+        UpdateColour();
+    }
+
 	//Change colour to suit type
 	public void UpdateColour()
 	{
