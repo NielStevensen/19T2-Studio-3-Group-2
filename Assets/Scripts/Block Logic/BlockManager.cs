@@ -243,7 +243,26 @@ public class BlockManager : NetworkBehaviour
 		return BlockTypes.A;
 	}
 
-    // Update is called once per frame
+	/*[Command]
+	void CmdTest()
+	{
+		RpcTest();
+	}
+
+	[ClientRpc]
+	void RpcTest()
+	{
+		if (isLocalPlayer)
+		{
+			print("local player test: " + gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+		}
+		else
+		{
+			print(gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+		}
+	}*/
+
+    //Handle input and chain counting
     void Update()
     {
         if (!isLocalPlayer)
@@ -251,6 +270,12 @@ public class BlockManager : NetworkBehaviour
             return;
         }
 
+		/*if (Input.GetKeyDown(KeyCode.T))
+		{
+			CmdTest();
+		}*/
+
+		//Handle swap input
         if (isCursorControl)
 		{
 			if (Input.GetButtonDown("Horizontal"))
@@ -277,38 +302,7 @@ public class BlockManager : NetworkBehaviour
 
 				if(detailsThis.isInteractable && detailsThat.isInteractable)
 				{
-					Coroutine relevantCoroutine;
-					
-					Vector3 posThis = blockThis.transform.position;
-					Vector3 posThat = blockThat.transform.position;
-
-					detailsThis.isInteractable = false;
-					detailsThis.coords = detailsThat.coords;
-					allBlocks[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = blockThis;
-
-					relevantCoroutine = blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y];
-
-					if (relevantCoroutine != null)
-					{
-						StopCoroutine(relevantCoroutine);
-					}
-
-					blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = StartCoroutine(SwapBlock(blockThis, detailsThis, posThis, posThat));
-
-					detailsThat.isInteractable = false;
-					detailsThat.coords = detailsThis.coords - new Vector2(1, 0);
-					allBlocks[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = blockThat;
-
-					relevantCoroutine = blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y];
-
-					if (relevantCoroutine != null)
-					{
-						StopCoroutine(relevantCoroutine);
-					}
-
-					blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = StartCoroutine(SwapBlock(blockThat, detailsThat, posThat, posThis));
-
-					StartCoroutine(CursorCooldown());
+					HandleSwap(new Vector2Int((int)cursorPos.x, (int)cursorPos.y), new Vector2Int((int)cursorPos.x + 1, (int)cursorPos.y));
 				}
 			}
 		}
@@ -333,24 +327,24 @@ public class BlockManager : NetworkBehaviour
 
 				BlockDetails detailsThis = selectedBlock.GetComponent<BlockDetails>();
 				BlockDetails detailsThat = null;
-
-				Coroutine relevantCoroutine;
-
+				
 				if (detailsThis.isInteractable)
 				{
 					if (Mathf.Abs(clickPos.x - releasePos.x) > deadzone)
 					{
-						int alt = 0;
-
+						Vector2Int selectedCoords = new Vector2Int((int)detailsThis.coords.x, (int)detailsThis.coords.y);
+						
+						Vector2Int swapDirection = Vector2Int.zero;
+						
 						if (releasePos.x < clickPos.x)
 						{
 							if (detailsThis.coords.x - 1 >= 0)
 							{
 								detailsThat = allBlocks[(int)detailsThis.coords.x - 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
-
+								
 								if (detailsThis.coords.x > 0 && detailsThat.isInteractable)
 								{
-									alt = -1;
+									HandleSwap(selectedCoords, selectedCoords + new Vector2Int(-1, 0));
 								}
 							}
 						}
@@ -359,46 +353,12 @@ public class BlockManager : NetworkBehaviour
 							if (detailsThis.coords.x + 1 <= blockMax.x)
 							{
 								detailsThat = allBlocks[(int)detailsThis.coords.x + 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
-
+								
 								if (detailsThis.coords.x < blockMax.x && detailsThat.isInteractable)
 								{
-									alt = 1;
+									HandleSwap(selectedCoords, selectedCoords + new Vector2Int(1, 0));
 								}
 							}
-						}
-
-						if (alt != 0)
-						{
-							GameObject otherBlock = detailsThat.gameObject;
-
-							Vector3 posThis = selectedBlock.transform.position;
-							Vector3 posThat = otherBlock.transform.position;
-
-							detailsThis.isInteractable = false;
-							detailsThis.coords = detailsThat.coords;
-							allBlocks[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = selectedBlock;
-
-							relevantCoroutine = blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y];
-
-							if (relevantCoroutine != null)
-							{
-								StopCoroutine(relevantCoroutine);
-							}
-
-							blockCoroutines[(int)detailsThis.coords.x, (int)detailsThis.coords.y] = StartCoroutine(SwapBlock(selectedBlock, detailsThis, posThis, posThat));
-
-							detailsThat.isInteractable = false;
-							detailsThat.coords = detailsThis.coords - new Vector2(1, 0) * alt;
-							allBlocks[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = otherBlock;
-
-							relevantCoroutine = blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y];
-
-							if (relevantCoroutine != null)
-							{
-								StopCoroutine(relevantCoroutine);
-							}
-
-							blockCoroutines[(int)detailsThat.coords.x, (int)detailsThat.coords.y] = StartCoroutine(SwapBlock(detailsThat.gameObject, detailsThat, posThat, posThis));
 						}
 					}
 				}
@@ -407,6 +367,7 @@ public class BlockManager : NetworkBehaviour
 			}
 		}
 
+		//Chain counting
 		bool isStillChaining = false;
 
 		for (int i = 0; i < allChains.Count; i++)
@@ -422,9 +383,10 @@ public class BlockManager : NetworkBehaviour
 			allChains.Clear();
 		}
 
+		//temp debug. refresh the scene
 		if (Input.GetKeyDown(KeyCode.P))
 		{
-			SceneManager.LoadScene("main");
+			//SceneManager.LoadScene("main");
 		}
 	}
 
@@ -434,30 +396,84 @@ public class BlockManager : NetworkBehaviour
 		return bottomLeftExtreme.x < input.x && input.x < topRightExtreme.x && bottomLeftExtreme.y < input.y && input.y < topRightExtreme.y;
 	}
 	
-	//Cursor cooldown
+	//Swap cooldown
 	IEnumerator CursorCooldown()
 	{
 		canCursorSwap = false;
 
-		cursorRenderer.color = Color.black;
+		if (isCursorControl)
+		{
+			cursorRenderer.color = Color.black;
+		}
+		else
+		{
+			
+		}
 
 		yield return new WaitForSeconds(swapTime);
 
 		canCursorSwap = true;
 
-		cursorRenderer.color = Color.white;
+		if (isCursorControl)
+		{
+			cursorRenderer.color = Color.white;
+		}
+		else
+		{
+			
+		}
 	}
 
-
+	//Handle chaging values, then swap blocks
+	void HandleSwap(Vector2Int blockSelected, Vector2Int blockToSwap)
+	{
+		if (hasAuthority)
+		{
+			CmdSwapBlocks(blockSelected.x, blockSelected.y, blockToSwap.x, blockToSwap.y);
+		}
+		
+		Coroutine relevantCoroutine;
+		
+		GameObject blockThis = allBlocks[blockSelected.x, blockSelected.y];
+		GameObject blockThat = allBlocks[blockToSwap.x, blockToSwap.y];
+		
+		BlockDetails detailsThis = blockThis.GetComponent<BlockDetails>();
+		BlockDetails detailsThat = blockThat.GetComponent<BlockDetails>();
+		
+		Vector2 swapDirection = detailsThat.coords - detailsThis.coords;
+		
+		detailsThis.isInteractable = false;
+		detailsThis.coords += swapDirection;
+		allBlocks[blockToSwap.x, blockToSwap.y] = blockThis;
+		
+		relevantCoroutine = blockCoroutines[blockToSwap.x, blockToSwap.y];
+		
+		if (relevantCoroutine != null)
+		{
+			StopCoroutine(relevantCoroutine);
+		}
+		
+		blockCoroutines[blockToSwap.x, blockToSwap.y] = StartCoroutine(SwapBlock(blockThis, detailsThis, blockThis.transform.position, CoordToPosition(blockToSwap.x, blockToSwap.y)));
+		
+		detailsThat.isInteractable = false;
+		detailsThat.coords -= swapDirection;
+		allBlocks[blockSelected.x, blockSelected.y] = blockThat;
+		
+		relevantCoroutine = blockCoroutines[blockSelected.x, blockSelected.y];
+		
+		if (relevantCoroutine != null)
+		{
+			StopCoroutine(relevantCoroutine);
+		}
+		
+		blockCoroutines[blockSelected.x, blockSelected.y] = StartCoroutine(SwapBlock(blockThat, detailsThat, blockThat.transform.position, CoordToPosition(blockSelected.x, blockSelected.y)));
+		
+		StartCoroutine(CursorCooldown());
+	}
 
 	//Horizontally swap blocks
 	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination)
 	{
-        if (hasAuthority)
-        {
-            CmdSwapBlocks((int)details.coords.x, (int)details.coords.y, origin, destination);
-        }
-
         float elapsedTime = 0.0f;
 
 		Vector3 direction = destination - origin;
@@ -478,23 +494,23 @@ public class BlockManager : NetworkBehaviour
 		CheckForMatches(details.coords, details.type, -1);
 	}
 
+	//Tell all clients which blocks to swap
     [Command]
-    void CmdSwapBlocks(int x, int y, Vector3 destination)
+    void CmdSwapBlocks(int selectedX, int selectedY, int toSwapX, int toSwapY)
     {
-        RpcSwapBlocks(x, y, destination);
+		RpcSwapBlocks(selectedX, selectedY, toSwapX, toSwapY);
     }
 	
+	//Receive instructions to swap
     [ClientRpc]
-    void RpcSwapBlocks(int x, int y, Vector3 destination)
+    void RpcSwapBlocks(int selectedX, int selectedY, int toSwapX, int toSwapY)
     {
         if (hasAuthority)
         {
             return;
         }
-
-        GameObject targetBlock = allBlocks[x, y];
-
-        StartCoroutine(SwapBlock(targetBlock, targetBlock.GetComponent<BlockDetails>(), targetBlock.transform.position, destination));
+		
+		HandleSwap(new Vector2Int(selectedX, selectedY), new Vector2Int(toSwapX, toSwapY));
     }
 
 	//Control block falling and align if necessary
@@ -744,8 +760,12 @@ public class BlockManager : NetworkBehaviour
 			}
 		}
 
+		//Type sync variables. Starts with 1 so '0's that come before other ints aren't ignored
+		string xList = "1";
+		string yList = "1";
+		string typeList = "1";
+		
 		//Break matched blocks and drop new blocks
-
 		if (matchingHorizontalIndices.Count >= 2)
 		{
 			int blockX;
@@ -765,9 +785,15 @@ public class BlockManager : NetworkBehaviour
 				details.isInteractable = false;
 				details.coords = new Vector2(blockX, blockMax.y);
 				allBlocks[blockX, (int)blockMax.y] = details.gameObject;
-				//details.type = GetRandomType(Random.Range(0, 5));
-				details.type = GenerateRandomType(new bool[5] { true, true, true, true, true});
-				details.UpdateColour();
+
+				if (isLocalPlayer)
+				{
+					details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
+					details.UpdateType();
+					
+					//CmdChangeType(blockX, (int)blockMax.y, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
+				}
+				
 				blockPos = oldBlock.transform.position;
 				blockPos = CoordToPosition(blockX, (int)blockMax.y);
 				details.gameObject.transform.position = blockPos + new Vector3(0, blockSize, 0);
@@ -788,6 +814,10 @@ public class BlockManager : NetworkBehaviour
 					details.isFalling = true;
 					details.chainIndex = newChainIndex;
 				}
+
+				xList += details.coords.x;
+				yList += details.coords.y;
+				typeList += (int)details.type;
 
 				if (pos.y < blockMax.y)
 				{
@@ -822,7 +852,7 @@ public class BlockManager : NetworkBehaviour
 				}
 			}
 		}
-		
+
 		if (matchingVerticalIndices.Count >= 3)
 		{
 			int verticalMatchCount = matchingVerticalIndices.Count;
@@ -874,10 +904,18 @@ public class BlockManager : NetworkBehaviour
 
 				if(i > oldIndices.Count - 1)
 				{
-					//details.type = GetRandomType(Random.Range(0, 5));
-					details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
-					details.UpdateColour();
-					
+					if (isLocalPlayer)
+					{
+						details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
+						details.UpdateType();
+						
+						xList += details.coords.x;
+						yList += details.coords.y;
+						typeList += (int)details.type;
+
+						//CmdChangeType((int)pos.x, targetIndex, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
+					}
+
 					details.gameObject.transform.position = CoordToPosition((int)pos.x, (int)blockMax.y + resetBlockCount);
 
 					resetBlockCount++;
@@ -898,6 +936,64 @@ public class BlockManager : NetworkBehaviour
 					details.chainIndex = newChainIndex;
 				}
 			}
+		}
+		
+		if (hasAuthority && xList != "1")
+		{
+			StartCoroutine(DelayedTypeSync(int.Parse(xList), int.Parse(yList), int.Parse(typeList)));
+		}
+	}
+	
+	//Change the type of the specified block on the server to ripple the update out
+	/*[Command]
+	void CmdChangeType(int x, int y, int newType)
+	{
+		//allBlocks[x, y].GetComponent<BlockDetails>().type = newType;
+		allBlocks[x, y].GetComponent<BlockDetails>().intType = newType;
+	}*/
+
+	//Frame delayed instruction to sync newly spawned blocks' types
+	IEnumerator DelayedTypeSync(int xList, int yList, int typeList)
+	{
+		yield return new WaitForEndOfFrame();
+
+		//print(Time.time);
+
+		CmdSyncTypes(xList, yList, typeList);
+	}
+
+	//Tell all clients the new colours for each nely spawned block
+	[Command]
+	void CmdSyncTypes(int xList, int yList, int typeList)
+	{
+		//print(Time.time);
+
+		RpcSyncTypes(xList, yList, typeList);
+	}
+
+	//Receive instruction on which blocks should be which colour
+	[ClientRpc]
+	void RpcSyncTypes(int xList, int yList, int typeList)
+	{
+		//print(Time.time);
+
+		if (hasAuthority)
+		{
+			return;
+		}
+		
+		char[] xCoords = xList.ToString().ToCharArray();
+		char[] yCoords = yList.ToString().ToCharArray();
+		char[] types = typeList.ToString().ToCharArray();
+
+		BlockDetails details;
+
+		for (int i = 0; i < xCoords.Length; i++)
+		{
+			details = allBlocks[(int)char.GetNumericValue(xCoords[i]), (int)char.GetNumericValue(yCoords[i])].GetComponent<BlockDetails>();
+
+			details.type = (BlockTypes)char.GetNumericValue(types[i]);
+			details.UpdateType();
 		}
 	}
 
