@@ -18,16 +18,12 @@ public class ChargeAttack : MonoBehaviour
     [Tooltip("current capacity of bar")]
     public float Current;
 
-    [HideInInspector]
-    public float aCount;
-    [HideInInspector]
-    public float bCount;
-    [HideInInspector]
-    public float cCount;
-    [HideInInspector]
-    public float dCount;
-    [HideInInspector]
-    public float eCount;
+    //[HideInInspector]
+    public float[] Counts;
+
+    int currentType;
+    float currentHighest;
+    
 
     private void Start() 
     {
@@ -39,29 +35,53 @@ public class ChargeAttack : MonoBehaviour
             switch (colour)
             {
                 case BlockTypes.A:
-                    aCount += comboCount *chainCount + comboCount;
+                    Counts[0] += comboCount *chainCount + comboCount;
 
                     break;
                 case BlockTypes.B:
-                    bCount += comboCount * chainCount + comboCount;
+                    Counts[1] += comboCount * chainCount + comboCount;
 
                     break;
                 case BlockTypes.C:
-                    cCount += comboCount * chainCount + comboCount;
+                    Counts[2] += comboCount * chainCount + comboCount;
 
                     break;
                 case BlockTypes.D:
-                    dCount += comboCount * chainCount + comboCount;
-
-                    break;
-                case BlockTypes.E:
-                    eCount += comboCount * chainCount + comboCount;
+                    Counts[3] += comboCount * chainCount + comboCount;
 
                     break;
             }
-        Current += comboCount;
+        Current = Counts[0] + Counts[1] + Counts[2] + Counts[3];
         Bar.fillAmount = Current/capacity;
-        Bar.material.SetColor("_Colour", Color.red);
         
+        
+        for (int a = 0;a > 4; a++)
+        {
+            if (Counts[a] > currentHighest)
+            {
+                currentHighest = Counts[a];
+                currentType = a;
+            }
+        }
+
+        switch (currentType)
+        {
+            case 0:
+                Bar.material.SetColor("_Colour", Color.red);
+
+                break;
+            case 1:
+                Bar.material.SetColor("_Colour", Color.yellow);
+
+                break;
+            case 2:
+                Bar.material.SetColor("_Colour", Color.green);
+
+                break;
+            case 3:
+                Bar.material.SetColor("_Colour", Color.blue);
+
+                break;
+        }
     }
 }
