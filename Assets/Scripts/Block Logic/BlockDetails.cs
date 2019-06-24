@@ -5,8 +5,8 @@ using UnityEngine.Networking;
 
 public enum BlockTypes { A = 0, B = 1, C = 2, D = 3, E = 4};
 
-public class BlockDetails : MonoBehaviour
-//public class BlockDetails : NetworkBehaviour
+//public class BlockDetails : MonoBehaviour
+public class BlockDetails : NetworkBehaviour
 {
 	[Tooltip("Coordinates of the block.")]
 	public Vector2 coords = Vector2.zero;
@@ -15,8 +15,8 @@ public class BlockDetails : MonoBehaviour
 	//[SyncVar(hook = "OnTypeChanged")]
 	public BlockTypes type = BlockTypes.A;
 	//[HideInInspector]
-	//[SyncVar(hook = "OnTypeChanged")]
-	//public int intType = 0;
+	[SyncVar(hook = "OnTypeChanged")]
+	public int intType = 0;
 
 	[Tooltip("Can the block be clicked on and used?")]
 	public bool isInteractable = true;
@@ -49,14 +49,23 @@ public class BlockDetails : MonoBehaviour
     }
 	
 	//Hook to change then update type
-	/*public void OnTypeChanged(int newType)
+	public void OnTypeChanged(int newType)
 	{
-		Debug.Log(coords);
+		//Debug.Log(coords);
+
+		/*if (isServer)
+		{
+			Debug.Log("host: " + newType);
+		}
+		else
+		{
+			Debug.Log("client: " + newType);
+		}*/
 
 		type = (BlockTypes)newType;
 
 		UpdateType();
-	}*/
+	}
 
 	//Change colour to suit type
 	public void UpdateType()

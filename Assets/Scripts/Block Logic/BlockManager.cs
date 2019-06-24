@@ -761,9 +761,9 @@ public class BlockManager : NetworkBehaviour
 		}
 
 		//Type sync variables. Starts with 1 so '0's that come before other ints aren't ignored
-		string xList = "1";
+		/*string xList = "1";
 		string yList = "1";
-		string typeList = "1";
+		string typeList = "1";*/
 		
 		//Break matched blocks and drop new blocks
 		if (matchingHorizontalIndices.Count >= 2)
@@ -788,10 +788,13 @@ public class BlockManager : NetworkBehaviour
 
 				if (isLocalPlayer)
 				{
-					details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
-					details.UpdateType();
+					//details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
+					//details.UpdateType();
 					
 					//CmdChangeType(blockX, (int)blockMax.y, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
+
+					//CmdChangeTypeBeta(blockX, (int)blockMax.y, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
+					StartCoroutine(DelayedTypeChange(blockX, (int)blockMax.y, (int)GenerateRandomType(new bool[5] { true, true, true, true, true })));
 				}
 				
 				blockPos = oldBlock.transform.position;
@@ -815,9 +818,9 @@ public class BlockManager : NetworkBehaviour
 					details.chainIndex = newChainIndex;
 				}
 
-				xList += details.coords.x;
+				/*xList += details.coords.x;
 				yList += details.coords.y;
-				typeList += (int)details.type;
+				typeList += (int)details.type;*/
 
 				if (pos.y < blockMax.y)
 				{
@@ -906,14 +909,17 @@ public class BlockManager : NetworkBehaviour
 				{
 					if (isLocalPlayer)
 					{
-						details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
+						/*details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
 						details.UpdateType();
 						
 						xList += details.coords.x;
 						yList += details.coords.y;
-						typeList += (int)details.type;
+						typeList += (int)details.type;*/
 
 						//CmdChangeType((int)pos.x, targetIndex, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
+
+						//CmdChangeTypeBeta((int)pos.x, targetIndex, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
+						StartCoroutine(DelayedTypeChange((int)pos.x, targetIndex, (int)GenerateRandomType(new bool[5] { true, true, true, true, true })));
 					}
 
 					details.gameObject.transform.position = CoordToPosition((int)pos.x, (int)blockMax.y + resetBlockCount);
@@ -938,28 +944,69 @@ public class BlockManager : NetworkBehaviour
 			}
 		}
 		
-		if (hasAuthority && xList != "1")
+		/*if (hasAuthority && xList != "1")
 		{
 			StartCoroutine(DelayedTypeSync(int.Parse(xList), int.Parse(yList), int.Parse(typeList)));
-		}
+		}*/
 	}
-	
+
+	//Frame delayed instruction to sync newly spawned blocks' types
+	IEnumerator DelayedTypeChange(int x, int y, int newType)
+	{
+		yield return new WaitForEndOfFrame();
+
+		CmdChangeTypeBeta(x, y, newType);
+
+		//yield return new WaitForEndOfFrame();
+	}
+
+	[Command]
+	void CmdChangeTypeBeta(int x, int y, int newType)
+	{
+		RpcChangeTypeBeta(x, y, newType);
+	}
+
+	[ClientRpc]
+	void RpcChangeTypeBeta(int x, int y, int newType)
+	{
+		BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
+
+		details.type = (BlockTypes)newType;
+		details.UpdateType();
+	}
+
 	//Change the type of the specified block on the server to ripple the update out
-	/*[Command]
+	[Command]
 	void CmdChangeType(int x, int y, int newType)
 	{
 		//allBlocks[x, y].GetComponent<BlockDetails>().type = newType;
+		//allBlocks[x, y].GetComponent<BlockDetails>().intType = newType;
+
+		ChangeType(x, y, newType);
+	}
+	
+	void ChangeType(int x, int y, int newType)
+	{
+		//print(x + ", " + y);
+
+		if (!isServer)
+		{
+			return;
+		}
+
 		allBlocks[x, y].GetComponent<BlockDetails>().intType = newType;
-	}*/
+	}
 
 	//Frame delayed instruction to sync newly spawned blocks' types
 	IEnumerator DelayedTypeSync(int xList, int yList, int typeList)
 	{
-		yield return new WaitForEndOfFrame();
+		//yield return new WaitForEndOfFrame();
 
 		//print(Time.time);
 
 		CmdSyncTypes(xList, yList, typeList);
+
+		yield return new WaitForEndOfFrame();
 	}
 
 	//Tell all clients the new colours for each nely spawned block
@@ -981,14 +1028,18 @@ public class BlockManager : NetworkBehaviour
 		{
 			return;
 		}
-		
+
+		print("X: " + xList);
+		print("Y: " + yList);
+		print("Types: " + typeList);
+
 		char[] xCoords = xList.ToString().ToCharArray();
 		char[] yCoords = yList.ToString().ToCharArray();
 		char[] types = typeList.ToString().ToCharArray();
 
 		BlockDetails details;
 
-		for (int i = 0; i < xCoords.Length; i++)
+		for (int i = 1; i < xCoords.Length; i++)
 		{
 			details = allBlocks[(int)char.GetNumericValue(xCoords[i]), (int)char.GetNumericValue(yCoords[i])].GetComponent<BlockDetails>();
 
