@@ -20,6 +20,8 @@ public class ChargeAttack : MonoBehaviour
 
     //[HideInInspector]
     public float[] Counts;
+    public Sprite[] tiles;
+    public Image Symbol;
 
     int currentType;
     float currentHighest;
@@ -51,36 +53,37 @@ public class ChargeAttack : MonoBehaviour
 
                     break;
             }
+
         Current = Counts[0] + Counts[1] + Counts[2] + Counts[3];
         Bar.fillAmount = Current/capacity;
+        if( Current > capacity)
+        {
+            Current = capacity;
+        }
         
-        
-        for (int a = 0;a > 4; a++)
+
+        for (int a = 0;a < 4; a++)
         {
             if (Counts[a] > currentHighest)
             {
                 currentHighest = Counts[a];
                 currentType = a;
+                Symbol.sprite = tiles[a];
             }
         }
-
         switch (currentType)
         {
             case 0:
-                Bar.material.SetColor("_Colour", Color.red);
-
+                Bar.material.SetColor("_Color", Color.red);
                 break;
             case 1:
-                Bar.material.SetColor("_Colour", Color.yellow);
-
+                Bar.material.SetColor("_Color", Color.yellow);
                 break;
             case 2:
-                Bar.material.SetColor("_Colour", Color.green);
-
+                Bar.material.SetColor("_Color", Color.green);
                 break;
             case 3:
-                Bar.material.SetColor("_Colour", Color.blue);
-
+                Bar.material.SetColor("_Color", Color.blue);
                 break;
         }
     }

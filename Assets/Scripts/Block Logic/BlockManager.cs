@@ -103,7 +103,7 @@ public class BlockManager : NetworkBehaviour
 	public List<int> allChains = new List<int>();
 
 	private MatchUI mui;
-
+    private ChargeAttack atkBar;
 	//Setup
 	void Start()
     {
@@ -132,6 +132,7 @@ public class BlockManager : NetworkBehaviour
 		}
 
 		mui = gameObject.GetComponent<MatchUI>();
+        atkBar = gameObject.GetComponent<ChargeAttack>();
 
         if (isServer)
         {
@@ -717,12 +718,12 @@ public class BlockManager : NetworkBehaviour
 				allChains[chainIndex] += 1;
 			}
 
-			//print(allChains[newChainIndex]);
-			//mui.UpdateChains(allChains[newChainIndex]);
-			//mui.UpdateCombo(comboCount);
-
-			//to retrieve chain count for current swap, use allChains[chainIndex]
-		}
+            //print(allChains[newChainIndex]);
+            //mui.UpdateChains(allChains[newChainIndex]);
+            //mui.UpdateCombo(comboCount);
+            atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount);
+            //to retrieve chain count for current swap, use allChains[chainIndex]
+        }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
 			if(chainIndex > -1)
