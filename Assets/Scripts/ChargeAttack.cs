@@ -11,12 +11,19 @@ public class ChargeAttack : MonoBehaviour
     //atkBar = gameObject.GetComponent<ChargeAttack>(); // set on start
 
     public Image Bar;
+    public Image healthBar;
 
     [Tooltip("total capacity of bar")]
     public float capacity;
 
     [Tooltip("current capacity of bar")]
     public float Current;
+
+    [Tooltip("current health")]
+    public float health;
+    [Tooltip("maximum health")]
+    public float maxhealth;
+        
 
     //[HideInInspector]
     public float[] Counts;
@@ -52,7 +59,10 @@ public class ChargeAttack : MonoBehaviour
                     Counts[3] += comboCount * chainCount + comboCount;
 
                     break;
-            }
+                case BlockTypes.E:
+                Heal(chainCount, comboCount);
+                    break;
+        }
 
         Current = Counts[0] + Counts[1] + Counts[2] + Counts[3];
         Bar.fillAmount = Current/capacity;
@@ -85,6 +95,16 @@ public class ChargeAttack : MonoBehaviour
             case 3:
                 Bar.material.SetColor("_Color", Color.blue);
                 break;
+        }
+    }
+
+    void Heal(int chain, int combo)
+    {
+        health += (chain + combo);
+        healthBar.fillAmount = health / maxhealth;
+        if (health > maxhealth)
+        {
+            health = maxhealth;
         }
     }
 }

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CustomBar
+  m_Name: HealthBar
   m_Shader: {fileID: 4800000, guid: 9ad34dc96660f2d4fbb82243670494bc, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
@@ -85,5 +85,5 @@ Material:
     - _UseUIAlphaClip: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 0, b: 0, a: 1}
+    - _Color: {r: 1, g: 0.015686274, b: 0.9282742, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
