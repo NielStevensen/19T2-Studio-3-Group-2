@@ -5,11 +5,6 @@ using UnityEngine.UI;
 
 public class ChargeAttack : MonoBehaviour
 {
-    //add to block manager to call
-    //atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount); goes under mui call
-    //private ChargeAttack atkBar; under mui decleration
-    //atkBar = gameObject.GetComponent<ChargeAttack>(); // set on start
-
     public Image Bar;
     public Image healthBar;
 
@@ -24,15 +19,15 @@ public class ChargeAttack : MonoBehaviour
     [Tooltip("maximum health")]
     public float maxhealth;
         
-
-    //[HideInInspector]
+    [HideInInspector]
     public float[] Counts;
     public Sprite[] tiles;
     public Image Symbol;
 
+    public TypeInteractions chart;
+
     int currentType;
     float currentHighest;
-    
 
     private void Start() 
     {
@@ -106,5 +101,11 @@ public class ChargeAttack : MonoBehaviour
         {
             health = maxhealth;
         }
+    }
+
+    void Damage(float Damage, float type)
+    {
+        health -= (Damage);
+        healthBar.fillAmount = health / maxhealth;
     }
 }

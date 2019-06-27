@@ -453,6 +453,28 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d74fbd19212cdac46add8b6063f262af, type: 3}
   - {fileID: 21300000, guid: f4fd951ad1e575848b48c49dd1cfd24f, type: 3}
   Symbol: {fileID: 4151175466297621438}
+  chart:
+    matrix:
+    - modifier:
+      - 0
+      - 0
+      - 0
+      - 0
+    - modifier:
+      - 0
+      - 0
+      - 0
+      - 0
+    - modifier:
+      - 0
+      - 0
+      - 0
+      - 0
+    - modifier:
+      - 0
+      - 0
+      - 0
+      - 0
 --- !u!114 &7196216909978742877
 MonoBehaviour:
   m_ObjectHideFlags: 0
