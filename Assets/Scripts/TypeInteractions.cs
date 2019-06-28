@@ -10,5 +10,5 @@ using UnityEngine;
         {
         public float[] modifier;
         }
-        public typeInteractions[] matrix = new typeInteractions[4];
+        public typeInteractions[] matrix = new typeInteractions[5];
     }

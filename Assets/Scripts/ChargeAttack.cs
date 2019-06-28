@@ -2,10 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class ChargeAttack : MonoBehaviour
+[System.Serializable]
+public class TwoDimArray
 {
+    public string name = "Type";
+
+    public float[] matchUp;
+
+    public TwoDimArray()
+    {
+        matchUp = new float[4] { 1, 1, 1, 1 };
+    }
+}
+
+public class ChargeAttack : NetworkBehaviour
+{
+    [HideInInspector]
     public Image Bar;
+    [HideInInspector]
     public Image healthBar;
 
     [Tooltip("total capacity of bar")]
@@ -15,59 +31,60 @@ public class ChargeAttack : MonoBehaviour
     public float Current;
 
     [Tooltip("current health")]
+    [SyncVar]
     public float health;
     [Tooltip("maximum health")]
+    [SyncVar]
     public float maxhealth;
-        
+
     [HideInInspector]
     public float[] Counts;
     public Sprite[] tiles;
+    [HideInInspector]
     public Image Symbol;
 
-    public TypeInteractions chart;
+    public int myType;
 
     int currentType;
     float currentHighest;
 
-    private void Start() 
+    public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
+
+    private void Start()
     {
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
     }
 
-    public void FillBar(BlockTypes colour,int chainCount, int comboCount)
+    public void FillBar(BlockTypes colour, int chainCount, int comboCount)
     {
-            switch (colour)
-            {
-                case BlockTypes.A:
-                    Counts[0] += comboCount *chainCount + comboCount;
-
-                    break;
-                case BlockTypes.B:
-                    Counts[1] += comboCount * chainCount + comboCount;
-
-                    break;
-                case BlockTypes.C:
-                    Counts[2] += comboCount * chainCount + comboCount;
-
-                    break;
-                case BlockTypes.D:
-                    Counts[3] += comboCount * chainCount + comboCount;
-
-                    break;
-                case BlockTypes.E:
+        switch (colour)
+        {
+            case BlockTypes.A:
+                Counts[0] += comboCount * chainCount + comboCount;
+                break;
+            case BlockTypes.B:
+                Counts[1] += comboCount * chainCount + comboCount;
+                break;
+            case BlockTypes.C:
+                Counts[2] += comboCount * chainCount + comboCount;
+                break;
+            case BlockTypes.D:
+                Counts[3] += comboCount * chainCount + comboCount;
+                break;
+            case BlockTypes.E:
                 Heal(chainCount, comboCount);
-                    break;
+                break;
         }
 
         Current = Counts[0] + Counts[1] + Counts[2] + Counts[3];
-        Bar.fillAmount = Current/capacity;
-        if( Current > capacity)
+        Bar.fillAmount = Current / capacity;
+        if (Current > capacity)
         {
             Current = capacity;
         }
-        
 
-        for (int a = 0;a < 4; a++)
+
+        for (int a = 0; a < 4; a++)
         {
             if (Counts[a] > currentHighest)
             {
@@ -103,9 +120,33 @@ public class ChargeAttack : MonoBehaviour
         }
     }
 
-    void Damage(float Damage, float type)
+    [ClientRpc]
+    void RpcDamage(float Damage, int type)
     {
-        health -= (Damage);
+        if (hasAuthority)
+        {
+            return;
+        }
+        health -= (Damage * matchUpMatrix[type].matchUp[myType]);
         healthBar.fillAmount = health / maxhealth;
+    }
+    [Command]
+    void CmdDamage (float Damage, int type)
+    {
+        RpcDamage(Damage, type);
+    }
+
+    public void Update()
+    {
+        Bar.fillAmount = Current / capacity;
+        if (Input.GetButtonDown("Jump"))
+        {
+            CmdDamage(Current / 30, currentType);
+            Current = 0;
+            for (int a = 0; a < 4; a++)
+            {
+               Counts[a] = 0f;
+            } 
+        }
     }
 }

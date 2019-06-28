@@ -17,7 +17,6 @@ public class TyepChartDisplay : PropertyDrawer
         {
             SerializedProperty intertaction = grid.GetArrayElementAtIndex(i).FindPropertyRelative("modifier");
             newPos.height = 20;
-            if (intertaction.arraySize != 4)
                 intertaction.arraySize = 4;
             newPos.width = 40;
             for (int j = 0; j < 4; j++)
