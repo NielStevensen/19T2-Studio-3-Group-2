@@ -21,6 +21,14 @@ public class BlockDetails : NetworkBehaviour
 	[Tooltip("Can the block be clicked on and used?")]
 	public bool isInteractable = true;
 
+	//Movement coroutine
+	[HideInInspector]
+	public Coroutine movementCoroutine;
+
+	//Is the block swapping?
+	[HideInInspector]
+	public bool isSwapping = false;
+
 	//Sprite renderer reference
 	private SpriteRenderer spriteRenderer;
 
@@ -93,5 +101,11 @@ public class BlockDetails : NetworkBehaviour
 
 				break;
 		}
+	}
+
+	//Can the block be matched, i.e. is it moving or already matched?
+	public bool IsMatchable()
+	{
+		return !(isInteractable || isSwapping || isFalling);
 	}
 }
