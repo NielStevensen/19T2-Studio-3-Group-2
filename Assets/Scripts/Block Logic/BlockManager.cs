@@ -42,7 +42,9 @@ public class BlockManager : NetworkBehaviour
 	//Block size
 	[Tooltip("Size of blocks.")]
 	public float blockSize = 1.0f;
-	private Vector3 displacement;
+	private Vector3 displacement3D;
+	private Vector2 displacement2D;
+	private Vector2 selectedBlockPos;
 
 	//Block count in the field
 	[Tooltip("The number of blocks horizontally (x) and vertically (y) across the field.")]
@@ -56,7 +58,6 @@ public class BlockManager : NetworkBehaviour
 	public int[] blockRarities = new int[5] { 200, 200, 200, 200, 25};
 
     //All blocks
-    [SyncVar]
     [SerializeField]
     private SyncListInt generatedTypes = new SyncListInt();
 	private GameObject[,] allBlocks;
@@ -81,10 +82,11 @@ public class BlockManager : NetworkBehaviour
 	private GameObject cursor;
 	private Vector2 cursorPos;
 	private SpriteRenderer cursorRenderer;
-	private bool canCursorSwap = true;
+	private bool canSwap = true;
 	
 	//Selected block
 	private GameObject selectedBlock;
+	private BlockDetails selectedDetails;
 
 	//Movement coroutines
 	private Coroutine[,] blockCoroutines;
@@ -110,6 +112,7 @@ public class BlockManager : NetworkBehaviour
 
 	private MatchUI mui;
     private ChargeAttack atkBar;
+
 	//Setup
 	void Start()
     {
@@ -122,7 +125,8 @@ public class BlockManager : NetworkBehaviour
 		bottomLeftExtreme = new Vector2(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom);
 		topRightExtreme = new Vector2(transform.position.x + playFieldBounds.right, transform.position.y + playFieldBounds.top);
 
-		displacement = new Vector3(blockSize / 2, blockSize / 2, 0);
+		displacement3D = new Vector3(blockSize / 2, blockSize / 2, 0);
+		displacement2D = new Vector2(blockSize / 2, blockSize / 2);
 
 		blockMax = blockCount - new Vector2(1, 1);
 
@@ -255,7 +259,7 @@ public class BlockManager : NetworkBehaviour
 
             for (int x = 0; x < blockCount.x; x++)
 			{
-				Vector3 pos = new Vector3(xBase + x * blockSize, yPos, 0) + displacement;
+				Vector3 pos = new Vector3(xBase + x * blockSize, yPos, 0) + displacement3D;
 
 				allBlocks[x, y] = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
                 //NetworkServer.Spawn(allBlocks[x, y]);
@@ -281,7 +285,7 @@ public class BlockManager : NetworkBehaviour
 		{
 			if (Input.GetButtonDown("Horizontal"))
 			{
-				cursorPos.x = Mathf.Clamp(cursorPos.x + 1 * Mathf.Sign(Input.GetAxisRaw("Horizontal")), 0, blockMax.x - 1);
+				cursorPos.x = Mathf.Clamp(cursorPos.x + 1 * Mathf.Sign(Input.GetAxisRaw("Horizontal")), 0, blockMax.x);
 
 				cursor.transform.position = CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true);
 			}
@@ -293,17 +297,45 @@ public class BlockManager : NetworkBehaviour
 				cursor.transform.position = CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true);
 			}
 
-			if (canCursorSwap && Input.GetButtonDown("Select"))
+			if (canSwap)
 			{
-				GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
-				GameObject blockThat = allBlocks[(int)cursorPos.x + 1, (int)cursorPos.y];
-
-				BlockDetails detailsThis = blockThis.GetComponent<BlockDetails>();
-				BlockDetails detailsThat = blockThat.GetComponent<BlockDetails>();
-
-				if(detailsThis.isInteractable && detailsThat.isInteractable)
+				if (Input.GetButtonDown("SwapH"))
 				{
-					HandleSwap(new Vector2Int((int)cursorPos.x, (int)cursorPos.y), new Vector2Int((int)cursorPos.x + 1, (int)cursorPos.y));
+					int direction = 1 * Mathf.FloorToInt(Mathf.Sign(Input.GetAxisRaw("SwapH")));
+					int swapIndex = (int)cursorPos.x + direction;
+					
+					if (0 <= swapIndex && swapIndex <= blockMax.x)
+					{
+						GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
+						GameObject blockThat = allBlocks[swapIndex, (int)cursorPos.y];
+
+						BlockDetails detailsThis = blockThis.GetComponent<BlockDetails>();
+						BlockDetails detailsThat = blockThat.GetComponent<BlockDetails>();
+
+						if (detailsThis.isInteractable && detailsThat.isInteractable)
+						{
+							HandleSwap(new Vector2Int((int)cursorPos.x, (int)cursorPos.y), new Vector2Int(swapIndex, (int)cursorPos.y));
+						}
+					}
+				}
+				else if (Input.GetButtonDown("SwapV"))
+				{
+					int direction = 1 * Mathf.FloorToInt(Mathf.Sign(Input.GetAxisRaw("SwapV")));
+					int swapIndex = (int)cursorPos.y + direction;
+					
+					if (0 <= swapIndex && swapIndex <= blockMax.y)
+					{
+						GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
+						GameObject blockThat = allBlocks[(int)cursorPos.x, swapIndex];
+
+						BlockDetails detailsThis = blockThis.GetComponent<BlockDetails>();
+						BlockDetails detailsThat = blockThat.GetComponent<BlockDetails>();
+
+						if (detailsThis.isInteractable && detailsThat.isInteractable)
+						{
+							HandleSwap(new Vector2Int((int)cursorPos.x, (int)cursorPos.y), new Vector2Int((int)cursorPos.x, swapIndex));
+						}
+					}
 				}
 			}
 		}
@@ -319,12 +351,71 @@ public class BlockManager : NetworkBehaviour
 
 					Vector2 index = new Vector2(Mathf.FloorToInt(fixedPos.x / blockSize), Mathf.FloorToInt(fixedPos.y / blockSize));
 
-					selectedBlock = allBlocks[(int)index.x, (int)index.y];
+					GameObject targetBlock = allBlocks[(int)index.x, (int)index.y];
+
+					if (targetBlock.GetComponent<BlockDetails>().isInteractable)
+					{
+						selectedBlock = targetBlock;
+						selectedDetails = selectedBlock.GetComponent<BlockDetails>();
+
+						Vector3 pos = CoordToPosition((int)index.x, (int)index.y);
+
+						selectedBlockPos = new Vector2(pos.x, pos.y);
+					}
+				}
+			}
+			else if(canSwap && Input.GetButton("Select") && selectedBlock != null)
+			{
+				if (selectedDetails.isInteractable)
+				{
+					Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+					if (!IsInBounds(mousePos, selectedBlockPos - displacement2D, selectedBlockPos + displacement2D))
+					{
+						Vector2Int selectedCoords = new Vector2Int((int)selectedDetails.coords.x, (int)selectedDetails.coords.y);
+						Vector2Int swapDirection = Vector2Int.zero;
+						Vector2Int targetCoords = Vector2Int.zero;
+
+						float relativeAngle = Mathf.Atan2(mousePos.y - selectedBlockPos.y, mousePos.x - selectedBlockPos.x) * Mathf.Rad2Deg + 180;
+
+						if(315 >= relativeAngle && relativeAngle > 225)
+						{
+							swapDirection = new Vector2Int(0, 1);
+						}
+						else if (225 >= relativeAngle && relativeAngle > 135)
+						{
+							swapDirection = new Vector2Int(1, 0);
+						}
+						else if (135 >= relativeAngle && relativeAngle > 45)
+						{
+							swapDirection = new Vector2Int(0, -1);
+						}
+						else
+						{
+							swapDirection = new Vector2Int(-1, 0);
+						}
+
+						targetCoords = selectedCoords + swapDirection;
+
+						if (IsInBounds(targetCoords, new Vector2Int(-1, -1), blockCount))
+						{
+							BlockDetails detailsThat = allBlocks[targetCoords.x, targetCoords.y].GetComponent<BlockDetails>();
+
+							if (detailsThat.isInteractable)
+							{
+								HandleSwap(selectedCoords, targetCoords);
+
+								Vector3 pos = CoordToPosition((int)selectedDetails.coords.x, (int)selectedDetails.coords.y);
+
+								selectedBlockPos = new Vector2(pos.x, pos.y);
+							}
+						}
+					}
 				}
 			}
 			else if (Input.GetButtonUp("Select") && selectedBlock != null)
 			{
-				releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+				/*releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
 				BlockDetails detailsThis = selectedBlock.GetComponent<BlockDetails>();
 				BlockDetails detailsThat = null;
@@ -362,7 +453,7 @@ public class BlockManager : NetworkBehaviour
 							}
 						}
 					}
-				}
+				}*/
 
 				selectedBlock = null;
 			}
@@ -391,16 +482,22 @@ public class BlockManager : NetworkBehaviour
 		}
 	}
 
-	//Are the supplied co ordinates within the bounds
+	//Are the supplied co ordinates within the board extremes
 	bool IsInBounds(Vector2 input)
 	{
 		return bottomLeftExtreme.x < input.x && input.x < topRightExtreme.x && bottomLeftExtreme.y < input.y && input.y < topRightExtreme.y;
+	}
+
+	//Are the supplied co ordinates within the supplied bounds
+	bool IsInBounds(Vector2 input, Vector2 bottomLeft, Vector2 topRight)
+	{
+		return bottomLeft.x < input.x && input.x < topRight.x && bottomLeft.y < input.y && input.y < topRight.y;
 	}
 	
 	//Swap cooldown
 	IEnumerator CursorCooldown()
 	{
-		canCursorSwap = false;
+		canSwap = false;
 
 		if (isCursorControl)
 		{
@@ -412,8 +509,9 @@ public class BlockManager : NetworkBehaviour
 		}
 
 		yield return new WaitForSeconds(swapTime);
+		yield return new WaitForEndOfFrame();
 
-		canCursorSwap = true;
+		canSwap = true;
 
 		if (isCursorControl)
 		{
@@ -557,13 +655,16 @@ public class BlockManager : NetworkBehaviour
 	//Handle the logic before and after dropping blocks
 	IEnumerator HandleBlockDrop(Vector2Int coords, int chainIndex, bool isHighest, int dropCount)
 	{
-		//wait for break
-		yield return new WaitForSeconds(0.5f);
-		
 		//get references
 		GameObject droppingBlock = allBlocks[coords.x, coords.y];
 		BlockDetails droppingDetails = droppingBlock.GetComponent<BlockDetails>();
 
+		droppingDetails.isInteractable = false;
+		droppingDetails.isFalling = true;
+
+		//wait for break
+		yield return new WaitForSeconds(0.5f);
+		
 		//move block to top
 		Vector3 newPos = CoordToPosition(coords.x, (int)blockCount.y);
 
@@ -869,6 +970,8 @@ public class BlockManager : NetworkBehaviour
 		
 		if(matchingHorizontalIndices.Count >= 2 || matchingVerticalIndices.Count >= 3)
 		{
+			selectedBlock = null;
+
 			int horizontalMatchCount = matchingHorizontalIndices.Count;
 			int verticalMatchCount = matchingVerticalIndices.Count;
 
@@ -901,7 +1004,9 @@ public class BlockManager : NetworkBehaviour
             //print(allChains[newChainIndex]);
             //mui.UpdateChains(allChains[newChainIndex]);
             //mui.UpdateCombo(comboCount);
-            atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount);
+
+            //atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount);
+
             //to retrieve chain count for current swap, use allChains[chainIndex]
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
@@ -959,7 +1064,7 @@ public class BlockManager : NetworkBehaviour
 
 			for (int x = 0; x < matchingHorizontalIndices.Count; x++)
 			{
-				StartCoroutine(FadeBlock(allBlocks[matchingHorizontalIndices[x], (int)pos.y]));
+				//StartCoroutine(FadeBlock(allBlocks[matchingHorizontalIndices[x], (int)pos.y]));
 
 				StartCoroutine(HandleBlockDrop(new Vector2Int(matchingHorizontalIndices[x], (int)pos.y), newChainIndex, true, 1));
 
@@ -1059,7 +1164,7 @@ public class BlockManager : NetworkBehaviour
 			{
 				//print(matchingVerticalIndices[i] + ": " + (i == matchingVerticalIndices.Count - 1).ToString());
 
-				StartCoroutine(FadeBlock(allBlocks[(int)pos.x, matchingVerticalIndices[i]]));
+				//StartCoroutine(FadeBlock(allBlocks[(int)pos.x, matchingVerticalIndices[i]]));
 
 				StartCoroutine(HandleBlockDrop(new Vector2Int((int)pos.x, matchingVerticalIndices[i]), newChainIndex, i == matchingVerticalIndices.Count - 1, matchingVerticalIndices.Count));
 			}
@@ -1146,7 +1251,7 @@ public class BlockManager : NetworkBehaviour
 		
 		if (hasAuthority && xList != "1")
 		{
-			StartCoroutine(DelayedTypeSync(int.Parse(xList), int.Parse(yList), int.Parse(typeList)));
+			//StartCoroutine(DelayedTypeSync(int.Parse(xList), int.Parse(yList), int.Parse(typeList)));
 		}
 	}
 
@@ -1253,16 +1358,14 @@ public class BlockManager : NetworkBehaviour
 	//Produce a vector 3 based on the coordinates provides
 	Vector3 CoordToPosition(int x, int y, bool useExtraDisplacement)
 	{
-		float extraDisplacement = blockSize / 2;
 		float extraZ = -1.25f;
 
 		if (!useExtraDisplacement)
 		{
-			extraDisplacement = 0;
 			extraZ = 0;
 		}
 
-		return transform.position + new Vector3((x - (blockCount.x / 2)) * blockSize + extraDisplacement, (y - (blockCount.y / 2)) * blockSize, extraZ) + displacement;
+		return transform.position + new Vector3((x - (blockCount.x / 2)) * blockSize, (y - (blockCount.y / 2)) * blockSize, extraZ) + displacement3D;
 	}
 
 	//temp. fade
