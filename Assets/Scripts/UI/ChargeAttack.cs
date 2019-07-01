@@ -25,16 +25,18 @@ public class ChargeAttack : NetworkBehaviour
     public Image healthBar;
 
     [Tooltip("total capacity of bar")]
+    [SyncVar]
     public float capacity;
 
     [Tooltip("current capacity of bar")]
+    [SyncVar]
     public float Current;
 
     [Tooltip("current health")]
-    [SyncVar]
+    //[SyncVar]
     public float health;
     [Tooltip("maximum health")]
-    [SyncVar]
+    //[SyncVar]
     public float maxhealth;
 
     [HideInInspector]
@@ -127,8 +129,12 @@ public class ChargeAttack : NetworkBehaviour
         {
             return;
         }
-        health -= (Damage * matchUpMatrix[type].matchUp[myType]);
-        healthBar.fillAmount = health / maxhealth;
+        else
+        {
+            health -= (Damage * matchUpMatrix[type].matchUp[myType]);
+            healthBar.fillAmount = health / maxhealth;
+            Debug.Log(Damage);
+        }
     }
     [Command]
     void CmdDamage (float Damage, int type)
@@ -141,12 +147,15 @@ public class ChargeAttack : NetworkBehaviour
         Bar.fillAmount = Current / capacity;
         if (Input.GetButtonDown("Jump"))
         {
-            CmdDamage(Current / 30, currentType);
-            Current = 0;
-            for (int a = 0; a < 4; a++)
+            if (isLocalPlayer)
             {
-               Counts[a] = 0f;
-            } 
+                CmdDamage(Current / 30, currentType);
+                Current = 0;
+                for (int a = 0; a < 4; a++)
+                {
+                    Counts[a] = 0f;
+                }
+            }
         }
     }
 }
