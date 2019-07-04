@@ -19,6 +19,9 @@ public class TwoDimArray
 
 public class ChargeAttack : NetworkBehaviour
 {
+    public ChargeAttack opponent;
+    public ChargeAttack[] scriptRefs;
+
     [HideInInspector]
     public Image Bar;
     [HideInInspector]
@@ -33,10 +36,10 @@ public class ChargeAttack : NetworkBehaviour
     public float Current;
 
     [Tooltip("current health")]
-    //[SyncVar]
+    [SyncVar]
     public float health;
     [Tooltip("maximum health")]
-    //[SyncVar]
+    [SyncVar]
     public float maxhealth;
 
     [HideInInspector]
@@ -55,6 +58,19 @@ public class ChargeAttack : NetworkBehaviour
     private void Start()
     {
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
+        if(GameObject.FindObjectsOfType<ChargeAttack>().Length  > 1)
+        {
+            scriptRefs = GameObject.FindObjectsOfType<ChargeAttack>();
+            foreach (ChargeAttack a in scriptRefs)
+            {
+                if (a != this)
+                { 
+                    // set a reference to opponents script then refrence yourself
+                    opponent = a;
+                    opponent.opponent = this;
+                }
+            }
+        }
     }
 
     public void FillBar(BlockTypes colour, int chainCount, int comboCount)
@@ -122,24 +138,27 @@ public class ChargeAttack : NetworkBehaviour
         }
     }
 
+    [Command]
+    void CmdDamage(float Damage, int type)
+    {
+        RpcDamage(Damage, type);
+    }
+
     [ClientRpc]
     void RpcDamage(float Damage, int type)
     {
         if (hasAuthority)
         {
+            Debug.Log("local");
             return;
         }
         else
         {
-            health -= (Damage * matchUpMatrix[type].matchUp[myType]);
-            healthBar.fillAmount = health / maxhealth;
+            Debug.Log("servered");
+            opponent.health -= (Damage * matchUpMatrix[type].matchUp[myType]);
+            opponent.healthBar.fillAmount = health / maxhealth;
             Debug.Log(Damage);
         }
-    }
-    [Command]
-    void CmdDamage (float Damage, int type)
-    {
-        RpcDamage(Damage, type);
     }
 
     public void Update()

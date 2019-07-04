@@ -16,7 +16,6 @@ public class FlipUI : NetworkBehaviour
         {
             if (!isLocalPlayer)
             {
-                Debug.Log("client");
                 foreach (GameObject a in flip)
                 {
                     a.transform.localScale = new Vector3(-1, 1, 1);
@@ -33,7 +32,6 @@ public class FlipUI : NetworkBehaviour
         {
             if (isLocalPlayer)
             {
-                Debug.Log("client");
                 foreach (GameObject a in flip)
                 {
                     a.transform.localScale = new Vector3(-1, 1, 1);
