@@ -410,7 +410,12 @@ MonoBehaviour:
   cursorPrefab: {fileID: 7142510313808808482, guid: 6c24dbc85da41de4483634e39c48f144,
     type: 3}
   deadzone: 0.16
-  allChains: 
+  spriteSheet:
+  - {fileID: 21300000, guid: 56627de0542c9434e9239b1609dd6314, type: 3}
+  - {fileID: 21300000, guid: 157101f4dd26d6b479aedcff2e0a9ea9, type: 3}
+  - {fileID: 21300000, guid: d74fbd19212cdac46add8b6063f262af, type: 3}
+  - {fileID: 21300000, guid: f4fd951ad1e575848b48c49dd1cfd24f, type: 3}
+  - {fileID: 21300000, guid: 6cb54434058f78842b3fffedc29b394c, type: 3}
 --- !u!114 &6969340816384813606
 MonoBehaviour:
   m_ObjectHideFlags: 0
