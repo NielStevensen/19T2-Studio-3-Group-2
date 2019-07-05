@@ -21,6 +21,7 @@ public class ChargeAttack : NetworkBehaviour
 {
     public ChargeAttack opponent;
     public ChargeAttack[] scriptRefs;
+    public GameObject statUI;
 
     [HideInInspector]
     public Image Bar;
@@ -149,20 +150,21 @@ public class ChargeAttack : NetworkBehaviour
     {
         if (hasAuthority)
         {
-            Debug.Log("local");
             return;
         }
         else
         {
-            Debug.Log("servered");
             opponent.health -= (Damage * matchUpMatrix[type].matchUp[myType]);
-            opponent.healthBar.fillAmount = health / maxhealth;
-            Debug.Log(Damage);
         }
     }
 
     public void Update()
     {
+        if (opponent != null)
+        {
+            opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
+        }
+        healthBar.fillAmount = health / maxhealth;
         Bar.fillAmount = Current / capacity;
         if (Input.GetButtonDown("Jump"))
         {
@@ -174,6 +176,22 @@ public class ChargeAttack : NetworkBehaviour
                 {
                     Counts[a] = 0f;
                 }
+            }
+        }
+        //check win and lose conditions
+        if (opponent != null && isLocalPlayer)
+        {
+            if (opponent.health <= 0)
+            {
+                GameObject Stats = GameObject.Instantiate(statUI);
+                Stats.GetComponentInChildren<Text>().text = "Congratulations you win";
+                this.enabled = false;
+            }
+            else if (health <= 0)
+            {
+                GameObject Stats = GameObject.Instantiate(statUI);
+                Stats.GetComponentInChildren<Text>().text = "You lose";
+                this.enabled = false;
             }
         }
     }

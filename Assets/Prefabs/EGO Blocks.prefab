@@ -437,6 +437,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10ab094dbc3b05c4fa258e7fb7731ae0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  opponent: {fileID: 0}
+  scriptRefs: []
+  statUI: {fileID: 6189224303237009101, guid: bb21e8808fcaacf41b631ddefce4a91b, type: 3}
   Bar: {fileID: 7343074089949593827}
   healthBar: {fileID: 1812728709786534928}
   capacity: 300
