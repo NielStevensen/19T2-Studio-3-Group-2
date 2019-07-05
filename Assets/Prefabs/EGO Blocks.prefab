@@ -360,6 +360,7 @@ GameObject:
   - component: {fileID: 6969340816384813605}
   - component: {fileID: 7196216909978742877}
   - component: {fileID: 1951292527200229196}
+  - component: {fileID: 2863440990465685207}
   m_Layer: 8
   m_Name: EGO Blocks
   m_TagString: Untagged
@@ -543,6 +544,18 @@ MonoBehaviour:
   - {fileID: 7343074089949593827}
   - {fileID: 1812728709786534928}
   customShader: {fileID: 2100000, guid: 863eb968d05a0924e9ad4674ee7b4e1d, type: 2}
+--- !u!114 &2863440990465685207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969340816384813601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0549be67fe8fecc4cacadb8285180d32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7074949194183948419
 GameObject:
   m_ObjectHideFlags: 0
