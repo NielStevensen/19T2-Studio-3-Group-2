@@ -40,6 +40,9 @@ public class BlockDetails : NetworkBehaviour
 	[HideInInspector]
 	public int chainIndex = -1;
 
+	//current temp
+	public Sprite[] spriteSheet;
+
 	//Setup
     void Awake()
     {
@@ -78,7 +81,9 @@ public class BlockDetails : NetworkBehaviour
 	//Change colour to suit type
 	public void UpdateType()
 	{
-		switch (type)
+		spriteRenderer.sprite = spriteSheet[(int)type];
+
+		/*switch (type)
 		{
 			case BlockTypes.A:
 				spriteRenderer.color = Color.red;
@@ -100,7 +105,7 @@ public class BlockDetails : NetworkBehaviour
 				spriteRenderer.color = Color.magenta;
 
 				break;
-		}
+		}*/
 	}
 
 	//Can the block be matched, i.e. is it moving or already matched?

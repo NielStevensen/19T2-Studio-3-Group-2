@@ -108,10 +108,14 @@ public class BlockManager : NetworkBehaviour
 	private List<GameObject>[] blocksIntercepted; //Blocks that were sent to the top but were not dropped because a match was made above its original coords
 
 	//Chain counting list
-	public List<int> allChains = new List<int>();
+	//[HideInInspector]
+	private List<int> allChains = new List<int>();
 
+	//UI objects
 	private MatchUI mui;
     private ChargeAttack atkBar;
+	
+	public Sprite[] spriteSheet;
 
 	//Setup
 	void Start()
@@ -268,6 +272,7 @@ public class BlockManager : NetworkBehaviour
 
 				details.coords = new Vector2(x, y);
                 details.type = (BlockTypes)generatedTypes[yCoord + x];
+				details.spriteSheet = spriteSheet;
             }
 		}
 	}
@@ -530,7 +535,9 @@ public class BlockManager : NetworkBehaviour
 		{
 			CmdSwapBlocks(blockSelected.x, blockSelected.y, blockToSwap.x, blockToSwap.y);
 		}
-		
+
+		int chainCount = allChains.Count;
+
 		Coroutine relevantCoroutine;
 		
 		GameObject blockThis = allBlocks[blockSelected.x, blockSelected.y];
@@ -552,7 +559,7 @@ public class BlockManager : NetworkBehaviour
 			StopCoroutine(relevantCoroutine);
 		}
 		
-		blockCoroutines[blockToSwap.x, blockToSwap.y] = StartCoroutine(SwapBlock(blockThis, detailsThis, blockThis.transform.position, CoordToPosition(blockToSwap.x, blockToSwap.y)));
+		blockCoroutines[blockToSwap.x, blockToSwap.y] = StartCoroutine(SwapBlock(blockThis, detailsThis, blockThis.transform.position, CoordToPosition(blockToSwap.x, blockToSwap.y), chainCount));
 		
 		detailsThat.isInteractable = false;
 		detailsThat.coords -= swapDirection;
@@ -565,13 +572,13 @@ public class BlockManager : NetworkBehaviour
 			StopCoroutine(relevantCoroutine);
 		}
 		
-		blockCoroutines[blockSelected.x, blockSelected.y] = StartCoroutine(SwapBlock(blockThat, detailsThat, blockThat.transform.position, CoordToPosition(blockSelected.x, blockSelected.y)));
+		blockCoroutines[blockSelected.x, blockSelected.y] = StartCoroutine(SwapBlock(blockThat, detailsThat, blockThat.transform.position, CoordToPosition(blockSelected.x, blockSelected.y), chainCount));
 		
 		StartCoroutine(CursorCooldown());
 	}
 
 	//Horizontally swap blocks
-	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination)
+	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination, int chainCount)
 	{
         float elapsedTime = 0.0f;
 
@@ -590,7 +597,7 @@ public class BlockManager : NetworkBehaviour
 
 		yield return new WaitForEndOfFrame();
 
-		CheckForMatches(details.coords, details.type, -1);
+		CheckForMatches(details.coords, details.type, chainCount, -1);
 	}
 
 	//Tell all clients which blocks to swap
@@ -649,11 +656,11 @@ public class BlockManager : NetworkBehaviour
 
 		yield return new WaitForEndOfFrame();
 
-		CheckForMatches(details.coords, details.type, chainIndex);
+		CheckForMatches(details.coords, details.type, -1, chainIndex);
 	}
 
 	//Handle the logic before and after dropping blocks
-	IEnumerator HandleBlockDrop(Vector2Int coords, int chainIndex, bool isHighest, int dropCount)
+	IEnumerator HandleBlockDrop(Vector2Int coords, int chainIndex, bool isHighest, int dropCount, int delayNum)
 	{
 		//get references
 		GameObject droppingBlock = allBlocks[coords.x, coords.y];
@@ -665,6 +672,11 @@ public class BlockManager : NetworkBehaviour
 		//wait for break
 		yield return new WaitForSeconds(0.5f);
 		
+		for(int i = 0; i < delayNum; i++)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+
 		//move block to top
 		Vector3 newPos = CoordToPosition(coords.x, (int)blockCount.y);
 
@@ -713,11 +725,10 @@ public class BlockManager : NetworkBehaviour
 
 					details.isFalling = true;
 
-					/*if (details.chainIndex == -1)
+					if (details.chainIndex == -1)
 					{
-						details.isFalling = true;
 						details.chainIndex = chainIndex;
-					}*/
+					}
 				}
 				else
 				{
@@ -729,6 +740,8 @@ public class BlockManager : NetworkBehaviour
 
 			if (shouldContinue)
 			{
+				print(coords.x + ", " + coords.y + ": " + blocksToDrop[coords.x].Count);
+
 				int totalDropCount = blocksIntercepted[coords.x].Count + blocksToDrop[coords.x].Count;
 
 				for (int i = 0; i < blocksIntercepted[coords.x].Count; i++)
@@ -754,11 +767,10 @@ public class BlockManager : NetworkBehaviour
 
 						details.isFalling = true;
 
-						/*if (details.chainIndex == -1)
+						if (details.chainIndex == -1)
 						{
-							details.isFalling = true;
 							details.chainIndex = chainIndex;
-						}*/
+						}
 					}
 				}
 
@@ -785,11 +797,10 @@ public class BlockManager : NetworkBehaviour
 
 						details.isFalling = true;
 
-						/*if (details.chainIndex == -1)
+						if (details.chainIndex == -1)
 						{
-							details.isFalling = true;
 							details.chainIndex = chainIndex;
-						}*/
+						}
 					}
 				}
 			}
@@ -807,64 +818,12 @@ public class BlockManager : NetworkBehaviour
 		//update colour
 		droppingDetails.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
 		droppingDetails.UpdateType();
-
-		//temp
-		/*for(int i = 0; i < 5; i++)
-		{
-			yield return new WaitForEndOfFrame();
-		}
-		
-		Color temp = droppingBlock.GetComponent<SpriteRenderer>().color;
-		temp.a = 1;
-		droppingBlock.GetComponent<SpriteRenderer>().color = temp;*/
 	}
-
-	//exception: a match is made above another match
-	//in this case, a block is sent to the top but never told to move down
-
-	//Wait until all blocks to drop in a column are dropped, then clear it
-	IEnumerator DropClear(int x)
-	{
-		int num = blocksToDrop[x].Count;
-		BlockDetails[] details = new BlockDetails[num];
-
-		for (int i = 0; i < num; i++)
-		{
-			details[i] = blocksToDrop[x][i].GetComponent<BlockDetails>();
-		}
-
-		while (true)
-		{
-			bool areDropped = true;
-
-			for (int i = 0; i < num; i++)
-			{
-				if (details[i].isFalling)
-				{
-					areDropped = false;
-
-					break;
-				}
-			}
-
-			if (areDropped)
-			{
-				break;
-			}
-
-			yield return new WaitForEndOfFrame();
-		}
-
-		yield return new WaitForEndOfFrame();
-		
-		blocksToDrop[x].Clear();
-	}
-
+	
 	//Checks for matches and move blocks accordingly
-	void CheckForMatches(Vector2 pos, BlockTypes relevantType, int chainIndex)
+	void CheckForMatches(Vector2 pos, BlockTypes relevantType, int chainCount, int chainIndex)
 	{
 		BlockDetails details;
-		Coroutine relevantCoroutine;
 
 		List<int> matchingHorizontalIndices = new List<int>();
 		List<int> matchingVerticalIndices = new List<int>() { (int)pos.y };
@@ -970,8 +929,11 @@ public class BlockManager : NetworkBehaviour
 		
 		if(matchingHorizontalIndices.Count >= 2 || matchingVerticalIndices.Count >= 3)
 		{
-			selectedBlock = null;
-
+			if(selectedDetails.coords == pos)
+			{
+				selectedBlock = null;
+			}
+			
 			int horizontalMatchCount = matchingHorizontalIndices.Count;
 			int verticalMatchCount = matchingVerticalIndices.Count;
 
@@ -992,13 +954,16 @@ public class BlockManager : NetworkBehaviour
 			
 			if (chainIndex == -1)
 			{
-				newChainIndex = allChains.Count;
-				
-				allChains.Add(1);
+				newChainIndex = chainCount;
+
+				if (allChains.Count == chainCount)
+				{
+					allChains.Add(1);
+				}
 			}
 			else if(chainIndex > -1)
 			{
-				//allChains[chainIndex] += 1;
+				allChains[chainIndex] += 1;
 			}
 
             //print(allChains[newChainIndex]);
@@ -1066,7 +1031,7 @@ public class BlockManager : NetworkBehaviour
 			{
 				//StartCoroutine(FadeBlock(allBlocks[matchingHorizontalIndices[x], (int)pos.y]));
 
-				StartCoroutine(HandleBlockDrop(new Vector2Int(matchingHorizontalIndices[x], (int)pos.y), newChainIndex, true, 1));
+				StartCoroutine(HandleBlockDrop(new Vector2Int(matchingHorizontalIndices[x], (int)pos.y), newChainIndex, true, 1, 0));
 
 				/*blockX = matchingHorizontalIndices[x];
 				
@@ -1166,7 +1131,7 @@ public class BlockManager : NetworkBehaviour
 
 				//StartCoroutine(FadeBlock(allBlocks[(int)pos.x, matchingVerticalIndices[i]]));
 
-				StartCoroutine(HandleBlockDrop(new Vector2Int((int)pos.x, matchingVerticalIndices[i]), newChainIndex, i == matchingVerticalIndices.Count - 1, matchingVerticalIndices.Count));
+				StartCoroutine(HandleBlockDrop(new Vector2Int((int)pos.x, matchingVerticalIndices[i]), newChainIndex, i == matchingVerticalIndices.Count - 1, matchingVerticalIndices.Count, i));
 			}
 
 			/*if(matchingVerticalIndices[verticalMatchCount - 1] < blockMax.y)
