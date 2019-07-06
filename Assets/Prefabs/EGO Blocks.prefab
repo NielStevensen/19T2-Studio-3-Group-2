@@ -556,6 +556,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0549be67fe8fecc4cacadb8285180d32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Knight:
+    element: 2
+    maxHealth: 600
+    attack: 18
+    defence: 23
+    ability: shield
+  Archer:
+    element: 1
+    maxHealth: 540
+    attack: 21
+    defence: 19
+    ability: double
+  Priest:
+    element: 3
+    maxHealth: 680
+    attack: 16
+    defence: 18
+    ability: leech
+  Wizard:
+    element: 0
+    maxHealth: 580
+    attack: 24
+    defence: 17
+    ability: fireball
 --- !u!1 &7074949194183948419
 GameObject:
   m_ObjectHideFlags: 0

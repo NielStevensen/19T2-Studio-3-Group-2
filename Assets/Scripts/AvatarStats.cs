@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class AvatarStats : MonoBehaviour
 {
-
+    public StatBlock Knight;
+    public StatBlock Archer;
+    public StatBlock Priest;
+    public StatBlock Wizard;
 }
 
 
