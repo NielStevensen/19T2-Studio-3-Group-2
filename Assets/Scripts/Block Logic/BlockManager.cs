@@ -55,7 +55,7 @@ public class BlockManager : NetworkBehaviour
 
 	//Block rarity
 	[Tooltip("The rarity of each block type.")]
-	public int[] blockRarities = new int[5] { 200, 200, 200, 200, 25};
+	public int[] blockRarities = new int[5] { 200, 200, 200, 200, 200};
 
     //All blocks
     [SerializeField]
@@ -87,25 +87,18 @@ public class BlockManager : NetworkBehaviour
 	//Selected block
 	private GameObject selectedBlock;
 	private BlockDetails selectedDetails;
-
-	//Movement coroutines
-	private Coroutine[,] blockCoroutines;
-
+	
 	//Mouse position
 	private Vector3 clickPos;
 	private Vector3 releasePos;
-
-	[Space(10)]
-
-	//Deadzone
-	[Tooltip("The distance movement must exceed to count as a move.")]
-	public float deadzone = 0.25f;
-
+	
 	//Block dropping values
-	private float lowestDropY;
-	private List<GameObject>[] blocksToDrop; //Blocks sent to the top to drop
 	private GameObject[] highestBlocks; //Highest blocks in each column. Used to set spawned block height to prevent overlap
-	private List<GameObject>[] blocksIntercepted; //Blocks that were sent to the top but were not dropped because a match was made above its original coords
+	private Coroutine[] dropCoroutines;
+
+	//Synced types. Used to network type changes
+	[SerializeField]
+	public SyncListInt syncedTypes = new SyncListInt(); 
 
 	//Chain counting list
 	//[HideInInspector]
@@ -133,8 +126,6 @@ public class BlockManager : NetworkBehaviour
 		displacement2D = new Vector2(blockSize / 2, blockSize / 2);
 
 		blockMax = blockCount - new Vector2(1, 1);
-
-		blockCoroutines = new Coroutine[(int)blockCount.x, (int)blockCount.y];
 		
 		if (isCursorControl)
 		{
@@ -144,23 +135,10 @@ public class BlockManager : NetworkBehaviour
 
 			cursorRenderer = cursor.GetComponent<SpriteRenderer>();
 		}
-
-		lowestDropY = CoordToPosition(0, (int)blockCount.y).y;
-		blocksToDrop = new List<GameObject>[(int)blockCount.x];
-
-		for(int i = 0; i < blocksToDrop.Length; i++)
-		{
-			blocksToDrop[i] = new List<GameObject>();
-		}
 		
 		highestBlocks = new GameObject[(int)blockCount.x];
-		blocksIntercepted = new List<GameObject>[(int)blockCount.x];
-
-		for (int i = 0; i < blocksIntercepted.Length; i++)
-		{
-			blocksIntercepted[i] = new List<GameObject>();
-		}
-
+		dropCoroutines = new Coroutine[(int)blockCount.x];
+		
 		mui = gameObject.GetComponent<MatchUI>();
         atkBar = gameObject.GetComponent<ChargeAttack>();
 
@@ -205,10 +183,15 @@ public class BlockManager : NetworkBehaviour
                         typeInclusivity[(int)tempType] = false;
                     }
                 }
-
-                generatedTypes.Add((int)GenerateRandomType(typeInclusivity));
+				
+				generatedTypes.Add((int)GenerateRandomType(typeInclusivity));
             }
         }
+
+		for(int i = 0; i < blockCount.x * blockCount.y; i++)
+		{
+			syncedTypes.Add(-1);
+		}
     }
 
 	//Get a random type based on rarity and block availability
@@ -420,46 +403,6 @@ public class BlockManager : NetworkBehaviour
 			}
 			else if (Input.GetButtonUp("Select") && selectedBlock != null)
 			{
-				/*releasePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-				BlockDetails detailsThis = selectedBlock.GetComponent<BlockDetails>();
-				BlockDetails detailsThat = null;
-				
-				if (detailsThis.isInteractable)
-				{
-					if (Mathf.Abs(clickPos.x - releasePos.x) > deadzone)
-					{
-						Vector2Int selectedCoords = new Vector2Int((int)detailsThis.coords.x, (int)detailsThis.coords.y);
-						
-						Vector2Int swapDirection = Vector2Int.zero;
-						
-						if (releasePos.x < clickPos.x)
-						{
-							if (detailsThis.coords.x - 1 >= 0)
-							{
-								detailsThat = allBlocks[(int)detailsThis.coords.x - 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
-								
-								if (detailsThis.coords.x > 0 && detailsThat.isInteractable)
-								{
-									HandleSwap(selectedCoords, selectedCoords + new Vector2Int(-1, 0));
-								}
-							}
-						}
-						else
-						{
-							if (detailsThis.coords.x + 1 <= blockMax.x)
-							{
-								detailsThat = allBlocks[(int)detailsThis.coords.x + 1, (int)detailsThis.coords.y].GetComponent<BlockDetails>();
-								
-								if (detailsThis.coords.x < blockMax.x && detailsThat.isInteractable)
-								{
-									HandleSwap(selectedCoords, selectedCoords + new Vector2Int(1, 0));
-								}
-							}
-						}
-					}
-				}*/
-
 				selectedBlock = null;
 			}
 		}
@@ -480,10 +423,93 @@ public class BlockManager : NetworkBehaviour
 			allChains.Clear();
 		}
 
-		//temp debug. refresh the scene
-		if (Input.GetKeyDown(KeyCode.P))
+		//temp debug. return to lobby scene
+		if (Input.GetKey(KeyCode.P) && Input.GetKey(KeyCode.Q))
 		{
-			//SceneManager.LoadScene("main");
+			SceneManager.LoadScene("Lobby");
+		}
+
+		//temp debug. get if any blocks are in the wrong state. hold control to force into the right state
+		if (Input.GetKeyDown(KeyCode.Minus))
+		{
+			BlockDetails details;
+
+			bool isError = false;
+
+			bool shouldForce = Input.GetKey(KeyCode.RightControl);
+
+			for(int x = 0; x < blockCount.x; x++)
+			{
+				for(int y = 0; y < blockCount.y; y++)
+				{
+					details = allBlocks[x, y].GetComponent<BlockDetails>();
+
+					if (!details.isInteractable || details.isFalling)
+					{
+						print(details.coords.x + ", " + details.coords.y + ": " + details.isInteractable.ToString() + ", " + details.isFalling.ToString());
+						
+						isError = true;
+
+						if (shouldForce)
+						{
+							details.isInteractable = true;
+							details.isFalling = false;
+						}
+					}
+				}
+			}
+
+			if (!isError)
+			{
+				print("no issues");
+			}
+			else
+			{
+				if (shouldForce)
+				{
+					print("issues were fixed");
+				}
+			}
+		}
+
+		//temp debug. force the type of the block the mouse is over
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			DebugForceType(0);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha2))
+		{
+			DebugForceType(1);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			DebugForceType(2);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			DebugForceType(3);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha5))
+		{
+			DebugForceType(4);
+		}
+	}
+
+	//temp debug. force type
+	void DebugForceType(int type)
+	{
+		clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+		if (IsInBounds(new Vector2(clickPos.x, clickPos.y)))
+		{
+			Vector2 fixedPos = new Vector2(clickPos.x, clickPos.y) - bottomLeftExtreme;
+
+			Vector2 index = new Vector2(Mathf.FloorToInt(fixedPos.x / blockSize), Mathf.FloorToInt(fixedPos.y / blockSize));
+
+			BlockDetails details = allBlocks[(int)index.x, (int)index.y].GetComponent<BlockDetails>();
+
+			details.type = (BlockTypes)type;
+			details.UpdateType();
 		}
 	}
 
@@ -513,7 +539,7 @@ public class BlockManager : NetworkBehaviour
 			
 		}
 
-		yield return new WaitForSeconds(swapTime);
+		//yield return new WaitForSeconds(swapTime);
 		yield return new WaitForEndOfFrame();
 
 		canSwap = true;
@@ -551,28 +577,28 @@ public class BlockManager : NetworkBehaviour
 		detailsThis.isInteractable = false;
 		detailsThis.coords += swapDirection;
 		allBlocks[blockToSwap.x, blockToSwap.y] = blockThis;
-		
-		relevantCoroutine = blockCoroutines[blockToSwap.x, blockToSwap.y];
-		
+
+		relevantCoroutine = detailsThis.movementCoroutine;
+
 		if (relevantCoroutine != null)
 		{
 			StopCoroutine(relevantCoroutine);
 		}
-		
-		blockCoroutines[blockToSwap.x, blockToSwap.y] = StartCoroutine(SwapBlock(blockThis, detailsThis, blockThis.transform.position, CoordToPosition(blockToSwap.x, blockToSwap.y), chainCount));
+
+		detailsThis.movementCoroutine =  StartCoroutine(SwapBlock(blockThis, detailsThis, blockThis.transform.position, CoordToPosition(blockToSwap.x, blockToSwap.y), chainCount));
 		
 		detailsThat.isInteractable = false;
 		detailsThat.coords -= swapDirection;
 		allBlocks[blockSelected.x, blockSelected.y] = blockThat;
-		
-		relevantCoroutine = blockCoroutines[blockSelected.x, blockSelected.y];
-		
+
+		relevantCoroutine = detailsThat.movementCoroutine;
+
 		if (relevantCoroutine != null)
 		{
 			StopCoroutine(relevantCoroutine);
 		}
-		
-		blockCoroutines[blockSelected.x, blockSelected.y] = StartCoroutine(SwapBlock(blockThat, detailsThat, blockThat.transform.position, CoordToPosition(blockSelected.x, blockSelected.y), chainCount));
+
+		detailsThat.movementCoroutine = StartCoroutine(SwapBlock(blockThat, detailsThat, blockThat.transform.position, CoordToPosition(blockSelected.x, blockSelected.y), chainCount));
 		
 		StartCoroutine(CursorCooldown());
 	}
@@ -620,12 +646,32 @@ public class BlockManager : NetworkBehaviour
     }
 	
 	//Control block falling and align if necessary
-	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex)
+	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex, bool shouldWaitForType)
 	{
 		Vector3 blockPos = obj.transform.position;
 
 		float diff = destination.x - obj.transform.position.x;
 		int alt = (int)Mathf.Sign(diff);
+
+		if (!hasAuthority)
+		{
+			int syncIndex = (int)(details.coords.y * blockCount.x + details.coords.x);
+
+			if (shouldWaitForType)
+			{
+				while(syncedTypes[syncIndex] == -1)
+				{
+					yield return new WaitForEndOfFrame();
+				}
+
+				details.type = (BlockTypes)syncedTypes[(int)(details.coords.y * blockCount.x + details.coords.x)];
+				details.UpdateType();
+
+				CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, -1);
+
+				//print(details.type.ToString());
+			}
+		}
 		
 		while (obj.transform.position.y > destination.y)
 		{
@@ -651,8 +697,9 @@ public class BlockManager : NetworkBehaviour
 		}
 
 		obj.transform.position = destination;
-
+		
 		details.isInteractable = true;
+		details.isFalling = false;
 
 		yield return new WaitForEndOfFrame();
 
@@ -660,166 +707,124 @@ public class BlockManager : NetworkBehaviour
 	}
 
 	//Handle the logic before and after dropping blocks
-	IEnumerator HandleBlockDrop(Vector2Int coords, int chainIndex, bool isHighest, int dropCount, int delayNum)
+	IEnumerator HandleBlockDrop(int xCoord, List<int> yCoords, int chainIndex)
 	{
-		//get references
-		GameObject droppingBlock = allBlocks[coords.x, coords.y];
-		BlockDetails droppingDetails = droppingBlock.GetComponent<BlockDetails>();
+		//Set values and references
+		int yCount = yCoords.Count;
+		int highestYCoord = yCoords[yCount - 1];
 
-		droppingDetails.isInteractable = false;
-		droppingDetails.isFalling = true;
+		List<GameObject> droppingBlocks = new List<GameObject>();
+		List<BlockDetails> droppingDetails = new List<BlockDetails>();
 
-		//wait for break
+		for(int i = 0; i < yCount; i++)
+		{
+			droppingBlocks.Add(allBlocks[xCoord, yCoords[i]]);
+			droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
+			
+			droppingDetails[i].isInteractable = false;
+		}
+		
+		//Wait for break
 		yield return new WaitForSeconds(0.5f);
+
+		//Find the lowest coords to move blocks to
+		Vector3 newPos = CoordToPosition(xCoord, (int)blockCount.y);
 		
-		for(int i = 0; i < delayNum; i++)
+		if (highestBlocks[xCoord] != null)
 		{
-			yield return new WaitForEndOfFrame();
+			newPos.y = Mathf.Max(newPos.y, highestBlocks[xCoord].transform.position.y + blockSize);
 		}
-
-		//move block to top
-		Vector3 newPos = CoordToPosition(coords.x, (int)blockCount.y);
-
-		if(highestBlocks[coords.x] != null)
+		
+		//Move blocks to the top and change their colour if they have authority
+		for (int i = 0; i < yCount; i++)
 		{
-			newPos.y = Mathf.Max(newPos.y, highestBlocks[coords.x].transform.position.y + blockSize);
+			droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
+
+			if (hasAuthority)
+			{
+				BlockTypes newType = GenerateRandomType(new bool[5] { true, true, true, true, true });
+
+				droppingDetails[i].type = newType;
+				droppingDetails[i].UpdateType();
+
+				CmdUpdateSyncedTypes((int)droppingDetails[i].coords.x, (int)droppingDetails[i].coords.y, (int)newType);
+			}
 		}
-
-		droppingBlock.transform.position = newPos;
-
-		highestBlocks[coords.x] = droppingBlock;
 		
-		//add block to list
-		blocksToDrop[coords.x].Add(droppingBlock);
+		highestBlocks[xCoord] = droppingBlocks[yCount - 1];
 		
-		//tell blocks above to fall
-		if (isHighest)
+		//Tell blocks above to fall
+		int newY = 0;
+		
+		BlockDetails details;
+		Coroutine relevantCoroutine;
+
+		for (int i = highestYCoord + 1; i < blockCount.y; i++)
 		{
-			int lowestY = 0;
+			details = allBlocks[xCoord, i].GetComponent<BlockDetails>();
 
-			bool shouldContinue = true;
-
-			BlockDetails details;
-			Coroutine relevantCoroutine;
-
-			for (int i = coords.y + 1; i < blockCount.y; i++)
+			while(!(details.isFalling || details.isInteractable))
 			{
-				details = allBlocks[coords.x, i].GetComponent<BlockDetails>();
-
-				if (details.isFalling || details.isInteractable)
-				{
-					lowestY = i - dropCount;
-					
-					details.isInteractable = false;
-					details.coords = new Vector2(coords.x, lowestY);
-					allBlocks[coords.x, lowestY] = details.gameObject;
-
-					relevantCoroutine = details.movementCoroutine;
-
-					if (relevantCoroutine != null)
-					{
-						StopCoroutine(relevantCoroutine);
-					}
-
-					details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(coords.x, lowestY), chainIndex));
-
-					details.isFalling = true;
-
-					if (details.chainIndex == -1)
-					{
-						details.chainIndex = chainIndex;
-					}
-				}
-				else
-				{
-					shouldContinue = false;
-
-					break;
-				}
-			}
-
-			if (shouldContinue)
-			{
-				print(coords.x + ", " + coords.y + ": " + blocksToDrop[coords.x].Count);
-
-				int totalDropCount = blocksIntercepted[coords.x].Count + blocksToDrop[coords.x].Count;
-
-				for (int i = 0; i < blocksIntercepted[coords.x].Count; i++)
-				{
-					details = blocksIntercepted[coords.x][i].GetComponent<BlockDetails>();
-
-					if (details.isFalling || details.isInteractable)
-					{
-						lowestY = (int)blockMax.y - totalDropCount + i + 1;
-						
-						details.isInteractable = false;
-						details.coords = new Vector2(coords.x, lowestY);
-						allBlocks[coords.x, lowestY] = details.gameObject;
-
-						relevantCoroutine = details.movementCoroutine;
-
-						if (relevantCoroutine != null)
-						{
-							StopCoroutine(relevantCoroutine);
-						}
-
-						details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(coords.x, lowestY), chainIndex));
-
-						details.isFalling = true;
-
-						if (details.chainIndex == -1)
-						{
-							details.chainIndex = chainIndex;
-						}
-					}
-				}
-
-				for (int i = 0; i < blocksToDrop[coords.x].Count; i++)
-				{
-					details = blocksToDrop[coords.x][i].GetComponent<BlockDetails>();
-
-					if (details.isFalling || details.isInteractable)
-					{
-						lowestY = (int)blockMax.y - totalDropCount + blocksIntercepted[coords.x].Count + i + 1;
-						
-						details.isInteractable = false;
-						details.coords = new Vector2(coords.x, lowestY);
-						allBlocks[coords.x, lowestY] = details.gameObject;
-
-						relevantCoroutine = details.movementCoroutine;
-
-						if (relevantCoroutine != null)
-						{
-							StopCoroutine(relevantCoroutine);
-						}
-
-						details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(coords.x, lowestY), chainIndex));
-
-						details.isFalling = true;
-
-						if (details.chainIndex == -1)
-						{
-							details.chainIndex = chainIndex;
-						}
-					}
-				}
-			}
-			else
-			{
-				for (int i = 0; i < blocksToDrop[coords.x].Count; i++)
-				{
-					blocksIntercepted[coords.x].Add(blocksToDrop[coords.x][i]);
-				}
+				yield return new WaitForEndOfFrame();
 			}
 			
-			blocksToDrop[coords.x].Clear();
-		}
+			newY = i - yCount;
+					
+			details.isInteractable = false;
+			details.isFalling = true;
+			details.coords = new Vector2(xCoord, newY);
+			allBlocks[xCoord, newY] = details.gameObject;
 
-		//update colour
-		droppingDetails.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
-		droppingDetails.UpdateType();
+			relevantCoroutine = details.movementCoroutine;
+
+			if (relevantCoroutine != null)
+			{
+				StopCoroutine(relevantCoroutine);
+			}
+
+			details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex, false));
+				
+			if (details.chainIndex == -1)
+			{
+				details.chainIndex = chainIndex;
+			}
+		}
+		
+		//If all blocks could fall, drop intercepted blocks and blocks sent to the top
+		for (int i = 0; i < yCount; i++)
+		{
+			details = droppingDetails[i];
+			
+			newY = (int)blockMax.y - yCount + i + 1;
+					
+			details.isInteractable = false;
+			details.isFalling = true;
+			details.coords = new Vector2(xCoord, newY);
+			allBlocks[xCoord, newY] = details.gameObject;
+
+			relevantCoroutine = details.movementCoroutine;
+
+			if (relevantCoroutine != null)
+			{
+				StopCoroutine(relevantCoroutine);
+			}
+
+			details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex, true));
+					
+			if (details.chainIndex == -1)
+			{
+				details.chainIndex = chainIndex;
+			}
+		}
 	}
 	
+	//Update synced typed
+	[Command]
+	void CmdUpdateSyncedTypes(int x, int y, int t)
+	{
+		syncedTypes[(int)(y * blockCount.x + x)] = t;
+	}
+
 	//Checks for matches and move blocks accordingly
 	void CheckForMatches(Vector2 pos, BlockTypes relevantType, int chainCount, int chainIndex)
 	{
@@ -929,7 +934,7 @@ public class BlockManager : NetworkBehaviour
 		
 		if(matchingHorizontalIndices.Count >= 2 || matchingVerticalIndices.Count >= 3)
 		{
-			if(selectedDetails.coords == pos)
+			if(hasAuthority && !isCursorControl && selectedDetails.coords == pos)
 			{
 				selectedBlock = null;
 			}
@@ -963,7 +968,7 @@ public class BlockManager : NetworkBehaviour
 			}
 			else if(chainIndex > -1)
 			{
-				allChains[chainIndex] += 1;
+				//allChains[chainIndex] += 1;
 			}
 
             //print(allChains[newChainIndex]);
@@ -982,7 +987,7 @@ public class BlockManager : NetworkBehaviour
 
 				details = allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>();
 
-				details.isFalling = false;
+				//details.isFalling = false;
 				details.chainIndex = -1;
 
 				for(int x = 0; x < blockCount.x; x++)
@@ -1010,210 +1015,45 @@ public class BlockManager : NetworkBehaviour
 				}
 			}
 		}
-
+		
 		//Type sync variables. Starts with 1 so '0's that come before other ints aren't ignored
 		string xList = "1";
 		string yList = "1";
 		string typeList = "1";
-		
+
 		//Break matched blocks and drop new blocks
+		Coroutine relevantCoroutine;
+
 		if (matchingHorizontalIndices.Count >= 2)
 		{
-			int blockX;
-			int xFallCount = (int)blockMax.y - (int)pos.y;
-
-			GameObject oldBlock = null;
-			Vector3 blockPos;
-
-			//StartCoroutine(HandleBlockDrop(new Vector2Int(matchingHorizontalIndices[0], (int)pos.y), newChainIndex, true));
-
 			for (int x = 0; x < matchingHorizontalIndices.Count; x++)
 			{
-				//StartCoroutine(FadeBlock(allBlocks[matchingHorizontalIndices[x], (int)pos.y]));
+				relevantCoroutine = dropCoroutines[matchingHorizontalIndices[x]];
 
-				StartCoroutine(HandleBlockDrop(new Vector2Int(matchingHorizontalIndices[x], (int)pos.y), newChainIndex, true, 1, 0));
-
-				/*blockX = matchingHorizontalIndices[x];
-				
-				details = allBlocks[blockX, (int)pos.y].GetComponent<BlockDetails>();
-
-				oldBlock = allBlocks[blockX, (int)blockMax.y];
-
-				details.isInteractable = false;
-				details.coords = new Vector2(blockX, blockMax.y);
-				allBlocks[blockX, (int)blockMax.y] = details.gameObject;
-
-				if (isLocalPlayer)
-				{
-					details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
-					details.UpdateType();
-
-					#region Other sync attempts
-					CmdChangeType(blockX, (int)blockMax.y, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
-
-					CmdChangeTypeBeta(blockX, (int)blockMax.y, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
-					StartCoroutine(DelayedTypeChange(blockX, (int)blockMax.y, (int)GenerateRandomType(new bool[5] { true, true, true, true, true })));
-					#endregion
-				}
-
-				blockPos = oldBlock.transform.position;
-				blockPos = CoordToPosition(blockX, (int)blockMax.y);
-				details.gameObject.transform.position = blockPos + new Vector3(0, blockSize, 0);
-				
-				relevantCoroutine = blockCoroutines[(int)details.coords.x, (int)details.coords.y];
-
-				if (relevantCoroutine != null)
+				if(relevantCoroutine != null)
 				{
 					StopCoroutine(relevantCoroutine);
 				}
 
-				blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, blockPos, newChainIndex));
-				
-				//StartCoroutine(FadeBlock(details.gameObject));
-
-				if(details.chainIndex == -1)
-				{
-					details.isFalling = true;
-					details.chainIndex = newChainIndex;
-				}
-
-				xList += details.coords.x;
-				yList += details.coords.y;
-				typeList += (int)details.type;
-
-				*//*if (pos.y < blockMax.y)
-				{
-					for (int y = (int)blockMax.y; y > pos.y; y--)
-					{
-						details = oldBlock.GetComponent<BlockDetails>();
-						
-						if(y - 1 > pos.y)
-						{
-							oldBlock = allBlocks[blockX, y - 1];
-						}
-						
-						details.isInteractable = false;
-						details.coords = new Vector2(blockX, y - 1);
-						allBlocks[blockX, (int)details.coords.y] = details.gameObject;
-						
-						relevantCoroutine = blockCoroutines[(int)details.coords.x, (int)details.coords.y];
-						
-						if (relevantCoroutine != null)
-						{
-							StopCoroutine(relevantCoroutine);
-						}
-						
-						blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(blockX, y - 1), newChainIndex));
-						
-						if (details.chainIndex == -1)
-						{
-							details.isFalling = true;
-							details.chainIndex = newChainIndex;
-						}
-					}
-				}*/
+				dropCoroutines[matchingHorizontalIndices[x]] = StartCoroutine(HandleBlockDrop(matchingHorizontalIndices[x], new List<int>() {(int)pos.y}, newChainIndex));
 			}
 		}
 
 		if (matchingVerticalIndices.Count >= 3)
 		{
-			int verticalMatchCount = matchingVerticalIndices.Count;
-			
-			/*List<int> oldIndices = new List<int>();
-			List<int> newIndexOrder = new List<int>();
-			List<GameObject> newBlockOrder = new List<GameObject>();*/
-			
 			matchingVerticalIndices.Sort();
 
-			for(int i = 0; i < matchingVerticalIndices.Count; i++)
+			relevantCoroutine = dropCoroutines[(int)pos.x];
+
+			if (relevantCoroutine != null)
 			{
-				//print(matchingVerticalIndices[i] + ": " + (i == matchingVerticalIndices.Count - 1).ToString());
-
-				//StartCoroutine(FadeBlock(allBlocks[(int)pos.x, matchingVerticalIndices[i]]));
-
-				StartCoroutine(HandleBlockDrop(new Vector2Int((int)pos.x, matchingVerticalIndices[i]), newChainIndex, i == matchingVerticalIndices.Count - 1, matchingVerticalIndices.Count, i));
+				StopCoroutine(relevantCoroutine);
 			}
 
-			/*if(matchingVerticalIndices[verticalMatchCount - 1] < blockMax.y)
-			{
-				for (int i = (int)blockMax.y; i > matchingVerticalIndices[verticalMatchCount - 1]; i--)
-				{
-					oldIndices.Add(i);
-				}
-			}
-			
-			oldIndices.Sort();
-			
-			for(int i = 0; i < oldIndices.Count; i++)
-			{
-				newIndexOrder.Add(oldIndices[i]);
-			}
-
-			for(int i = 0; i < verticalMatchCount; i++)
-			{
-				newIndexOrder.Add(matchingVerticalIndices[i]);
-			}
-
-			for(int i = 0; i < newIndexOrder.Count; i++)
-			{
-				newBlockOrder.Add(allBlocks[(int)pos.x, newIndexOrder[i]]);
-			}*/
-
-			/*int targetIndex;
-
-			int resetBlockCount = 1;
-
-			for (int i = 0; i < newIndexOrder.Count; i++)
-			{
-				targetIndex = (int)blockMax.y - newIndexOrder.Count + i + 1;
-				
-				details = newBlockOrder[i].GetComponent<BlockDetails>();
-				
-				details.isInteractable = false;
-				details.coords = new Vector2((int)pos.x, targetIndex);
-				allBlocks[(int)pos.x, targetIndex] = details.gameObject;
-
-				if(i > oldIndices.Count - 1)
-				{
-					if (isLocalPlayer)
-					{
-						details.type = GenerateRandomType(new bool[5] { true, true, true, true, true });
-						details.UpdateType();
-						
-						xList += details.coords.x;
-						yList += details.coords.y;
-						typeList += (int)details.type;
-
-						#region Other syn attempts
-						CmdChangeType((int)pos.x, targetIndex, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
-
-						CmdChangeTypeBeta((int)pos.x, targetIndex, (int)GenerateRandomType(new bool[5] { true, true, true, true, true }));
-						StartCoroutine(DelayedTypeChange((int)pos.x, targetIndex, (int)GenerateRandomType(new bool[5] { true, true, true, true, true })));
-						#endregion
-					}
-
-					details.gameObject.transform.position = CoordToPosition((int)pos.x, (int)blockMax.y + resetBlockCount);
-
-					resetBlockCount++;
-				}
-
-				relevantCoroutine = blockCoroutines[(int)details.coords.x, (int)details.coords.y];
-				
-				if (relevantCoroutine != null)
-				{
-					StopCoroutine(relevantCoroutine);
-				}
-				
-				blockCoroutines[(int)details.coords.x, (int)details.coords.y] = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition((int)pos.x, targetIndex), newChainIndex));
-
-				if (details.chainIndex == -1)
-				{
-					details.isFalling = true;
-					details.chainIndex = newChainIndex;
-				}
-			}*/
+			dropCoroutines[(int)pos.x] = StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex));
 		}
 		
+		//old sync stuff. relocate
 		if (hasAuthority && xList != "1")
 		{
 			//StartCoroutine(DelayedTypeSync(int.Parse(xList), int.Parse(yList), int.Parse(typeList)));
@@ -1331,25 +1171,5 @@ public class BlockManager : NetworkBehaviour
 		}
 
 		return transform.position + new Vector3((x - (blockCount.x / 2)) * blockSize, (y - (blockCount.y / 2)) * blockSize, extraZ) + displacement3D;
-	}
-
-	//temp. fade
-	IEnumerator FadeBlock(GameObject obj)
-	{
-		SpriteRenderer sr = obj.GetComponent<SpriteRenderer>();
-		Color newColour = sr.color;
-
-		float elapsedTime = 0.0f;
-
-		while(elapsedTime < 0.5f)
-		{
-			elapsedTime = Mathf.Min(elapsedTime + Time.deltaTime, 0.5f);
-
-			newColour.a = 1 - (elapsedTime / 0.5f);
-
-			//sr.color = newColour;
-
-			yield return new WaitForEndOfFrame();
-		}
 	}
 }

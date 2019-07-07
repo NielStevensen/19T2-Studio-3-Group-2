@@ -24,20 +24,16 @@ public class BlockDetails : NetworkBehaviour
 	//Movement coroutine
 	[HideInInspector]
 	public Coroutine movementCoroutine;
-
-	//Is the block swapping?
-	[HideInInspector]
-	public bool isSwapping = false;
-
+	
 	//Sprite renderer reference
 	private SpriteRenderer spriteRenderer;
 
 	//Is the block falling? Used to count chains
-	[HideInInspector]
+	//[HideInInspector]
 	public bool isFalling = false;
 
 	//Index of current chain
-	[HideInInspector]
+	//[HideInInspector]
 	public int chainIndex = -1;
 
 	//current temp
@@ -82,35 +78,5 @@ public class BlockDetails : NetworkBehaviour
 	public void UpdateType()
 	{
 		spriteRenderer.sprite = spriteSheet[(int)type];
-
-		/*switch (type)
-		{
-			case BlockTypes.A:
-				spriteRenderer.color = Color.red;
-
-				break;
-			case BlockTypes.B:
-				spriteRenderer.color = Color.yellow;
-
-				break;
-			case BlockTypes.C:
-				spriteRenderer.color = Color.green;
-
-				break;
-			case BlockTypes.D:
-				spriteRenderer.color = Color.blue;
-
-				break;
-			case BlockTypes.E:
-				spriteRenderer.color = Color.magenta;
-
-				break;
-		}*/
-	}
-
-	//Can the block be matched, i.e. is it moving or already matched?
-	public bool IsMatchable()
-	{
-		return !(isInteractable || isSwapping || isFalling);
 	}
 }
