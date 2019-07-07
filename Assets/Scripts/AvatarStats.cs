@@ -4,10 +4,26 @@ using UnityEngine;
 
 public class AvatarStats : MonoBehaviour
 {
-    public StatBlock Knight;
-    public StatBlock Archer;
-    public StatBlock Priest;
-    public StatBlock Wizard;
+    public StatBlock stats;
+    public ChargeAttack refrence;
+
+    public GameObject[] buttons;
+
+    public void setclass()
+    {
+        // set charecter stats
+        refrence.attack = stats.attack;
+        refrence.maxhealth = stats.maxHealth;
+        refrence.defence = stats.defence;
+        refrence.myType = stats.element;
+
+        refrence.health = refrence.maxhealth;
+        foreach(GameObject a in buttons)
+        {
+            a.SetActive(false);
+        }
+    }
+
 }
 
 

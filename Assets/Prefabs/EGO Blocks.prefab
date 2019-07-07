@@ -360,7 +360,6 @@ GameObject:
   - component: {fileID: 6969340816384813605}
   - component: {fileID: 7196216909978742877}
   - component: {fileID: 1951292527200229196}
-  - component: {fileID: 2863440990465685207}
   m_Layer: 8
   m_Name: EGO Blocks
   m_TagString: Untagged
@@ -446,6 +445,12 @@ MonoBehaviour:
   opponent: {fileID: 0}
   scriptRefs: []
   statUI: {fileID: 6189224303237009101, guid: bb21e8808fcaacf41b631ddefce4a91b, type: 3}
+  classSelection: {fileID: 7150710300330844436, guid: 2925e75b5d5c6ce40a2e959344d8627f,
+    type: 3}
+  attack: 0
+  defence: 0
+  dmgMod: 0
+  defMod: 0
   Bar: {fileID: 7343074089949593827}
   healthBar: {fileID: 1812728709786534928}
   capacity: 300
@@ -544,42 +549,6 @@ MonoBehaviour:
   - {fileID: 7343074089949593827}
   - {fileID: 1812728709786534928}
   customShader: {fileID: 2100000, guid: 863eb968d05a0924e9ad4674ee7b4e1d, type: 2}
---- !u!114 &2863440990465685207
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6969340816384813601}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0549be67fe8fecc4cacadb8285180d32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Knight:
-    element: 2
-    maxHealth: 600
-    attack: 18
-    defence: 23
-    ability: shield
-  Archer:
-    element: 1
-    maxHealth: 540
-    attack: 21
-    defence: 19
-    ability: double
-  Priest:
-    element: 3
-    maxHealth: 680
-    attack: 16
-    defence: 18
-    ability: leech
-  Wizard:
-    element: 0
-    maxHealth: 580
-    attack: 24
-    defence: 17
-    ability: fireball
 --- !u!1 &7074949194183948419
 GameObject:
   m_ObjectHideFlags: 0

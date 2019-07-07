@@ -23,6 +23,12 @@ public class ChargeAttack : NetworkBehaviour
     public ChargeAttack[] scriptRefs;
     public GameObject statUI;
 
+    public GameObject classSelection;
+    public float attack;
+    public float defence;
+    public float dmgMod;
+    public float defMod;
+
     [HideInInspector]
     public Image Bar;
     [HideInInspector]
@@ -58,6 +64,15 @@ public class ChargeAttack : NetworkBehaviour
 
     private void Start()
     {
+        // open class selection on local player
+        if (isLocalPlayer)
+        {
+            GameObject Selector  = Instantiate(classSelection);
+            foreach(AvatarStats a in Selector.GetComponentsInChildren<AvatarStats>())
+            {
+                a.refrence = this;
+            }
+        }
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
         if(GameObject.FindObjectsOfType<ChargeAttack>().Length  > 1)
         {
@@ -154,23 +169,32 @@ public class ChargeAttack : NetworkBehaviour
         }
         else
         {
-            opponent.health -= (Damage * matchUpMatrix[type].matchUp[myType]);
+            opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * (100-(defence + defMod) /100));
         }
     }
 
     public void Update()
     {
+        float stab;
         if (opponent != null)
         {
             opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
         }
         healthBar.fillAmount = health / maxhealth;
         Bar.fillAmount = Current / capacity;
+        if (currentType == myType)
+        {
+            stab = 1.1f;
+        }
+        else
+        {
+            stab = 1f;
+        }
         if (Input.GetButtonDown("Jump"))
         {
             if (isLocalPlayer)
             {
-                CmdDamage(Current / 30, currentType);
+                CmdDamage(Current / 30 * attack * stab * dmgMod, currentType);
                 Current = 0;
                 for (int a = 0; a < 4; a++)
                 {
