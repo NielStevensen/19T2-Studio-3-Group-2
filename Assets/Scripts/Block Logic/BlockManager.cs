@@ -539,7 +539,7 @@ public class BlockManager : NetworkBehaviour
 			
 		}
 
-		//yield return new WaitForSeconds(swapTime);
+		yield return new WaitForSeconds(swapTime);
 		yield return new WaitForEndOfFrame();
 
 		canSwap = true;
@@ -652,23 +652,6 @@ public class BlockManager : NetworkBehaviour
 
 		float diff = destination.x - obj.transform.position.x;
 		int alt = (int)Mathf.Sign(diff);
-
-		/*if (!isLocalPlayer && shouldWaitForType)
-		{
-			int syncIndex = (int)(details.coords.y * blockCount.x + details.coords.x);
-
-			while (syncedTypes[syncIndex] == -1)
-			{
-				yield return new WaitForEndOfFrame();
-			}
-
-			details.type = (BlockTypes)syncedTypes[(int)(details.coords.y * blockCount.x + details.coords.x)];
-			details.UpdateType();
-
-			CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, -1);
-
-			//print(details.type.ToString());
-		}*/
 		
 		while (obj.transform.position.y > destination.y)
 		{
@@ -736,16 +719,6 @@ public class BlockManager : NetworkBehaviour
 		for (int i = 0; i < yCount; i++)
 		{
 			droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
-
-			/*if (isLocalPlayer)
-			{
-				BlockTypes newType = GenerateRandomType(new bool[5] { true, true, true, true, true });
-
-				droppingDetails[i].type = newType;
-				droppingDetails[i].UpdateType();
-
-				CmdUpdateSyncedTypes((int)droppingDetails[i].coords.x, (int)droppingDetails[i].coords.y, (int)newType);
-			}*/
 		}
 		
 		highestBlocks[xCoord] = droppingBlocks[yCount - 1];
@@ -873,7 +846,6 @@ public class BlockManager : NetworkBehaviour
 		List<int> matchingVerticalIndices = new List<int>() { (int)pos.y };
 		
 		//Count matching blocks
-
 		for (int i = 1; i < blockCount.x; i++)
 		{
 			if(pos.x - i < 0)
@@ -960,14 +932,12 @@ public class BlockManager : NetworkBehaviour
 		}
 
 		//If no vertical match was made, add the swapped block to horizontal matches
-
 		if(matchingHorizontalIndices.Count >= 2 && matchingVerticalIndices.Count < 3)
 		{
 			matchingHorizontalIndices.Add((int)pos.x);
 		}
 
 		//Calculate combos and chains
-
 		int comboCount = 0;
 		int newChainIndex = chainIndex;
 		
@@ -1015,6 +985,7 @@ public class BlockManager : NetworkBehaviour
             //mui.UpdateCombo(comboCount);
 
             //atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount);
+            atkBar.FillBar(relevantType, 1, comboCount);
 
             //to retrieve chain count for current swap, use allChains[chainIndex]
         }
@@ -1025,8 +996,7 @@ public class BlockManager : NetworkBehaviour
 				bool areStillFalling = false;
 
 				details = allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>();
-
-				//details.isFalling = false;
+				
 				details.chainIndex = -1;
 
 				for(int x = 0; x < blockCount.x; x++)
@@ -1055,11 +1025,6 @@ public class BlockManager : NetworkBehaviour
 			}
 		}
 		
-		//Type sync variables. Starts with 1 so '0's that come before other ints aren't ignored
-		string xList = "1";
-		string yList = "1";
-		string typeList = "1";
-
 		//Break matched blocks and drop new blocks
 		Coroutine relevantCoroutine;
 
@@ -1091,108 +1056,8 @@ public class BlockManager : NetworkBehaviour
 
 			dropCoroutines[(int)pos.x] = StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex));
 		}
-		
-		//old sync stuff. relocate
-		if (hasAuthority && xList != "1")
-		{
-			//StartCoroutine(DelayedTypeSync(int.Parse(xList), int.Parse(yList), int.Parse(typeList)));
-		}
-	}
-
-	#region Other sync attempts
-	//Frame delayed instruction to sync newly spawned blocks' types
-	/*IEnumerator DelayedTypeChange(int x, int y, int newType)
-	{
-		yield return new WaitForEndOfFrame();
-
-		CmdChangeTypeBeta(x, y, newType);
-
-		//yield return new WaitForEndOfFrame();
-	}
-
-	[Command]
-	void CmdChangeTypeBeta(int x, int y, int newType)
-	{
-		RpcChangeTypeBeta(x, y, newType);
-	}
-
-	[ClientRpc]
-	void RpcChangeTypeBeta(int x, int y, int newType)
-	{
-		BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
-
-		details.type = (BlockTypes)newType;
-		details.UpdateType();
-	}
-
-	//Change the type of the specified block on the server to ripple the update out
-	[Command]
-	void CmdChangeType(int x, int y, int newType)
-	{
-		//allBlocks[x, y].GetComponent<BlockDetails>().type = newType;
-		//allBlocks[x, y].GetComponent<BlockDetails>().intType = newType;
-
-		ChangeType(x, y, newType);
 	}
 	
-	void ChangeType(int x, int y, int newType)
-	{
-		//print(x + ", " + y);
-
-		if (!isServer)
-		{
-			return;
-		}
-
-		allBlocks[x, y].GetComponent<BlockDetails>().intType = newType;
-	}*/
-	#endregion
-
-	//Frame delayed instruction to sync newly spawned blocks' types
-	IEnumerator DelayedTypeSync(int xList, int yList, int typeList)
-	{
-		yield return new WaitForEndOfFrame();
-		
-		CmdSyncTypes(xList, yList, typeList);
-
-		//yield return new WaitForEndOfFrame();
-	}
-
-	//Tell all clients the new colours for each nely spawned block
-	[Command]
-	void CmdSyncTypes(int xList, int yList, int typeList)
-	{
-		RpcSyncTypes(xList, yList, typeList);
-	}
-
-	//Receive instruction on which blocks should be which colour
-	[ClientRpc]
-	void RpcSyncTypes(int xList, int yList, int typeList)
-	{
-		if (hasAuthority)
-		{
-			return;
-		}
-
-		/*print("X: " + xList);
-		print("Y: " + yList);
-		print("Types: " + typeList);*/
-
-		char[] xCoords = xList.ToString().ToCharArray();
-		char[] yCoords = yList.ToString().ToCharArray();
-		char[] types = typeList.ToString().ToCharArray();
-
-		BlockDetails details;
-
-		for (int i = 1; i < xCoords.Length; i++)
-		{
-			details = allBlocks[(int)char.GetNumericValue(xCoords[i]), (int)char.GetNumericValue(yCoords[i])].GetComponent<BlockDetails>();
-
-			details.type = (BlockTypes)char.GetNumericValue(types[i]);
-			details.UpdateType();
-		}
-	}
-
 	//Wrapper for a default location
 	Vector3 CoordToPosition(int x, int y)
 	{
