@@ -17,10 +17,10 @@ public class TwoDimArray
     }
 }
 
-public class ChargeAttack : NetworkBehaviour
+public class CombatHandler : NetworkBehaviour
 {
-    public ChargeAttack opponent;
-    public ChargeAttack[] scriptRefs;
+    public CombatHandler opponent;
+    public CombatHandler[] scriptRefs;
     public GameObject statUI;
 
     public GameObject classSelection;
@@ -74,10 +74,10 @@ public class ChargeAttack : NetworkBehaviour
             }
         }
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
-        if(GameObject.FindObjectsOfType<ChargeAttack>().Length  > 1)
+        if(GameObject.FindObjectsOfType<CombatHandler>().Length  > 1)
         {
-            scriptRefs = GameObject.FindObjectsOfType<ChargeAttack>();
-            foreach (ChargeAttack a in scriptRefs)
+            scriptRefs = GameObject.FindObjectsOfType<CombatHandler>();
+            foreach (CombatHandler a in scriptRefs)
             {
                 if (a != this)
                 { 

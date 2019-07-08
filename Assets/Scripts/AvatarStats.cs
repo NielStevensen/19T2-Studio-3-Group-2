@@ -5,7 +5,7 @@ using UnityEngine;
 public class AvatarStats : MonoBehaviour
 {
     public StatBlock stats;
-    public ChargeAttack refrence;
+    public CombatHandler refrence;
 
     public GameObject[] buttons;
 
