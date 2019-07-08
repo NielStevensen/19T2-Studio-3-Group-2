@@ -106,7 +106,7 @@ public class BlockManager : NetworkBehaviour
 
 	//UI objects
 	private MatchUI mui;
-    private ChargeAttack atkBar;
+    private CombatHandler atkBar;
 	
 	public Sprite[] spriteSheet;
 
@@ -140,7 +140,7 @@ public class BlockManager : NetworkBehaviour
 		dropCoroutines = new Coroutine[(int)blockCount.x];
 		
 		mui = gameObject.GetComponent<MatchUI>();
-        atkBar = gameObject.GetComponent<ChargeAttack>();
+        atkBar = gameObject.GetComponent<CombatHandler>();
 
         if (isServer)
         {
