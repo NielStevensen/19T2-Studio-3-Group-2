@@ -65,14 +65,14 @@ public class CombatHandler : NetworkBehaviour
     private void Start()
     {
         // open class selection on local player
-        if (isLocalPlayer)
-        {
-            GameObject Selector  = Instantiate(classSelection);
-            foreach(AvatarStats a in Selector.GetComponentsInChildren<AvatarStats>())
-            {
-                a.refrence = this;
-            }
-        }
+        //if (isLocalPlayer)
+        //{
+        //    GameObject Selector  = Instantiate(classSelection);
+        //    foreach(AvatarStats a in Selector.GetComponentsInChildren<AvatarStats>())
+        //    {
+        //        a.refrence = this;
+        //    }
+        //}
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
         if(GameObject.FindObjectsOfType<CombatHandler>().Length  > 1)
         {
@@ -163,6 +163,7 @@ public class CombatHandler : NetworkBehaviour
     [ClientRpc]
     void RpcDamage(float Damage, int type)
     {
+        Debug.Log((Damage * matchUpMatrix[type].matchUp[myType]) * (100 - ((defence + defMod) / 100)));
         if (hasAuthority)
         {
             return;

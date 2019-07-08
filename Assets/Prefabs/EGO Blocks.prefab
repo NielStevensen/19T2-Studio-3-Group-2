@@ -446,16 +446,16 @@ MonoBehaviour:
   statUI: {fileID: 6189224303237009101, guid: bb21e8808fcaacf41b631ddefce4a91b, type: 3}
   classSelection: {fileID: 7150710300330844436, guid: 2925e75b5d5c6ce40a2e959344d8627f,
     type: 3}
-  attack: 0
-  defence: 0
-  dmgMod: 0
-  defMod: 0
+  attack: 10
+  defence: 10
+  dmgMod: 1
+  defMod: 1
   Bar: {fileID: 7343074089949593827}
   healthBar: {fileID: 1812728709786534928}
   capacity: 300
   Current: 0
-  health: 100
-  maxhealth: 100
+  health: 600
+  maxhealth: 600
   Counts:
   - 0
   - 0
