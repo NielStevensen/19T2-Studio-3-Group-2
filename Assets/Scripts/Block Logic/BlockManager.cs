@@ -106,7 +106,7 @@ public class BlockManager : NetworkBehaviour
 
 	//UI objects
 	private MatchUI mui;
-    private ChargeAttack atkBar;
+    private CombatHandler atkBar;
 	
 	public Sprite[] spriteSheet;
 
@@ -140,7 +140,7 @@ public class BlockManager : NetworkBehaviour
 		dropCoroutines = new Coroutine[(int)blockCount.x];
 		
 		mui = gameObject.GetComponent<MatchUI>();
-        atkBar = gameObject.GetComponent<ChargeAttack>();
+        atkBar = gameObject.GetComponent<CombatHandler>();
 
         if (isServer)
         {
@@ -653,25 +653,22 @@ public class BlockManager : NetworkBehaviour
 		float diff = destination.x - obj.transform.position.x;
 		int alt = (int)Mathf.Sign(diff);
 
-		if (!hasAuthority)
+		/*if (!isLocalPlayer && shouldWaitForType)
 		{
 			int syncIndex = (int)(details.coords.y * blockCount.x + details.coords.x);
 
-			if (shouldWaitForType)
+			while (syncedTypes[syncIndex] == -1)
 			{
-				while(syncedTypes[syncIndex] == -1)
-				{
-					yield return new WaitForEndOfFrame();
-				}
-
-				details.type = (BlockTypes)syncedTypes[(int)(details.coords.y * blockCount.x + details.coords.x)];
-				details.UpdateType();
-
-				CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, -1);
-
-				//print(details.type.ToString());
+				yield return new WaitForEndOfFrame();
 			}
-		}
+
+			details.type = (BlockTypes)syncedTypes[(int)(details.coords.y * blockCount.x + details.coords.x)];
+			details.UpdateType();
+
+			CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, -1);
+
+			//print(details.type.ToString());
+		}*/
 		
 		while (obj.transform.position.y > destination.y)
 		{
@@ -735,12 +732,12 @@ public class BlockManager : NetworkBehaviour
 			newPos.y = Mathf.Max(newPos.y, highestBlocks[xCoord].transform.position.y + blockSize);
 		}
 		
-		//Move blocks to the top and change their colour if they have authority
+		//Move blocks to the top// and change their colour if they have authority
 		for (int i = 0; i < yCount; i++)
 		{
 			droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
 
-			if (hasAuthority)
+			/*if (isLocalPlayer)
 			{
 				BlockTypes newType = GenerateRandomType(new bool[5] { true, true, true, true, true });
 
@@ -748,7 +745,7 @@ public class BlockManager : NetworkBehaviour
 				droppingDetails[i].UpdateType();
 
 				CmdUpdateSyncedTypes((int)droppingDetails[i].coords.x, (int)droppingDetails[i].coords.y, (int)newType);
-			}
+			}*/
 		}
 		
 		highestBlocks[xCoord] = droppingBlocks[yCount - 1];
@@ -789,13 +786,17 @@ public class BlockManager : NetworkBehaviour
 				details.chainIndex = chainIndex;
 			}
 		}
-		
-		//If all blocks could fall, drop intercepted blocks and blocks sent to the top
+
+		//Drop blocks at the top and change type
+		List<int> newYCoords = new List<int>();
+
 		for (int i = 0; i < yCount; i++)
 		{
 			details = droppingDetails[i];
 			
 			newY = (int)blockMax.y - yCount + i + 1;
+
+			newYCoords.Add(newY);
 					
 			details.isInteractable = false;
 			details.isFalling = true;
@@ -815,6 +816,21 @@ public class BlockManager : NetworkBehaviour
 			{
 				details.chainIndex = chainIndex;
 			}
+
+			if (isLocalPlayer)
+			{
+				BlockTypes newType = GenerateRandomType(new bool[5] { true, true, true, true, true });
+
+				details.type = newType;
+				details.UpdateType();
+
+				CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, (int)newType);
+			}
+		}
+
+		if (!isLocalPlayer)
+		{
+			StartCoroutine(NetworkTypeUpdate(xCoord, newYCoords));
 		}
 	}
 	
@@ -823,6 +839,29 @@ public class BlockManager : NetworkBehaviour
 	void CmdUpdateSyncedTypes(int x, int y, int t)
 	{
 		syncedTypes[(int)(y * blockCount.x + x)] = t;
+	}
+
+	//Update type on client
+	IEnumerator NetworkTypeUpdate(int xCoord, List<int> yCoords)
+	{
+		BlockDetails details;
+
+		for (int i = 0; i < yCoords.Count; i++)
+		{
+			int syncIndex = (int)(yCoords[i] * blockCount.x + xCoord);
+
+			while (syncedTypes[syncIndex] == -1)
+			{
+				yield return new WaitForEndOfFrame();
+			}
+
+			details = allBlocks[xCoord, yCoords[i]].GetComponent<BlockDetails>();
+
+			details.type = (BlockTypes)syncedTypes[(int)(yCoords[i] * blockCount.x + xCoord)];
+			details.UpdateType();
+
+			CmdUpdateSyncedTypes(xCoord, yCoords[i], -1);
+		}
 	}
 
 	//Checks for matches and move blocks accordingly
