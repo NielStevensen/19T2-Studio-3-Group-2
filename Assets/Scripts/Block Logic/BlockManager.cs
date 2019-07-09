@@ -718,9 +718,12 @@ public class BlockManager : NetworkBehaviour
 	//Handle the logic before and after dropping blocks
 	IEnumerator HandleBlockDrop(int xCoord, List<int> yCoords, int chainIndex, int coroutineNum)
 	{
+		
 		//Set values and references
 		int yCount = yCoords.Count;
 		int highestYCoord = yCoords[yCount - 1];
+		if (xCoord == 4)
+			Debug.Log(highestYCoord);
 
 		List<GameObject> droppingBlocks = new List<GameObject>();
 		List<BlockDetails> droppingDetails = new List<BlockDetails>();
@@ -738,6 +741,8 @@ public class BlockManager : NetworkBehaviour
 		//Wait for break
 		//yield return new WaitForSeconds(0.2f);
 		yield return new WaitForSeconds(0.5f);
+		if(xCoord == 4)
+		Debug.Log(highestYCoord + "waitingfins");
 		//yield return new WaitForSeconds(0.5f);
 		//yield return new WaitForSeconds(0.5f);
 
