@@ -33,6 +33,7 @@ public class BoolCoroutine
 
 	public Coroutine localCoroutine;
 
+	public bool isHalfway = false;
 	public bool isDone = false;
 
 	public BoolCoroutine(List<int> newY, Coroutine newCoroutine)
@@ -567,7 +568,7 @@ public class BlockManager : NetworkBehaviour
 			
 		}
 
-		//yield return new WaitForSeconds(swapTime);
+		yield return new WaitForSeconds(swapTime);
 		yield return new WaitForEndOfFrame();
 
 		canSwap = true;
@@ -730,9 +731,12 @@ public class BlockManager : NetworkBehaviour
 			droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
 			
 			droppingDetails[i].isInteractable = false;
+
+			droppingDetails[i].spriteRenderer.color = Color.grey;
 		}
 		
 		//Wait for break
+		//yield return new WaitForSeconds(0.2f);
 		yield return new WaitForSeconds(0.5f);
 		//yield return new WaitForSeconds(0.5f);
 		//yield return new WaitForSeconds(0.5f);
@@ -749,23 +753,35 @@ public class BlockManager : NetworkBehaviour
 		for (int i = 0; i < yCount; i++)
 		{
 			droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
+
+			droppingDetails[i].spriteRenderer.color = Color.white;
 		}
 		
 		highestBlocks[xCoord] = droppingBlocks[yCount - 1];
 
 		//If another coroutine is dropping blocks in the column, stop it
+		dropBoolCoroutines[xCoord][coroutineNum].isHalfway = true;
+
+		//but what if the coroutine to stop hasn't gotten to this point yet?
+		//could try setting a bool then running a coroutine to check when that bool changes ten stopping the coroutine
+		//but remember that this stuff needs to change block type + network it
 		int extraDropHeight = 0;
 
 		if(coroutineNum > 0)
 		{
-			if(dropBoolCoroutines[xCoord][coroutineNum - 1].highestY < dropBoolCoroutines[xCoord][coroutineNum].highestY)
+			while(!dropBoolCoroutines[xCoord][coroutineNum - 1].isHalfway)
 			{
-				extraDropHeight = dropBoolCoroutines[xCoord][coroutineNum - 1].yDrop;
+				yield return new WaitForEndOfFrame();
+			}
 
+			if (dropBoolCoroutines[xCoord][coroutineNum - 1].highestY < dropBoolCoroutines[xCoord][coroutineNum].highestY)
+			{
 				foreach(int i in dropBoolCoroutines[xCoord][coroutineNum - 1].yCoords)
 				{
 					undroppedBlocks[xCoord].Add(allBlocks[xCoord, i]);
 				}
+
+				extraDropHeight = undroppedBlocks[xCoord].Count;
 
 				dropBoolCoroutines[xCoord][coroutineNum - 1].isDone = true;
 				StopCoroutine(dropBoolCoroutines[xCoord][coroutineNum - 1].localCoroutine);
@@ -818,6 +834,8 @@ public class BlockManager : NetworkBehaviour
 
 			newY = (int)blockMax.y - extraDropHeight - yCount + i + 1;
 
+			print(newY);
+
 			newYCoordsA.Add(newY);
 
 			details.isInteractable = false;
@@ -839,7 +857,7 @@ public class BlockManager : NetworkBehaviour
 				details.chainIndex = chainIndex;
 			}
 
-			/*if (isLocalPlayer)
+			if (isLocalPlayer)
 			{
 				BlockTypes newType = GenerateRandomType(new bool[5] { true, true, true, true, true });
 
@@ -847,7 +865,17 @@ public class BlockManager : NetworkBehaviour
 				details.UpdateType();
 
 				CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, (int)newType);
-			}*/
+			}
+
+			if(i == undroppedBlocks[xCoord].Count - 1)
+			{
+				undroppedBlocks[xCoord].Clear();
+			}
+		}
+
+		if (newYCoordsA.Count > 0 && !isLocalPlayer)
+		{
+			StartCoroutine(NetworkTypeUpdate(xCoord, newYCoordsA));
 		}
 
 		//Drop blocks at the top and change type if hasAuthority

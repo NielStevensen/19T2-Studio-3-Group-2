@@ -20,7 +20,8 @@ public class BlockDetails : MonoBehaviour
 	public Coroutine movementCoroutine;
 	
 	//Sprite renderer reference
-	private SpriteRenderer spriteRenderer;
+	[HideInInspector]
+	public SpriteRenderer spriteRenderer;
 
 	//Is the block falling? Used to count chains
 	[HideInInspector]
