@@ -404,9 +404,9 @@ MonoBehaviour:
   blockSize: 0.64
   blockCount: {x: 8, y: 10}
   blockRarities: c8000000c8000000c8000000c8000000c8000000
-  swapTime: 1
+  swapTime: 0.1
   fallSpeed: 2
-  isCursorControl: 0
+  isCursorControl: 1
   cursorPrefab: {fileID: 7142510313808808482, guid: 6c24dbc85da41de4483634e39c48f144,
     type: 3}
   spriteSheet:
