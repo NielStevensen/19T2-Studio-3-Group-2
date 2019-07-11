@@ -176,32 +176,17 @@ public class CombatHandler : NetworkBehaviour
 
     public void Update()
     {
-        float stab;
+       
         if (opponent != null)
         {
             opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
         }
         healthBar.fillAmount = health / maxhealth;
         Bar.fillAmount = Current / capacity;
-        if (currentType == myType)
-        {
-            stab = 1.1f;
-        }
-        else
-        {
-            stab = 1f;
-        }
+
         if (Input.GetButtonDown("Jump"))
         {
-            if (isLocalPlayer)
-            {
-                CmdDamage(Current / 30 * attack * stab * dmgMod, currentType);
-                Current = 0;
-                for (int a = 0; a < 4; a++)
-                {
-                    Counts[a] = 0f;
-                }
-            }
+            Attack();
         }
         //check win and lose conditions
         if (opponent != null && isLocalPlayer)
@@ -217,6 +202,28 @@ public class CombatHandler : NetworkBehaviour
                 GameObject Stats = GameObject.Instantiate(statUI);
                 Stats.GetComponentInChildren<Text>().text = "You lose";
                 this.enabled = false;
+            }
+        }
+    }
+
+    public void Attack()
+    {
+        float stab;
+        if (currentType == myType)
+        {
+            stab = 1.1f;
+        }
+        else
+        {
+            stab = 1f;
+        }
+        if (isLocalPlayer)
+        {
+            CmdDamage(Current / 30 * attack * stab * dmgMod, currentType);
+            Current = 0;
+            for (int a = 0; a < 4; a++)
+            {
+                Counts[a] = 0f;
             }
         }
     }
