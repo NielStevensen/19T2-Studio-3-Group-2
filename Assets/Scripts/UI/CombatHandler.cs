@@ -94,7 +94,10 @@ public class CombatHandler : NetworkBehaviour
 
     public void FillBar(BlockTypes colour, int chainCount, int comboCount)
     {
-        Combos.Add(comboCount);
+        if (comboCount > 3)
+        {
+            Combos.Add(comboCount);
+        }
         if(Chains .Capacity > 0 &&Chains[Chains.Capacity -1] + 1 == chainCount)
         {
             Chains.Add(chainCount);
