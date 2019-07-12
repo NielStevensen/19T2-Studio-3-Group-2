@@ -12,7 +12,7 @@ public class FlipUI : NetworkBehaviour
     public Material customShader;
     public void  Start()
     {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE
         if (isServer)
         {
             if (!isLocalPlayer)
@@ -26,7 +26,6 @@ public class FlipUI : NetworkBehaviour
                 {
                     a.fillOrigin = 1;
                 }
-                reverseFill[0].material = new Material(customShader);
             }
         }
         else
@@ -42,7 +41,6 @@ public class FlipUI : NetworkBehaviour
                 {
                     a.fillOrigin = 1;
                 }
-                reverseFill[0].material = new Material(customShader);
             }
         }
         #endif

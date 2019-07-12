@@ -60,6 +60,9 @@ public class CombatHandler : NetworkBehaviour
     int currentType;
     float currentHighest;
 
+    public List<int> Chains;
+    public List<int> Combos;
+
     public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
 
     private void Start()
@@ -91,6 +94,11 @@ public class CombatHandler : NetworkBehaviour
 
     public void FillBar(BlockTypes colour, int chainCount, int comboCount)
     {
+        Combos.Add(comboCount);
+        if(Chains .Capacity > 0 &&Chains[Chains.Capacity -1] + 1 == chainCount)
+        {
+            Chains.Add(chainCount);
+        }
         switch (colour)
         {
             case BlockTypes.A:
@@ -130,16 +138,16 @@ public class CombatHandler : NetworkBehaviour
         switch (currentType)
         {
             case 0:
-                Bar.material.SetColor("_Color", Color.red);
+                Bar.color = Color.red;
                 break;
             case 1:
-                Bar.material.SetColor("_Color", Color.yellow);
+                Bar.color = Color.yellow;
                 break;
             case 2:
-                Bar.material.SetColor("_Color", Color.green);
+                Bar.color = Color.green;
                 break;
             case 3:
-                Bar.material.SetColor("_Color", Color.blue);
+                Bar.color = Color.blue;
                 break;
         }
     }
@@ -163,14 +171,14 @@ public class CombatHandler : NetworkBehaviour
     [ClientRpc]
     void RpcDamage(float Damage, int type)
     {
-        Debug.Log((Damage * matchUpMatrix[type].matchUp[myType]) * (100 - ((defence + defMod) / 100)));
+        Debug.Log((Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100));
         if (hasAuthority)
         {
             return;
         }
         else
         {
-            opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * (100-(defence + defMod) /100));
+            opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * ((100-(defence + defMod)) /100));
         }
     }
 
