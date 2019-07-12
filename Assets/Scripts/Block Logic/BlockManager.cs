@@ -25,27 +25,6 @@ public class BoundingBox
 	}
 }
 
-public class BoolCoroutine
-{
-	public List<int> yCoords = new List<int>();
-	public int yDrop = 0;
-	public int highestY = 0;
-
-	public Coroutine localCoroutine;
-
-	public bool isHalfway = false;
-	public bool isDone = false;
-
-	public BoolCoroutine(List<int> newY, Coroutine newCoroutine)
-	{
-		yCoords = newY;
-		yDrop = yCoords.Count;
-		highestY = yCoords[yDrop - 1];
-		
-		localCoroutine = newCoroutine;
-	}
-}
-
 public class BlockManager : NetworkBehaviour
 {
 	//Play field bounds
@@ -115,7 +94,6 @@ public class BlockManager : NetworkBehaviour
 	
 	//Block dropping values
 	private GameObject[] highestBlocks; //Highest blocks in each column. Used to set spawned block height to prevent overlap
-	private List<BoolCoroutine>[] dropBoolCoroutines;
 	private List<GameObject>[] undroppedBlocks;
 
 	//Synced types. Used to network type changes
@@ -159,12 +137,10 @@ public class BlockManager : NetworkBehaviour
 		}
 		
 		highestBlocks = new GameObject[(int)blockCount.x];
-		dropBoolCoroutines = new List<BoolCoroutine>[(int)blockCount.x];
 		undroppedBlocks = new List<GameObject>[(int)blockCount.x];
 
 		for(int i = 0; i < blockCount.x; i++)
 		{
-			dropBoolCoroutines[i] = new List<BoolCoroutine>();
 			undroppedBlocks[i] = new List<GameObject>();
 		}
 		
@@ -278,7 +254,6 @@ public class BlockManager : NetworkBehaviour
 				Vector3 pos = new Vector3(xBase + x * blockSize, yPos, 0) + displacement3D;
 
 				allBlocks[x, y] = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
-                //NetworkServer.Spawn(allBlocks[x, y]);
 
 				BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
 
@@ -650,7 +625,7 @@ public class BlockManager : NetworkBehaviour
 		StartCoroutine(CursorCooldown());
 	}
 
-	//Horizontally swap blocks
+	//Swap blocks
 	IEnumerator SwapBlock(GameObject obj, BlockDetails details, Vector3 origin, Vector3 destination, int chainCount)
 	{
         float elapsedTime = 0.0f;
@@ -693,7 +668,7 @@ public class BlockManager : NetworkBehaviour
     }
 	
 	//Control block falling and align if necessary
-	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex, bool shouldWaitForType)
+	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex)
 	{
 		Vector3 blockPos = obj.transform.position;
 
@@ -734,278 +709,53 @@ public class BlockManager : NetworkBehaviour
 	}
 
 	//Handle the logic before and after dropping blocks
-	/*IEnumerator HandleBlockDrop(int xCoord, List<int> yCoords, int chainIndex, int coroutineNum)
+	IEnumerator HandleBlockDrop(int xCoord, List<int> yCoords, int chainIndex)
 	{
-		
-		//Set values and references
 		int yCount = yCoords.Count;
-		int highestYCoord = yCoords[yCount - 1];
-
 		List<GameObject> droppingBlocks = new List<GameObject>();
-		List<BlockDetails> droppingDetails = new List<BlockDetails>();
 
-		for(int i = 0; i < yCount; i++)
+		//If there are blocks to drop, handle the logic for dropping
+		if (yCoords.Count > 0)
 		{
-			droppingBlocks.Add(allBlocks[xCoord, yCoords[i]]);
-			droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
+			//Set values and references
+			int highestYCoord = yCoords[yCount - 1];
 			
-			droppingDetails[i].isInteractable = false;
+			List<BlockDetails> droppingDetails = new List<BlockDetails>();
 
-			droppingDetails[i].spriteRenderer.color = Color.grey;
-		}
-		
-		//Wait for break
-		//yield return new WaitForSeconds(0.2f);
-		yield return new WaitForSeconds(0.5f);
-		//yield return new WaitForSeconds(0.5f);
-		//yield return new WaitForSeconds(0.5f);
-
-		//Find the lowest coords to move blocks to
-		Vector3 newPos = CoordToPosition(xCoord, (int)blockCount.y);
-		
-		if (highestBlocks[xCoord] != null)
-		{
-			newPos.y = Mathf.Max(newPos.y, highestBlocks[xCoord].transform.position.y + blockSize);
-		}
-		
-		//Move blocks to the top
-		for (int i = 0; i < yCount; i++)
-		{
-			droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
-
-			droppingDetails[i].spriteRenderer.color = Color.white;
-		}
-		
-		highestBlocks[xCoord] = droppingBlocks[yCount - 1];
-
-		//If another coroutine is dropping blocks in the column, stop it
-		dropBoolCoroutines[xCoord][coroutineNum].isHalfway = true;
-
-		//but what if the coroutine to stop hasn't gotten to this point yet?
-		//could try setting a bool then running a coroutine to check when that bool changes ten stopping the coroutine
-		//but remember that this stuff needs to change block type + network it
-		int extraDropHeight = 0;
-
-		if(coroutineNum > 0)
-		{
-			while(!dropBoolCoroutines[xCoord][coroutineNum - 1].isHalfway)
+			for (int i = 0; i < yCount; i++)
 			{
-				yield return new WaitForEndOfFrame();
+				droppingBlocks.Add(allBlocks[xCoord, yCoords[i]]);
+				droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
+
+				droppingDetails[i].isInteractable = false;
+
+				//temp
+				droppingDetails[i].spriteRenderer.color = Color.grey;
 			}
 
-			if (dropBoolCoroutines[xCoord][coroutineNum - 1].highestY < dropBoolCoroutines[xCoord][coroutineNum].highestY)
+			//Wait for break
+			yield return new WaitForSeconds(0.5f);
+
+			//Find the lowest coords to move blocks to
+			Vector3 newPos = CoordToPosition(xCoord, (int)blockCount.y);
+
+			if (highestBlocks[xCoord] != null)
 			{
-				foreach(int i in dropBoolCoroutines[xCoord][coroutineNum - 1].yCoords)
-				{
-					undroppedBlocks[xCoord].Add(allBlocks[xCoord, i]);
-				}
-
-				extraDropHeight = undroppedBlocks[xCoord].Count;
-
-				dropBoolCoroutines[xCoord][coroutineNum - 1].isDone = true;
-				StopCoroutine(dropBoolCoroutines[xCoord][coroutineNum - 1].localCoroutine);
+				newPos.y = Mathf.Max(newPos.y, highestBlocks[xCoord].transform.position.y + blockSize);
 			}
+
+			//Move blocks to the top and set null references
+			for (int i = 0; i < yCount; i++)
+			{
+				droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
+				allBlocks[xCoord, yCoords[i]] = null;
+
+				//temp
+				droppingDetails[i].spriteRenderer.color = Color.white;
+			}
+
+			highestBlocks[xCoord] = droppingBlocks[yCount - 1];
 		}
-		
-		//Tell blocks above to fall
-		int newY = 0;
-		
-		BlockDetails details;
-		Coroutine relevantCoroutine;
-
-		for (int i = highestYCoord + 1; i < blockCount.y; i++)
-		{
-			details = allBlocks[xCoord, i].GetComponent<BlockDetails>();
-
-			while(!(details.isFalling || details.isInteractable))
-			{
-				yield return new WaitForEndOfFrame();
-			}
-			
-			newY = i - yCount - extraDropHeight;
-					
-			details.isInteractable = false;
-			details.isFalling = true;
-			details.coords = new Vector2(xCoord, newY);
-			allBlocks[xCoord, newY] = details.gameObject;
-
-			relevantCoroutine = details.movementCoroutine;
-
-			if (relevantCoroutine != null)
-			{
-				StopCoroutine(relevantCoroutine);
-			}
-
-			details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex, false));
-				
-			if (details.chainIndex == -1)
-			{
-				details.chainIndex = chainIndex;
-			}
-		}
-
-		//Drop blocks that weren't dropped due to matches in the same column
-		List<int> newYCoordsA = new List<int>();
-
-		for (int i = 0; i < undroppedBlocks[xCoord].Count; i++)
-		{
-			details = undroppedBlocks[xCoord][i].GetComponent<BlockDetails>();
-
-			newY = (int)blockMax.y - extraDropHeight - yCount + i + 1;
-
-			print(newY);
-
-			newYCoordsA.Add(newY);
-
-			details.isInteractable = false;
-			details.isFalling = true;
-			details.coords = new Vector2(xCoord, newY);
-			allBlocks[xCoord, newY] = details.gameObject;
-
-			relevantCoroutine = details.movementCoroutine;
-
-			if (relevantCoroutine != null)
-			{
-				StopCoroutine(relevantCoroutine);
-			}
-
-			details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex, true));
-
-			if (details.chainIndex == -1)
-			{
-				details.chainIndex = chainIndex;
-			}
-
-			if (isLocalPlayer)
-			{
-				BlockTypes newType = GenerateRandomType(new bool[5] { true, true, true, true, true });
-
-				details.type = newType;
-				details.UpdateType();
-
-				CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, (int)newType);
-			}
-
-			if(i == undroppedBlocks[xCoord].Count - 1)
-			{
-				undroppedBlocks[xCoord].Clear();
-			}
-		}
-
-		if (newYCoordsA.Count > 0 && !isLocalPlayer)
-		{
-			StartCoroutine(NetworkTypeUpdate(xCoord, newYCoordsA));
-		}
-
-		//Drop blocks at the top and change type if hasAuthority
-		List<int> newYCoords = new List<int>();
-
-		for (int i = 0; i < yCount; i++)
-		{
-			details = droppingDetails[i];
-			
-			newY = (int)blockMax.y - yCount + i + 1;
-
-			newYCoords.Add(newY);
-					
-			details.isInteractable = false;
-			details.isFalling = true;
-			details.coords = new Vector2(xCoord, newY);
-			allBlocks[xCoord, newY] = details.gameObject;
-
-			relevantCoroutine = details.movementCoroutine;
-
-			if (relevantCoroutine != null)
-			{
-				StopCoroutine(relevantCoroutine);
-			}
-
-			details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex, true));
-					
-			if (details.chainIndex == -1)
-			{
-				details.chainIndex = chainIndex;
-			}
-
-			if (isLocalPlayer)
-			{
-				BlockTypes newType = GenerateRandomType(new bool[5] { true, true, true, true, true });
-
-				details.type = newType;
-				details.UpdateType();
-
-				CmdUpdateSyncedTypes((int)details.coords.x, (int)details.coords.y, (int)newType);
-			}
-		}
-
-		if (!isLocalPlayer)
-		{
-			StartCoroutine(NetworkTypeUpdate(xCoord, newYCoords));
-		}
-
-		dropBoolCoroutines[xCoord][coroutineNum].isDone = true;
-
-		bool areAllDone = true;
-
-		for(int i = 0; i < dropBoolCoroutines[xCoord].Count; i++)
-		{
-			if (!dropBoolCoroutines[xCoord][i].isDone)
-			{
-				areAllDone = false;
-
-				break;
-			}
-		}
-
-		if (areAllDone)
-		{
-			dropBoolCoroutines[xCoord].Clear();
-		}
-	}*/
-
-	//Handle the logic before and after dropping blocks
-	IEnumerator HandleBlockDrop(int xCoord, List<int> yCoords, int chainIndex, int coroutineNum)
-	{
-		//Set values and references
-		int yCount = yCoords.Count;
-		int highestYCoord = yCoords[yCount - 1];
-
-		List<GameObject> droppingBlocks = new List<GameObject>();
-		List<BlockDetails> droppingDetails = new List<BlockDetails>();
-
-		for (int i = 0; i < yCount; i++)
-		{
-			droppingBlocks.Add(allBlocks[xCoord, yCoords[i]]);
-			droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
-
-			droppingDetails[i].isInteractable = false;
-
-			//temp
-			droppingDetails[i].spriteRenderer.color = Color.grey;
-		}
-
-		//Wait for break
-		yield return new WaitForSeconds(0.5f);
-
-		//Find the lowest coords to move blocks to
-		Vector3 newPos = CoordToPosition(xCoord, (int)blockCount.y);
-
-		if (highestBlocks[xCoord] != null)
-		{
-			newPos.y = Mathf.Max(newPos.y, highestBlocks[xCoord].transform.position.y + blockSize);
-		}
-
-		//Move blocks to the top and set null references
-		for (int i = 0; i < yCount; i++)
-		{
-			droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
-			allBlocks[xCoord, yCoords[i]] = null;
-
-			//temp
-			droppingDetails[i].spriteRenderer.color = Color.white;
-		}
-
-		highestBlocks[xCoord] = droppingBlocks[yCount - 1];
 		
 		//Tell blocks above to fall
 		GameObject block;
@@ -1051,7 +801,7 @@ public class BlockManager : NetworkBehaviour
 						StopCoroutine(relevantCoroutine);
 					}
 
-					details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, (int)details.coords.y), chainIndex, false));
+					details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, (int)details.coords.y), chainIndex));
 
 					if (details.chainIndex == -1)
 					{
@@ -1075,7 +825,9 @@ public class BlockManager : NetworkBehaviour
 				blocksToDrop.Add(undroppedBlocks[xCoord][i]);
 			}
 
-			for(int i = 0; i < yCount; i++)
+			undroppedBlocks[xCoord].Clear();
+
+			for (int i = 0; i < yCount; i++)
 			{
 				blocksToDrop.Add(droppingBlocks[i]);
 			}
@@ -1114,13 +866,11 @@ public class BlockManager : NetworkBehaviour
 					StopCoroutine(relevantCoroutine);
 				}
 
-				details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex, false));
+				details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex));
 				
 				nullNum--;
 			}
-
-			undroppedBlocks[xCoord].Clear();
-
+			
 			if (!isLocalPlayer && newYCoords.Count > 0)
 			{
 				StartCoroutine(NetworkTypeUpdate(xCoord, newYCoords));
@@ -1304,6 +1054,8 @@ public class BlockManager : NetworkBehaviour
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
+			StartCoroutine(HandleBlockDrop((int)pos.x, new List<int>(), -1));
+
 			/*if(chainIndex > -1)
 			{
 				bool areStillFalling = false;
@@ -1343,19 +1095,15 @@ public class BlockManager : NetworkBehaviour
 		{
 			for (int x = 0; x < matchingHorizontalIndices.Count; x++)
 			{
-				int num = dropBoolCoroutines[matchingHorizontalIndices[x]].Count;
-				
-				dropBoolCoroutines[matchingHorizontalIndices[x]].Add(new BoolCoroutine(new List<int> { (int)pos.y}, StartCoroutine(HandleBlockDrop(matchingHorizontalIndices[x], new List<int>() { (int)pos.y }, newChainIndex, num))));
+				StartCoroutine(HandleBlockDrop(matchingHorizontalIndices[x], new List<int>() { (int)pos.y }, newChainIndex));
 			}
 		}
 
 		if (matchingVerticalIndices.Count >= 3)
 		{
 			matchingVerticalIndices.Sort();
-			
-			int num = dropBoolCoroutines[(int)pos.x].Count;
-			
-			dropBoolCoroutines[(int)pos.x].Add(new BoolCoroutine(matchingVerticalIndices, StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex, num))));
+
+			StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex));
 		}
 	}
 	
