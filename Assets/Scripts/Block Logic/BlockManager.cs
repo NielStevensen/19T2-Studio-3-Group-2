@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class BoundingBox
@@ -73,11 +72,13 @@ public class BlockManager : NetworkBehaviour
 	[Space(10)]
 
 	//Is the player using mouse or cursor control?
+	[Tooltip("Is the player using cursor control?")]
 	public bool isCursorControl = true;
 
 	[Space(10)]
 
 	//Cursor
+	[Tooltip("Cursor prefab.")]
 	public GameObject cursorPrefab;
 	private GameObject cursor;
 	private Vector2 cursorPos;
@@ -438,13 +439,7 @@ public class BlockManager : NetworkBehaviour
 		{
 			allChains.Clear();
 		}
-
-		//temp debug. return to lobby scene
-		if (Input.GetKey(KeyCode.P) && Input.GetKey(KeyCode.Q))
-		{
-			SceneManager.LoadScene("Lobby");
-		}
-
+		
 		//temp debug. get if any blocks are in the wrong state. hold control to force into the right state
 		if (Input.GetKeyDown(KeyCode.Minus))
 		{
@@ -584,6 +579,7 @@ public class BlockManager : NetworkBehaviour
 			CmdSwapBlocks(blockSelected.x, blockSelected.y, blockToSwap.x, blockToSwap.y);
 		}
 
+		//here so that the one move causes the one chain........
 		int chainCount = allChains.Count;
 
 		Coroutine relevantCoroutine;
@@ -715,11 +711,9 @@ public class BlockManager : NetworkBehaviour
 		List<GameObject> droppingBlocks = new List<GameObject>();
 
 		//If there are blocks to drop, handle the logic for dropping
-		if (yCoords.Count > 0)
+		if (yCount > 0)
 		{
 			//Set values and references
-			int highestYCoord = yCoords[yCount - 1];
-			
 			List<BlockDetails> droppingDetails = new List<BlockDetails>();
 
 			for (int i = 0; i < yCount; i++)
@@ -762,7 +756,7 @@ public class BlockManager : NetworkBehaviour
 		BlockDetails details;
 		Coroutine relevantCoroutine;
 
-		Vector2Int nullCount = Vector2Int.zero;
+		int nullCount = 0;
 
 		bool shouldContinue = true;
 
@@ -772,11 +766,11 @@ public class BlockManager : NetworkBehaviour
 
 			if (block == null)
 			{
-				nullCount += new Vector2Int(0, 1);
+				nullCount++;
 			}
 			else
 			{
-				if(nullCount.y > 0)
+				if(nullCount > 0)
 				{
 					details = block.GetComponent<BlockDetails>();
 
@@ -790,9 +784,14 @@ public class BlockManager : NetworkBehaviour
 					details.isInteractable = false;
 					details.isFalling = true;
 
-					allBlocks[(int)details.coords.x, (int)details.coords.y] = null;
-					details.coords -= nullCount;
+					allBlocks[xCoord, (int)details.coords.y] = null;
+					details.coords.y -= nullCount;
 					allBlocks[xCoord, (int)details.coords.y] = details.gameObject;
+
+					if (details.chainIndex == -1)
+					{
+						details.chainIndex = chainIndex;
+					}
 
 					relevantCoroutine = details.movementCoroutine;
 
@@ -802,11 +801,6 @@ public class BlockManager : NetworkBehaviour
 					}
 
 					details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, (int)details.coords.y), chainIndex));
-
-					if (details.chainIndex == -1)
-					{
-						details.chainIndex = chainIndex;
-					}
 				}
 			}
 		}
@@ -814,8 +808,6 @@ public class BlockManager : NetworkBehaviour
 		//If no uninteractable blocks were encountered, drop the blocks sent to the top
 		if (shouldContinue)
 		{
-			int nullNum = nullCount.y;
-
 			List<int> newYCoords = new List<int>();
 
 			List<GameObject> blocksToDrop = new List<GameObject>();
@@ -838,7 +830,7 @@ public class BlockManager : NetworkBehaviour
 					
 				details.isFalling = true;
 
-				int newY = (int)blockCount.y - nullNum;
+				int newY = (int)blockCount.y - nullCount;
 				
 				details.coords = new Vector2(xCoord, newY);
 				allBlocks[xCoord, newY] = details.gameObject;
@@ -868,7 +860,7 @@ public class BlockManager : NetworkBehaviour
 
 				details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex));
 				
-				nullNum--;
+				nullCount--;
 			}
 			
 			if (!isLocalPlayer && newYCoords.Count > 0)
@@ -1113,6 +1105,7 @@ public class BlockManager : NetworkBehaviour
 		return CoordToPosition(x, y, false);
 	}
 
+	//is this overload necessary
 	//Produce a vector 3 based on the coordinates provides
 	Vector3 CoordToPosition(int x, int y, bool useExtraDisplacement)
 	{
