@@ -507,8 +507,21 @@ public class BlockManager : NetworkBehaviour
 		{
 			DebugForceType(4);
 		}
-	}
 
+		//temp debug. check board sync
+		if (Input.GetKeyDown(KeyCode.Equals))
+		{
+			if (isServer) //can only be done on build
+			{
+				CmdRequestSyncCheck(GetTypeArray());
+			}
+			else //can only be done in editor
+			{
+				CmdSendSyncData(GetTypeArray());
+			}
+		}
+	}
+	
 	//temp debug. force type
 	void DebugForceType(int type)
 	{
@@ -527,6 +540,100 @@ public class BlockManager : NetworkBehaviour
 				details.type = (BlockTypes)type;
 				details.UpdateType();
 			}
+		}
+	}
+	
+	//temp debug. send type array and request for it to be checked (HOST)
+	[Command]
+	void CmdRequestSyncCheck(string clientData)
+	{
+		RpcRequestSyncCheck(clientData);
+	}
+
+	//temp debug. receieve type array and compare (HOST)
+	[ClientRpc]
+	void RpcRequestSyncCheck(string clientData)
+	{
+		if (!isServer)
+		{
+			print("Host sync check");
+
+			CompareTypeArrays(clientData, GetTypeArray());
+		}
+	}
+	
+	//temp debug. send over type array (CLIENT)
+	[Command]
+	void CmdSendSyncData(string clientData)
+	{
+		RpcSendSyncData(clientData);
+	}
+
+	//temp debug. receive type array (CLIENT)
+	[ClientRpc]
+	void RpcSendSyncData(string clientData)
+	{
+		if(isServer)
+		{
+			print("Client sync check");
+
+			CompareTypeArrays(clientData, GetTypeArray());
+		}
+	}
+
+	//temp debug. retrieve type array
+	string GetTypeArray()
+	{
+		BlockDetails details;
+
+		string str = "1";
+		int tempInt;
+
+		for (int y = 0; y < blockCount.y; y++)
+		{
+			for (int x = 0; x < blockCount.x; x++)
+			{
+				if (allBlocks[x, y] != null)
+				{
+					details = allBlocks[x, y].GetComponent<BlockDetails>();
+
+					tempInt = (int)details.type;
+					str += tempInt.ToString();
+				}
+				else
+				{
+					str += "9";
+				}
+			}
+		}
+
+		return str;
+	}
+
+	//temp debug. compare type arrays
+	void CompareTypeArrays(string clientTypes, string projectedTypes)
+	{
+		char[] clientArray = clientTypes.ToCharArray();
+		char[] projectedArray = projectedTypes.ToCharArray();
+
+		bool areSynced = true;
+
+		for(int i = 1; i < clientArray.Length; i++)
+		{
+			if(clientArray[i] != projectedArray[i])
+			{
+				areSynced = false;
+
+				int x = (i - 1) % (int)blockCount.x;
+				int y = (i - 1) / (int)blockCount.x;
+
+				print("Issue at " + x + ", " + y + "\nClient type: " + clientArray[i] + ", Projected type: " + projectedArray[i]);
+			}
+		}
+
+		if (areSynced)
+		{
+			print("Boards are synced. No issues.");
 		}
 	}
 
@@ -904,7 +1011,8 @@ public class BlockManager : NetworkBehaviour
 			details.type = (BlockTypes)syncedTypes[(int)(yCoords[i] * blockCount.x + xCoord)];
 			details.UpdateType();
 
-			CmdUpdateSyncedTypes(xCoord, yCoords[i], -1);
+			//CmdUpdateSyncedTypes(xCoord, yCoords[i], -1);
+			syncedTypes[(int)(yCoords[i] * blockCount.x + xCoord)] = -1;
 		}
 	}
 
