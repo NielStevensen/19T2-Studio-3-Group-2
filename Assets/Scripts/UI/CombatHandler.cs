@@ -63,6 +63,8 @@ public class CombatHandler : NetworkBehaviour
     public List<int> Chains;
     public List<int> Combos;
 
+    public string toPrint = "";
+
     public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
 
     private void Start()
@@ -205,18 +207,49 @@ public class CombatHandler : NetworkBehaviour
             if (opponent.health <= 0)
             {
                 GameObject Stats = GameObject.Instantiate(statUI);
-                Stats.GetComponentInChildren<Text>().text = "Congratulations you win";
+                Stats.GetComponentsInChildren<Text>()[0].text = "Congratulations you win";
+                printStats(Stats);
                 this.enabled = false;
             }
             else if (health <= 0)
             {
                 GameObject Stats = GameObject.Instantiate(statUI);
-                Stats.GetComponentInChildren<Text>().text = "You lose";
+                Stats.GetComponentsInChildren<Text>()[0].text = "You lose";
+                printStats(Stats);
                 this.enabled = false;
             }
         }
     }
 
+    public void printStats( GameObject stats)
+    {
+        List<int> countedCombos = new List<int>();
+        Combos.Sort();
+
+        foreach (int a in Combos)
+        {
+            if (a - 1 == countedCombos.Count)
+            {
+                countedCombos.Add(1);
+            }
+            else if (a - 1 > countedCombos.Count)
+            {
+                for( int i = 0; (i + (a-1)) < countedCombos.Count; i ++)
+                {
+                    countedCombos.Add(0);
+                }
+            }
+            else
+            {
+                countedCombos[a - 1] += 1;
+            }
+        }
+        foreach (int a in countedCombos)
+        {
+            toPrint += "Combo:" + a.ToString() + "\n";
+        }
+        stats.GetComponentsInChildren<Text>()[1].text += toPrint;
+    }
     public void Attack()
     {
         float stab;

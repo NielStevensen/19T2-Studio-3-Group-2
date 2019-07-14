@@ -25,7 +25,6 @@ public class CameraTesting : MonoBehaviour
         //moving the camera so the botton of the screen also in place.
         float newCamPositionY = cam.transform.position.y - (defaultCamSize - newCamSize);
         cam.transform.position = new Vector3(cam.transform.position.x, newCamPositionY, cam.transform.position.z);
-        cam.cullingMask = 
 #if UNITY_ANDROID
         Debug.Log("hi");
 #endif
