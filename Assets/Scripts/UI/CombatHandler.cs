@@ -67,6 +67,8 @@ public class CombatHandler : NetworkBehaviour
 
     public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
 
+    bool isDead = false;
+
     private void Start()
     {
         // open class selection on local player
@@ -223,31 +225,35 @@ public class CombatHandler : NetworkBehaviour
 
     public void printStats( GameObject stats)
     {
-        List<int> countedCombos = new List<int>();
         Combos.Sort();
 
-        foreach (int a in Combos)
+        int highestValue = Combos[Combos.Count - 1];
+
+        List<int> comboCount = new List<int>();
+
+        for(int i = 0; i < highestValue; i++)
         {
-            if (a - 1 == countedCombos.Count)
+            comboCount.Add(0);
+        }
+
+        for(int i = 0; i < Combos.Count; i++)
+        {
+            comboCount[Combos[i] - 1]++;
+        }
+
+        print(Combos.Count);
+        print(comboCount.Count);
+
+        if(comboCount.Count > 3)
+        {
+            for (int a = 3; a < comboCount.Count; a++)
             {
-                countedCombos.Add(1);
-            }
-            else if (a - 1 > countedCombos.Count)
-            {
-                for( int i = 0; (i + (a-1)) < countedCombos.Count; i ++)
-                {
-                    countedCombos.Add(0);
-                }
-            }
-            else
-            {
-                countedCombos[a - 1] += 1;
+                print(a - 1);
+
+                toPrint += "\n " + (a + 1) + " Combo: " + comboCount[a].ToString();
             }
         }
-        foreach (int a in countedCombos)
-        {
-            toPrint += "Combo:" + a.ToString() + "\n";
-        }
+
         stats.GetComponentsInChildren<Text>()[1].text += toPrint;
     }
     public void Attack()
