@@ -4,9 +4,9 @@
 	{
 		_MainTexture("Sprite Texture", 2D) = "white" {}
 		[PerRendererData] _Colour("Colour", Color) = (1, 1, 1, 1)
-		_Saturation("Saturation", Range(-1, 1)) = 0.0
-		_Contrast("Contrast", Range(0, 1)) = 1.0
-		_Exposure("Exposure", Range(-1, 1)) = 0.0
+		_Saturation("Saturation", Range(-100, 100)) = 0.0
+		_Contrast("Contrast", Range(1, 10)) = 1.0
+		_Exposure("Exposure", Range(-5, 5)) = 0.0
 	}
 
 	SubShader
