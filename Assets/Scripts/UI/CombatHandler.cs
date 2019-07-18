@@ -68,18 +68,10 @@ public class CombatHandler : NetworkBehaviour
     public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
 
     bool isDead = false;
+    public bool didWin; // has the player won
 
     private void Start()
     {
-        // open class selection on local player
-        //if (isLocalPlayer)
-        //{
-        //    GameObject Selector  = Instantiate(classSelection);
-        //    foreach(AvatarStats a in Selector.GetComponentsInChildren<AvatarStats>())
-        //    {
-        //        a.refrence = this;
-        //    }
-        //}
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
         if(GameObject.FindObjectsOfType<CombatHandler>().Length  > 1)
         {
