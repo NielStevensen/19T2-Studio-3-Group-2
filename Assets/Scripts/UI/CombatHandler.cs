@@ -19,6 +19,7 @@ public class TwoDimArray
 
 public class CombatHandler : NetworkBehaviour
 {
+    #region variables
     public CombatHandler opponent;
     public CombatHandler[] scriptRefs;
     public GameObject statUI;
@@ -67,17 +68,11 @@ public class CombatHandler : NetworkBehaviour
 
     public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
 
+    bool isDead = false;
+    public bool didWin; // has the player won
+    #endregion;
     private void Start()
     {
-        // open class selection on local player
-        //if (isLocalPlayer)
-        //{
-        //    GameObject Selector  = Instantiate(classSelection);
-        //    foreach(AvatarStats a in Selector.GetComponentsInChildren<AvatarStats>())
-        //    {
-        //        a.refrence = this;
-        //    }
-        //}
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
         if(GameObject.FindObjectsOfType<CombatHandler>().Length  > 1)
         {
@@ -176,7 +171,6 @@ public class CombatHandler : NetworkBehaviour
     [ClientRpc]
     void RpcDamage(float Damage, int type)
     {
-        Debug.Log((Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100));
         if (hasAuthority)
         {
             return;
@@ -208,14 +202,15 @@ public class CombatHandler : NetworkBehaviour
             {
                 GameObject Stats = GameObject.Instantiate(statUI);
                 Stats.GetComponentsInChildren<Text>()[0].text = "Congratulations you win";
-                printStats(Stats);
+                didWin = true; // flag the player as winner
+                printStats(Stats); // print stas and update save data
                 this.enabled = false;
             }
             else if (health <= 0)
             {
                 GameObject Stats = GameObject.Instantiate(statUI);
                 Stats.GetComponentsInChildren<Text>()[0].text = "You lose";
-                printStats(Stats);
+                printStats(Stats); // print stas and update save data
                 this.enabled = false;
             }
         }
@@ -223,33 +218,33 @@ public class CombatHandler : NetworkBehaviour
 
     public void printStats( GameObject stats)
     {
-        List<int> countedCombos = new List<int>();
         Combos.Sort();
 
-        foreach (int a in Combos)
+        int highestValue = Combos[Combos.Count - 1];
+
+        List<int> comboCount = new List<int>();
+
+        for(int i = 0; i < highestValue; i++)
         {
-            if (a - 1 == countedCombos.Count)
-            {
-                countedCombos.Add(1);
-            }
-            else if (a - 1 > countedCombos.Count)
-            {
-                for( int i = 0; (i + (a-1)) < countedCombos.Count; i ++)
-                {
-                    countedCombos.Add(0);
-                }
-            }
-            else
-            {
-                countedCombos[a - 1] += 1;
-            }
+            comboCount.Add(0);
         }
-        foreach (int a in countedCombos)
+
+        for(int i = 0; i < Combos.Count; i++)
         {
-            toPrint += "Combo:" + a.ToString() + "\n";
+            comboCount[Combos[i] - 1]++;
+        }
+
+        if(comboCount.Count > 3)
+        {
+            for (int a = 3; a < comboCount.Count; a++)
+            {
+                toPrint += "\n " + (a + 1) + " Combo: " + comboCount[a].ToString();
+            }
         }
         stats.GetComponentsInChildren<Text>()[1].text += toPrint;
+        UpdateSave(); // update save statistics
     }
+
     public void Attack()
     {
         float stab;
@@ -270,5 +265,32 @@ public class CombatHandler : NetworkBehaviour
                 Counts[a] = 0f;
             }
         }
+    }
+
+    void UpdateSave()
+    {
+        SaveData data;
+        if (SaveSystem.LoadSave() != null)
+        {
+            data = SaveSystem.LoadSave();
+        }
+        else
+        {
+            data = new SaveData(0, 0, 0);
+        }
+
+        if (didWin)
+        {
+            data.Wins += 1;
+        }
+        if (Combos.Count > 0 && Combos[Combos.Count - 1] > data.HighestCombo)
+        {
+            data.HighestCombo = Combos[Combos.Count - 1];
+        }
+        if (Chains.Count > 0 && Chains[Chains.Count - 1] > data.HighestChain)
+        {
+            data.HighestChain = Chains[Chains.Count - 1];
+        }
+        SaveSystem.Save(data);
     }
 }
