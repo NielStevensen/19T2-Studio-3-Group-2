@@ -6,13 +6,13 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveSystem
 { 
-    public static void Save(CombatHandler combatStats)
+    public static void Save(SaveData data)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/stats.sav";
         FileStream stream = new FileStream(path, FileMode.Create);
 
-        SaveData save = new SaveData(combatStats);
+        SaveData save = new SaveData(data);
         formatter.Serialize(stream, save);
         stream.Close();
     }

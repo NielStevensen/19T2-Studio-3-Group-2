@@ -19,6 +19,7 @@ public class TwoDimArray
 
 public class CombatHandler : NetworkBehaviour
 {
+    #region variables
     public CombatHandler opponent;
     public CombatHandler[] scriptRefs;
     public GameObject statUI;
@@ -69,7 +70,7 @@ public class CombatHandler : NetworkBehaviour
 
     bool isDead = false;
     public bool didWin; // has the player won
-
+    #endregion;
     private void Start()
     {
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
@@ -170,7 +171,6 @@ public class CombatHandler : NetworkBehaviour
     [ClientRpc]
     void RpcDamage(float Damage, int type)
     {
-        Debug.Log((Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100));
         if (hasAuthority)
         {
             return;
@@ -202,14 +202,15 @@ public class CombatHandler : NetworkBehaviour
             {
                 GameObject Stats = GameObject.Instantiate(statUI);
                 Stats.GetComponentsInChildren<Text>()[0].text = "Congratulations you win";
-                printStats(Stats);
+                didWin = true; // flag the player as winner
+                printStats(Stats); // print stas and update save data
                 this.enabled = false;
             }
             else if (health <= 0)
             {
                 GameObject Stats = GameObject.Instantiate(statUI);
                 Stats.GetComponentsInChildren<Text>()[0].text = "You lose";
-                printStats(Stats);
+                printStats(Stats); // print stas and update save data
                 this.enabled = false;
             }
         }
@@ -233,21 +234,17 @@ public class CombatHandler : NetworkBehaviour
             comboCount[Combos[i] - 1]++;
         }
 
-        print(Combos.Count);
-        print(comboCount.Count);
-
         if(comboCount.Count > 3)
         {
             for (int a = 3; a < comboCount.Count; a++)
             {
-                print(a - 1);
-
                 toPrint += "\n " + (a + 1) + " Combo: " + comboCount[a].ToString();
             }
         }
-
         stats.GetComponentsInChildren<Text>()[1].text += toPrint;
+        UpdateSave(); // update save statistics
     }
+
     public void Attack()
     {
         float stab;
@@ -268,5 +265,32 @@ public class CombatHandler : NetworkBehaviour
                 Counts[a] = 0f;
             }
         }
+    }
+
+    void UpdateSave()
+    {
+        SaveData data;
+        if (SaveSystem.LoadSave() != null)
+        {
+            data = SaveSystem.LoadSave();
+        }
+        else
+        {
+            data = new SaveData(0, 0, 0);
+        }
+
+        if (didWin)
+        {
+            data.Wins += 1;
+        }
+        if (Combos.Count > 0 && Combos[Combos.Count - 1] > data.HighestCombo)
+        {
+            data.HighestCombo = Combos[Combos.Count - 1];
+        }
+        if (Chains.Count > 0 && Chains[Chains.Count - 1] > data.HighestChain)
+        {
+            data.HighestChain = Chains[Chains.Count - 1];
+        }
+        SaveSystem.Save(data);
     }
 }

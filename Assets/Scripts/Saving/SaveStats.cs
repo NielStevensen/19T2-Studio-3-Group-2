@@ -5,20 +5,24 @@ using UnityEngine;
 [System.Serializable]
     public class SaveData
     {
-        int HighestCombo;
-        int HighestChain;
-        int Wins;
+        public int HighestCombo;
+        public int HighestChain;
+        public int Wins;
 
-        public SaveData(CombatHandler combatStats)
+        public SaveData(SaveData info)
         {
-        HighestCombo = combatStats.Combos[combatStats.Combos.Count - 1];
-            if(combatStats.didWin)// add to wins if the pleyr won
-            {
-                
-            }
-            else
-            {
 
-            }
+        HighestCombo = info.HighestCombo;
+        HighestChain = info.HighestChain;
+        Wins = info.Wins;
+
+        }
+        public SaveData(int a, int b,int c)
+        {
+
+        HighestCombo = a;
+        HighestChain = b;
+        Wins = c;
+
         }
     }
