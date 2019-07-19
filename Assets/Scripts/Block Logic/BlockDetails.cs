@@ -11,6 +11,8 @@ public class BlockDetails : MonoBehaviour
 
 	[Tooltip("Block type.")]
 	public BlockTypes type = BlockTypes.A;
+	[HideInInspector]
+	public bool shouldChangeType = false;
 
 	[Tooltip("Can the block be clicked on and used?")]
 	public bool isInteractable = true;
@@ -54,5 +56,7 @@ public class BlockDetails : MonoBehaviour
 	public void UpdateType()
 	{
 		spriteRenderer.sprite = spriteSheet[(int)type];
+
+		shouldChangeType = false;
 	}
 }

@@ -26,6 +26,7 @@ public class BoundingBox
 
 public class BlockManager : NetworkBehaviour
 {
+	#region Variables
 	//Play field bounds
 	[Tooltip("The bounds of the play field.")]
 	public BoundingBox playFieldBounds = new BoundingBox(-4, 4, 4, -4);
@@ -110,6 +111,7 @@ public class BlockManager : NetworkBehaviour
     private CombatHandler atkBar;
 	
 	public Sprite[] spriteSheet;
+	#endregion
 
 	//Setup
 	void Start()
@@ -156,8 +158,9 @@ public class BlockManager : NetworkBehaviour
 		SetupBlocks();
     }
 
+	#region Initial block setup
 	//Generate the first set of randomised blocks. Prevent spawning matching blocks in lines of 3 or more
-    void RandomiseTypes()
+	void RandomiseTypes()
     {
         int yCoord;
 
@@ -264,17 +267,20 @@ public class BlockManager : NetworkBehaviour
             }
 		}
 	}
-	
-    //Handle input and chain counting
-    void Update()
+	#endregion
+
+	//Handle input and chain counting
+	void Update()
     {
         if (!isLocalPlayer)
         {
             return;
         }
-		
+
+		//might need to put this elsewhere so that the player's stuff on the opponents projection functions properly
+		#region Swap input
 		//Handle swap input
-        if (isCursorControl)
+		if (isCursorControl)
 		{
 			if (Input.GetButtonDown("Horizontal"))
 			{
@@ -299,11 +305,11 @@ public class BlockManager : NetworkBehaviour
 					
 					if (0 <= swapIndex && swapIndex <= blockMax.x)
 					{
-						if(allBlocks[swapIndex, (int)cursorPos.y] != null)
-						{
-							GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
-							GameObject blockThat = allBlocks[swapIndex, (int)cursorPos.y];
+						GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
+						GameObject blockThat = allBlocks[swapIndex, (int)cursorPos.y];
 
+						if(blockThis != null && blockThat != null)
+						{
 							BlockDetails detailsThis = blockThis.GetComponent<BlockDetails>();
 							BlockDetails detailsThat = blockThat.GetComponent<BlockDetails>();
 
@@ -321,11 +327,11 @@ public class BlockManager : NetworkBehaviour
 					
 					if (0 <= swapIndex && swapIndex <= blockMax.y)
 					{
-						if(allBlocks[(int)cursorPos.x, swapIndex] != null)
-						{
-							GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
-							GameObject blockThat = allBlocks[(int)cursorPos.x, swapIndex];
+						GameObject blockThis = allBlocks[(int)cursorPos.x, (int)cursorPos.y];
+						GameObject blockThat = allBlocks[(int)cursorPos.x, swapIndex];
 
+						if (blockThis != null && blockThat != null)
+						{
 							BlockDetails detailsThis = blockThis.GetComponent<BlockDetails>();
 							BlockDetails detailsThat = blockThat.GetComponent<BlockDetails>();
 
@@ -423,7 +429,9 @@ public class BlockManager : NetworkBehaviour
 				selectedBlock = null;
 			}
 		}
+		#endregion
 
+		#region Combo/chain counting
 		//Chain counting
 		bool isStillChaining = false;
 
@@ -439,13 +447,42 @@ public class BlockManager : NetworkBehaviour
 		{
 			allChains.Clear();
 		}
-		
+		#endregion
+
+		#region Debug stuff
+		//temp debug. analyse whether or not there are dumplicate references
+		if (Input.GetKeyDown(KeyCode.Alpha9))
+		{
+			bool areDuplicates = false;
+
+			int max = (int)blockCount.x * (int)blockCount.y;
+
+			for (int i = 0; i < max; i++)
+			{
+				for(int j = i + 1; j < max; j++)
+				{
+					if(allBlocks[i % (int)blockCount.x, i / (int)blockCount.x] == allBlocks[j % (int)blockCount.x, j / (int)blockCount.x])
+					{
+						areDuplicates = true;
+
+						print("Duplicate reference at: " + (i % (int)blockCount.x) + ", " + (i / (int)blockCount.x) + " and " + (j % (int)blockCount.x) + ", " + (j / (int)blockCount.x));
+					}
+				}
+			}
+
+			if (!areDuplicates)
+			{
+				print("No duplicates");
+			}
+		}
+
 		//temp debug. get if any blocks are in the wrong state. hold control to force into the right state
 		if (Input.GetKeyDown(KeyCode.Minus))
 		{
 			BlockDetails details;
 
 			bool isError = false;
+			bool isNull = false;
 
 			bool shouldForce = Input.GetKey(KeyCode.RightControl);
 
@@ -470,19 +507,46 @@ public class BlockManager : NetworkBehaviour
 							}
 						}
 					}
+					else
+					{
+						isNull = true;
+
+						print("Null reference at: " + x + ", " + y);
+					}
 				}
 			}
 
-			if (!isError)
+			if (!isError && !isNull)
 			{
 				print("no issues");
 			}
-			else
+			else if(isError)
 			{
 				if (shouldForce)
 				{
 					print("issues were fixed");
 				}
+			}
+		}
+
+		//temp debug. get if there are any stored intercepted undropped blocks
+		if (Input.GetKeyDown(KeyCode.Alpha0))
+		{
+			bool areUndropped = false;
+
+			for (int i = 0; i < blockCount.x; i++)
+			{
+				if(undroppedBlocks[i].Count > 0)
+				{
+					areUndropped = true;
+
+					print(undroppedBlocks[i].Count + "undropped blocks in column number " + i);
+				}
+			}
+
+			if (!areUndropped)
+			{
+				print("No undropped blocks");
 			}
 		}
 
@@ -520,8 +584,10 @@ public class BlockManager : NetworkBehaviour
 				CmdSendSyncData(GetTypeArray());
 			}
 		}
+		#endregion
 	}
-	
+
+	#region Debug stuff
 	//temp debug. force type
 	void DebugForceType(int type)
 	{
@@ -636,7 +702,9 @@ public class BlockManager : NetworkBehaviour
 			print("Boards are synced. No issues.");
 		}
 	}
+	#endregion
 
+	#region IsInBounds
 	//Are the supplied co ordinates within the board extremes
 	bool IsInBounds(Vector2 input)
 	{
@@ -648,7 +716,9 @@ public class BlockManager : NetworkBehaviour
 	{
 		return bottomLeft.x < input.x && input.x < topRight.x && bottomLeft.y < input.y && input.y < topRight.y;
 	}
-	
+	#endregion
+
+	#region Swap logic
 	//Swap cooldown
 	IEnumerator CursorCooldown()
 	{
@@ -769,7 +839,9 @@ public class BlockManager : NetworkBehaviour
 		
 		HandleSwap(new Vector2Int(selectedX, selectedY), new Vector2Int(toSwapX, toSwapY));
     }
-	
+	#endregion
+
+	#region Drop logic
 	//Control block falling and align if necessary
 	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex)
 	{
@@ -895,6 +967,11 @@ public class BlockManager : NetworkBehaviour
 					details.coords.y -= nullCount;
 					allBlocks[xCoord, (int)details.coords.y] = details.gameObject;
 
+					if (allBlocks[xCoord, (int)details.coords.y] == null)
+					{
+						print("Null reference at " + xCoord + ", " + (int)details.coords.y);
+					}
+
 					if (details.chainIndex == -1)
 					{
 						details.chainIndex = chainIndex;
@@ -911,7 +988,7 @@ public class BlockManager : NetworkBehaviour
 				}
 			}
 		}
-
+		
 		//If no uninteractable blocks were encountered, drop the blocks sent to the top
 		if (shouldContinue)
 		{
@@ -919,17 +996,35 @@ public class BlockManager : NetworkBehaviour
 
 			List<GameObject> blocksToDrop = new List<GameObject>();
 
-			for(int i = 0; i < undroppedBlocks[xCoord].Count; i++)
-			{
-				blocksToDrop.Add(undroppedBlocks[xCoord][i]);
-			}
+			int undroppedCount = undroppedBlocks[xCoord].Count;
 
-			undroppedBlocks[xCoord].Clear();
+			if (undroppedBlocks[xCoord].Count > 0)
+			{
+				for (int i = 0; i < undroppedBlocks[xCoord].Count; i++)
+				{
+					blocksToDrop.Add(undroppedBlocks[xCoord][i]);
+				}
+				
+				undroppedBlocks[xCoord].Clear();
+			}
 
 			for (int i = 0; i < yCount; i++)
 			{
 				blocksToDrop.Add(droppingBlocks[i]);
 			}
+
+			for(int i = 0; i < blocksToDrop.Count; i++)
+			{
+				for (int j = i + 1; j < blocksToDrop.Count; j++)
+				{
+					if(blocksToDrop[i] == blocksToDrop[j])
+					{
+						print("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "\nDuplicate drop reference");
+					}
+				}
+			}
+			
+			Debug.Assert(nullCount <= blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nMore blocks to drop than there are blank spaces");
 			
 			for (int i = 0; i < blocksToDrop.Count; i++)
 			{
@@ -938,10 +1033,23 @@ public class BlockManager : NetworkBehaviour
 				details.isFalling = true;
 
 				int newY = (int)blockCount.y - nullCount;
-				
+
+				//print(newY);
+				Debug.Assert(newY < blockCount.y, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nOld y: " + details.coords.y + ", new y: " + newY + ", nullCount: " + nullCount + "\nUndropped count: " + undroppedCount + ", Total count: " + blocksToDrop.Count);
+
+				if(newY > 9)
+				{
+					break;
+				}
+
 				details.coords = new Vector2(xCoord, newY);
 				allBlocks[xCoord, newY] = details.gameObject;
 				newYCoords.Add(newY);
+
+				if(allBlocks[xCoord, newY] == null)
+				{
+					print("Null reference at " + xCoord + ", " + newY);
+				}
 
 				if (details.chainIndex == -1)
 				{
@@ -978,7 +1086,7 @@ public class BlockManager : NetworkBehaviour
 		//If an uninteractable block was encountered, add the blocks sent to the top to a list
 		else
 		{
-			for(int i = 0; i < yCount; i++)
+			for (int i = 0; i < yCount; i++)
 			{
 				undroppedBlocks[xCoord].Add(droppingBlocks[i]);
 			}
@@ -1015,27 +1123,9 @@ public class BlockManager : NetworkBehaviour
 			syncedTypes[(int)(yCoords[i] * blockCount.x + xCoord)] = -1;
 		}
 	}
+	#endregion
 
-	//Check if the block at the provided indices is not null and is the right type
-	bool CheckBlock(int x, int y, BlockTypes type)
-	{
-		if (allBlocks[x, y] == null)
-		{
-			return false;
-		}
-
-		BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
-
-		if (details.type == type && details.isInteractable)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
+	#region Match check logic
 	//Checks for matches and move blocks accordingly
 	void CheckForMatches(Vector2 pos, BlockTypes relevantType, int chainCount, int chainIndex)
 	{
@@ -1206,7 +1296,29 @@ public class BlockManager : NetworkBehaviour
 			StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex));
 		}
 	}
-	
+
+	//Check if the block at the provided indices is not null and is the right type
+	bool CheckBlock(int x, int y, BlockTypes type)
+	{
+		if (allBlocks[x, y] == null)
+		{
+			return false;
+		}
+
+		BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
+
+		if (details.type == type && details.isInteractable)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	#endregion
+
+	#region CoordToPosition
 	//Wrapper for a default location
 	Vector3 CoordToPosition(int x, int y)
 	{
@@ -1226,4 +1338,5 @@ public class BlockManager : NetworkBehaviour
 
 		return transform.position + new Vector3((x - (blockCount.x / 2)) * blockSize, (y - (blockCount.y / 2)) * blockSize, extraZ) + displacement3D;
 	}
+	#endregion
 }
