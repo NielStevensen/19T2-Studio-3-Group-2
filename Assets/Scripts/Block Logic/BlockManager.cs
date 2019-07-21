@@ -518,7 +518,7 @@ public class BlockManager : NetworkBehaviour
 
 			if (!isError && !isNull)
 			{
-				print("no issues");
+				print("No state issues or null references");
 			}
 			else if(isError)
 			{
@@ -966,12 +966,7 @@ public class BlockManager : NetworkBehaviour
 					allBlocks[xCoord, (int)details.coords.y] = null;
 					details.coords.y -= nullCount;
 					allBlocks[xCoord, (int)details.coords.y] = details.gameObject;
-
-					if (allBlocks[xCoord, (int)details.coords.y] == null)
-					{
-						print("Null reference at " + xCoord + ", " + (int)details.coords.y);
-					}
-
+					
 					if (details.chainIndex == -1)
 					{
 						details.chainIndex = chainIndex;
@@ -995,6 +990,7 @@ public class BlockManager : NetworkBehaviour
 			List<int> newYCoords = new List<int>();
 
 			List<GameObject> blocksToDrop = new List<GameObject>();
+			List<int> duplicateIndices = new List<int>();
 
 			int undroppedCount = undroppedBlocks[xCoord].Count;
 
@@ -1017,15 +1013,53 @@ public class BlockManager : NetworkBehaviour
 			{
 				for (int j = i + 1; j < blocksToDrop.Count; j++)
 				{
-					if(blocksToDrop[i] == blocksToDrop[j])
+					if (blocksToDrop[i] == blocksToDrop[j])
 					{
 						print("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + "\nDuplicate drop reference");
+
+						bool isAlreadyNoted = false;
+
+						for (int a = 0; a < duplicateIndices.Count; a++)
+						{
+							if(duplicateIndices[a] == j)
+							{
+								isAlreadyNoted = true;
+							}
+						}
+
+						if (!isAlreadyNoted)
+						{
+							duplicateIndices.Add(j);
+						}
 					}
 				}
 			}
 			
-			Debug.Assert(nullCount <= blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nMore blocks to drop than there are blank spaces");
-			
+			Debug.Assert(nullCount <= blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nMore blocks to drop(" + blocksToDrop.Count + ") than there are blank spaces: " + nullCount);
+
+			int duplicateCount = duplicateIndices.Count;
+
+			if (duplicateCount > 0)
+			{
+				print("Undropped count: " + undroppedCount);
+
+				print("ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nThere were " + duplicateCount + " duplicate references");
+
+				duplicateIndices.Sort();
+				duplicateIndices.Reverse();
+
+				int dropCount = blocksToDrop.Count;
+
+				for (int i = 0; i < duplicateCount; i++)
+				{
+					blocksToDrop.RemoveAt(duplicateIndices[i]);
+				}
+
+				print("Original number to drop: " + dropCount + ". Removing " + duplicateCount + " duplicate references. Fixed number to drop: " + blocksToDrop.Count);
+			}
+
+			Debug.Assert(nullCount <= blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nStill more blocks to drop(" + blocksToDrop.Count + ") than there are blank spaces: " + nullCount);
+
 			for (int i = 0; i < blocksToDrop.Count; i++)
 			{
 				details = blocksToDrop[i].GetComponent<BlockDetails>();
@@ -1045,12 +1079,7 @@ public class BlockManager : NetworkBehaviour
 				details.coords = new Vector2(xCoord, newY);
 				allBlocks[xCoord, newY] = details.gameObject;
 				newYCoords.Add(newY);
-
-				if(allBlocks[xCoord, newY] == null)
-				{
-					print("Null reference at " + xCoord + ", " + newY);
-				}
-
+				
 				if (details.chainIndex == -1)
 				{
 					details.chainIndex = chainIndex;
