@@ -116,7 +116,9 @@ public class BlockManager : NetworkBehaviour
 	//Setup
 	void Start()
     {
-        if (isCursorControl)
+		//Debug.Assert(false, "test");
+
+		if (isCursorControl)
         {
             //Cursor.visible = false;
             //Cursor.lockState = CursorLockMode.Locked;
@@ -1035,12 +1037,31 @@ public class BlockManager : NetworkBehaviour
 				}
 			}
 			
-			Debug.Assert(nullCount <= blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nMore blocks to drop(" + blocksToDrop.Count + ") than there are blank spaces: " + nullCount);
+			//Debug.Assert(nullCount < blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nMore blocks to drop(" + blocksToDrop.Count + ") than there are blank spaces: " + nullCount);
+			Debug.Assert(nullCount == blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!! Number mismatch!" + "\nThe number of blank space(" + nullCount + ") is not equal to the number of blocks to drop(" + blocksToDrop.Count + ")");
 
 			int duplicateCount = duplicateIndices.Count;
 
 			if (duplicateCount > 0)
 			{
+				print("Coords of undropped blocks:");
+
+				for(int i = 0; i < undroppedCount; i++)
+				{
+					Vector2 xy = blocksToDrop[i].GetComponent<BlockDetails>().coords;
+
+					print(xy.x + ", " + xy.y);
+				}
+
+				print("Coords of blocks sent to the top:");
+
+				for (int i = undroppedCount; i < undroppedCount; i++)
+				{
+					Vector2 xy = blocksToDrop[i].GetComponent<BlockDetails>().coords;
+
+					print(xy.x + ", " + xy.y);
+				}
+
 				print("Undropped count: " + undroppedCount);
 
 				print("ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nThere were " + duplicateCount + " duplicate references");
@@ -1058,10 +1079,13 @@ public class BlockManager : NetworkBehaviour
 				print("Original number to drop: " + dropCount + ". Removing " + duplicateCount + " duplicate references. Fixed number to drop: " + blocksToDrop.Count);
 			}
 
-			Debug.Assert(nullCount <= blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nStill more blocks to drop(" + blocksToDrop.Count + ") than there are blank spaces: " + nullCount);
+			//Debug.Assert(nullCount < blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nStill more blocks to drop(" + blocksToDrop.Count + ") than there are blank spaces: " + nullCount);
+			Debug.Assert(nullCount == blocksToDrop.Count, "ERROR!!!!!!!!!!!!!!!!!!!!!!!! Number mismatch!" + "\nThe number of blank space(" + nullCount + ") is not equal to the number of blocks to drop(" + blocksToDrop.Count + ")");
 
 			for (int i = 0; i < blocksToDrop.Count; i++)
 			{
+				Debug.Assert(nullCount > 0, "Nullcount too low!");
+
 				details = blocksToDrop[i].GetComponent<BlockDetails>();
 					
 				details.isFalling = true;
