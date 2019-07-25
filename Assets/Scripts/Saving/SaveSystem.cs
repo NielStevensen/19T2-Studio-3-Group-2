@@ -30,8 +30,8 @@ public static class SaveSystem
         }
         else
         {
-            return null;
             Debug.Log("noSave");
+            return null;
         }
     }
 }
