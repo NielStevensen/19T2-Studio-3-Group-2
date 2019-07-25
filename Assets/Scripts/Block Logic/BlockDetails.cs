@@ -45,7 +45,7 @@ public class BlockDetails : NetworkBehaviour
 	public SpriteRenderer spriteRenderer;
 
 	//Sprite sheet for current tile set
-	//[HideInInspector]
+	[HideInInspector]
 	public Sprite[] spriteSheet;
 
 	//Setup
@@ -83,10 +83,11 @@ public class BlockDetails : NetworkBehaviour
 		transform.SetParent(master.gameObject.transform);
 		
 		master.allBlocks[(int)coords.x, (int)coords.y] = gameObject;
-		master.allBlocksStatic[blockID] = gameObject;
+		master.allBlocksStatic[blockID] = this;
 		spriteSheet = master.spriteSheets[master.spriteSheetIndex].spriteSheet;
 	}
 
+	#region Type update
 	//Delay updating the colour by a frame. Used for initial sync
 	IEnumerator DelayedTypeUpdate()
     {
@@ -100,4 +101,5 @@ public class BlockDetails : NetworkBehaviour
 	{
 		spriteRenderer.sprite = spriteSheet[(int)type];
 	}
+	#endregion
 }
