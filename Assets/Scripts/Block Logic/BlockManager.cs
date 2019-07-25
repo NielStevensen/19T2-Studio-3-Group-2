@@ -24,6 +24,15 @@ public class BoundingBox
 	}
 }
 
+[System.Serializable]
+public class SpriteSheet
+{
+	[Tooltip("Name of this sprite sheet.")]
+	public string name = "Sheet";
+	[Tooltip("Array of sprites in the list.\nOrder: Fire, Lightning, Nature, Water, healing.")]
+	public Sprite[] spriteSheet = new Sprite[5];
+}
+
 public class BlockManager : NetworkBehaviour
 {
 	#region Variables
@@ -60,7 +69,10 @@ public class BlockManager : NetworkBehaviour
     //All blocks
     [SerializeField]
     private SyncListInt generatedTypes = new SyncListInt();
-	private GameObject[,] allBlocks;
+	[HideInInspector]
+	public GameObject[,] allBlocks;
+	[HideInInspector]
+	public GameObject[] allBlocksStatic;
 
 	[Space(10)]
 
@@ -93,11 +105,12 @@ public class BlockManager : NetworkBehaviour
 	//Mouse position
 	private Vector3 clickPos;
 	private Vector3 releasePos;
-	
+
 	//Block dropping values
+	private List<bool> areDropsOccurring = new List<bool>();
 	private GameObject[] highestBlocks; //Highest blocks in each column. Used to set spawned block height to prevent overlap
 	private List<GameObject>[] undroppedBlocks;
-
+	
 	//Synced types. Used to network type changes
 	[SerializeField]
 	public SyncListInt syncedTypes = new SyncListInt(); 
@@ -106,17 +119,43 @@ public class BlockManager : NetworkBehaviour
 	//[HideInInspector]
 	private List<int> allChains = new List<int>();
 
+	[Space(10)]
+
+	//Sprite sheets
+	[Tooltip("All sprite sheets.")]
+	public SpriteSheet[] spriteSheets = new SpriteSheet[4];
+	[Tooltip("The index of the sprite sheet the player is using.")]
+	public int spriteSheetIndex = 0;
+
 	//UI objects
 	private MatchUI mui;
     private CombatHandler atkBar;
-	
-	public Sprite[] spriteSheet;
 	#endregion
+
+	//Initialise arrays
+	private void Awake()
+	{
+		allBlocks = new GameObject[(int)blockCount.x, (int)blockCount.y];
+		allBlocksStatic = new GameObject[(int)(blockCount.x * blockCount.y)];
+	}
 
 	//Setup
 	void Start()
     {
-		//Debug.Assert(false, "test");
+		ManagerIndentifier identifier = FindObjectOfType<ManagerIndentifier>();
+
+		if (isLocalPlayer)
+		{
+			identifier.clientManager = this;
+
+			gameObject.name = "Client manager";
+		}
+		else
+		{
+			identifier.projectedManager = this;
+
+			gameObject.name = "Projected manager";
+		}
 
 		if (isCursorControl)
         {
@@ -132,7 +171,7 @@ public class BlockManager : NetworkBehaviour
 
 		blockMax = blockCount - new Vector2(1, 1);
 		
-		if (isCursorControl)
+		if (isLocalPlayer && isCursorControl)
 		{
 			cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2) - 1, Mathf.Min(2, blockCount.y));
 			
@@ -149,16 +188,26 @@ public class BlockManager : NetworkBehaviour
 			undroppedBlocks[i] = new List<GameObject>();
 		}
 		
-		mui = gameObject.GetComponent<MatchUI>();
-        atkBar = gameObject.GetComponent<CombatHandler>();
-
         if (isServer)
         {
             RandomiseTypes();
         }
 
-		SetupBlocks();
-    }
+		if (isLocalPlayer)
+		{
+			int index = 0;
+
+			if (isServer)
+			{
+				index = 1;
+			}
+
+			CmdSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, index);
+		}
+
+		mui = gameObject.GetComponent<MatchUI>();
+		atkBar = gameObject.GetComponent<CombatHandler>();
+	}
 
 	#region Initial block setup
 	//Generate the first set of randomised blocks. Prevent spawning matching blocks in lines of 3 or more
@@ -236,37 +285,41 @@ public class BlockManager : NetworkBehaviour
 
 		return BlockTypes.A;
 	}
-
-	//Setup initial blocks
-	void SetupBlocks()
+	
+	//Spawn blocks over the network
+	[Command]
+	void CmdSetupBlocks(float xBase, float yBase, int index)
 	{
-		allBlocks = new GameObject[(int)blockCount.x, (int)blockCount.y];
-
-		float xBase = transform.position.x + playFieldBounds.left;
-		float yBase = transform.position.y + playFieldBounds.bottom;
-		
 		float yPos;
-
-        int yCoord;
+		
+		int yCoord;
 		
 		for (int y = 0; y < blockCount.y; y++)
 		{
 			yPos = yBase + y * blockSize;
-
-            yCoord = y * (int)blockCount.x;
-
-            for (int x = 0; x < blockCount.x; x++)
+			
+			yCoord = y * (int)blockCount.x;
+			
+			for (int x = 0; x < blockCount.x; x++)
 			{
 				Vector3 pos = new Vector3(xBase + x * blockSize, yPos, 0) + displacement3D;
-
-				allBlocks[x, y] = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
-
+				
+				int ID = y * (int)blockCount.x + x;
+				GameObject block = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
+				
+				allBlocks[x, y] = block;
+				allBlocksStatic[ID] = block;
+				
 				BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
 
+				details.managerSearchIndex = index;
+				details.blockID = ID;
 				details.coords = new Vector2(x, y);
-                details.type = (BlockTypes)generatedTypes[yCoord + x];
-				details.spriteSheet = spriteSheet;
-            }
+				details.type = (BlockTypes)generatedTypes[yCoord + x];
+				details.spriteSheet = spriteSheets[0].spriteSheet;
+				
+				NetworkServer.SpawnWithClientAuthority(block, connectionToClient);
+			}
 		}
 	}
 	#endregion
@@ -278,8 +331,7 @@ public class BlockManager : NetworkBehaviour
         {
             return;
         }
-
-		//might need to put this elsewhere so that the player's stuff on the opponents projection functions properly
+		
 		#region Swap input
 		//Handle swap input
 		if (isCursorControl)
@@ -452,32 +504,6 @@ public class BlockManager : NetworkBehaviour
 		#endregion
 
 		#region Debug stuff
-		//temp debug. analyse whether or not there are dumplicate references
-		if (Input.GetKeyDown(KeyCode.Alpha9))
-		{
-			bool areDuplicates = false;
-
-			int max = (int)blockCount.x * (int)blockCount.y;
-
-			for (int i = 0; i < max; i++)
-			{
-				for(int j = i + 1; j < max; j++)
-				{
-					if(allBlocks[i % (int)blockCount.x, i / (int)blockCount.x] == allBlocks[j % (int)blockCount.x, j / (int)blockCount.x])
-					{
-						areDuplicates = true;
-
-						print("Duplicate reference at: " + (i % (int)blockCount.x) + ", " + (i / (int)blockCount.x) + " and " + (j % (int)blockCount.x) + ", " + (j / (int)blockCount.x));
-					}
-				}
-			}
-
-			if (!areDuplicates)
-			{
-				print("No duplicates");
-			}
-		}
-
 		//temp debug. get if any blocks are in the wrong state. hold control to force into the right state
 		if (Input.GetKeyDown(KeyCode.Minus))
 		{
@@ -530,28 +556,7 @@ public class BlockManager : NetworkBehaviour
 				}
 			}
 		}
-
-		//temp debug. get if there are any stored intercepted undropped blocks
-		if (Input.GetKeyDown(KeyCode.Alpha0))
-		{
-			bool areUndropped = false;
-
-			for (int i = 0; i < blockCount.x; i++)
-			{
-				if(undroppedBlocks[i].Count > 0)
-				{
-					areUndropped = true;
-
-					print(undroppedBlocks[i].Count + "undropped blocks in column number " + i);
-				}
-			}
-
-			if (!areUndropped)
-			{
-				print("No undropped blocks");
-			}
-		}
-
+		
 		//temp debug. force the type of the block the mouse is over
 		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
@@ -572,19 +577,6 @@ public class BlockManager : NetworkBehaviour
 		else if (Input.GetKeyDown(KeyCode.Alpha5))
 		{
 			DebugForceType(4);
-		}
-
-		//temp debug. check board sync
-		if (Input.GetKeyDown(KeyCode.Equals))
-		{
-			if (isServer) //can only be done on build
-			{
-				CmdRequestSyncCheck(GetTypeArray());
-			}
-			else //can only be done in editor
-			{
-				CmdSendSyncData(GetTypeArray());
-			}
 		}
 		#endregion
 	}
@@ -608,100 +600,6 @@ public class BlockManager : NetworkBehaviour
 				details.type = (BlockTypes)type;
 				details.UpdateType();
 			}
-		}
-	}
-	
-	//temp debug. send type array and request for it to be checked (HOST)
-	[Command]
-	void CmdRequestSyncCheck(string clientData)
-	{
-		RpcRequestSyncCheck(clientData);
-	}
-
-	//temp debug. receieve type array and compare (HOST)
-	[ClientRpc]
-	void RpcRequestSyncCheck(string clientData)
-	{
-		if (!isServer)
-		{
-			print("Host sync check");
-
-			CompareTypeArrays(clientData, GetTypeArray());
-		}
-	}
-	
-	//temp debug. send over type array (CLIENT)
-	[Command]
-	void CmdSendSyncData(string clientData)
-	{
-		RpcSendSyncData(clientData);
-	}
-
-	//temp debug. receive type array (CLIENT)
-	[ClientRpc]
-	void RpcSendSyncData(string clientData)
-	{
-		if(isServer)
-		{
-			print("Client sync check");
-
-			CompareTypeArrays(clientData, GetTypeArray());
-		}
-	}
-
-	//temp debug. retrieve type array
-	string GetTypeArray()
-	{
-		BlockDetails details;
-
-		string str = "1";
-		int tempInt;
-
-		for (int y = 0; y < blockCount.y; y++)
-		{
-			for (int x = 0; x < blockCount.x; x++)
-			{
-				if (allBlocks[x, y] != null)
-				{
-					details = allBlocks[x, y].GetComponent<BlockDetails>();
-
-					tempInt = (int)details.type;
-					str += tempInt.ToString();
-				}
-				else
-				{
-					str += "9";
-				}
-			}
-		}
-
-		return str;
-	}
-
-	//temp debug. compare type arrays
-	void CompareTypeArrays(string clientTypes, string projectedTypes)
-	{
-		char[] clientArray = clientTypes.ToCharArray();
-		char[] projectedArray = projectedTypes.ToCharArray();
-
-		bool areSynced = true;
-
-		for(int i = 1; i < clientArray.Length; i++)
-		{
-			if(clientArray[i] != projectedArray[i])
-			{
-				areSynced = false;
-
-				int x = (i - 1) % (int)blockCount.x;
-				int y = (i - 1) / (int)blockCount.x;
-
-				print("Issue at " + x + ", " + y + "\nClient type: " + clientArray[i] + ", Projected type: " + projectedArray[i]);
-			}
-		}
-
-		if (areSynced)
-		{
-			print("Boards are synced. No issues.");
 		}
 	}
 	#endregion
@@ -730,10 +628,6 @@ public class BlockManager : NetworkBehaviour
 		{
 			cursorRenderer.color = Color.black;
 		}
-		else
-		{
-			
-		}
 
 		yield return new WaitForSeconds(swapTime);
 		yield return new WaitForEndOfFrame();
@@ -744,20 +638,11 @@ public class BlockManager : NetworkBehaviour
 		{
 			cursorRenderer.color = Color.white;
 		}
-		else
-		{
-			
-		}
 	}
 
 	//Handle chaging values, then swap blocks
 	void HandleSwap(Vector2Int blockSelected, Vector2Int blockToSwap)
 	{
-		if (hasAuthority)
-		{
-			CmdSwapBlocks(blockSelected.x, blockSelected.y, blockToSwap.x, blockToSwap.y);
-		}
-
 		//here so that the one move causes the one chain........
 		int chainCount = allChains.Count;
 
@@ -820,27 +705,11 @@ public class BlockManager : NetworkBehaviour
 
 		yield return new WaitForEndOfFrame();
 
-		CheckForMatches(details.coords, details.type, chainCount, -1);
+		if (isLocalPlayer)
+		{
+			CheckForMatches(details.coords, details.type, chainCount, -1);
+		}
 	}
-
-	//Tell all clients which blocks to swap
-    [Command]
-    void CmdSwapBlocks(int selectedX, int selectedY, int toSwapX, int toSwapY)
-    {
-		RpcSwapBlocks(selectedX, selectedY, toSwapX, toSwapY);
-    }
-	
-	//Receive instructions to swap
-    [ClientRpc]
-    void RpcSwapBlocks(int selectedX, int selectedY, int toSwapX, int toSwapY)
-    {
-        if (hasAuthority)
-        {
-            return;
-        }
-		
-		HandleSwap(new Vector2Int(selectedX, selectedY), new Vector2Int(toSwapX, toSwapY));
-    }
 	#endregion
 
 	#region Drop logic
@@ -882,11 +751,14 @@ public class BlockManager : NetworkBehaviour
 
 		yield return new WaitForEndOfFrame();
 
-		CheckForMatches(details.coords, details.type, -1, chainIndex);
+		if (isLocalPlayer)
+		{
+			CheckForMatches(details.coords, details.type, -1, chainIndex);
+		}
 	}
 
 	//Handle the logic before and after dropping blocks
-	IEnumerator HandleBlockDrop(int xCoord, List<int> yCoords, int chainIndex)
+	IEnumerator HandleBlockDrop(int xCoord, List<int> yCoords, int chainIndex, int boolIndex)
 	{
 		int yCount = yCoords.Count;
 		List<GameObject> droppingBlocks = new List<GameObject>();
@@ -909,7 +781,7 @@ public class BlockManager : NetworkBehaviour
 			}
 
 			//Wait for break
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(0.375f);
 
 			//Find the lowest coords to move blocks to
 			Vector3 newPos = CoordToPosition(xCoord, (int)blockCount.y);
@@ -989,7 +861,8 @@ public class BlockManager : NetworkBehaviour
 		//If no uninteractable blocks were encountered, drop the blocks sent to the top
 		if (shouldContinue)
 		{
-			List<int> newYCoords = new List<int>();
+			//List<int> newYCoords = new List<int>();
+			List<int> targetIDs = new List<int>();
 
 			List<GameObject> blocksToDrop = new List<GameObject>();
 			List<int> duplicateIndices = new List<int>();
@@ -1055,7 +928,7 @@ public class BlockManager : NetworkBehaviour
 
 				print("Coords of blocks sent to the top:");
 
-				for (int i = undroppedCount; i < undroppedCount; i++)
+				for (int i = undroppedCount; i < blocksToDrop.Count; i++)
 				{
 					Vector2 xy = blocksToDrop[i].GetComponent<BlockDetails>().coords;
 
@@ -1091,8 +964,7 @@ public class BlockManager : NetworkBehaviour
 				details.isFalling = true;
 
 				int newY = (int)blockCount.y - nullCount;
-
-				//print(newY);
+				
 				Debug.Assert(newY < blockCount.y, "ERROR!!!!!!!!!!!!!!!!!!!!!!!!" + "\nOld y: " + details.coords.y + ", new y: " + newY + ", nullCount: " + nullCount + "\nUndropped count: " + undroppedCount + ", Total count: " + blocksToDrop.Count);
 
 				if(newY > 9)
@@ -1102,7 +974,8 @@ public class BlockManager : NetworkBehaviour
 
 				details.coords = new Vector2(xCoord, newY);
 				allBlocks[xCoord, newY] = details.gameObject;
-				newYCoords.Add(newY);
+				//newYCoords.Add(newY);
+				targetIDs.Add(details.blockID);
 				
 				if (details.chainIndex == -1)
 				{
@@ -1116,7 +989,12 @@ public class BlockManager : NetworkBehaviour
 					details.type = newType;
 					details.UpdateType();
 
-					CmdUpdateSyncedTypes(xCoord, newY, (int)newType);
+					//CmdUpdateSyncedTypes(xCoord, newY, (int)newType);
+					CmdUpdateSyncedTypes(details.blockID, (int)newType);
+				}
+				else
+				{
+					//StartCoroutine(NetworkTypeUpdateI(details.blockID));
 				}
 
 				relevantCoroutine = details.movementCoroutine;
@@ -1131,9 +1009,12 @@ public class BlockManager : NetworkBehaviour
 				nullCount--;
 			}
 			
-			if (!isLocalPlayer && newYCoords.Count > 0)
+			//if (!isLocalPlayer && newYCoords.Count > 0)
+			if (!isLocalPlayer && targetIDs.Count > 0)
 			{
-				StartCoroutine(NetworkTypeUpdate(xCoord, newYCoords));
+				//StartCoroutine(NetworkTypeUpdate(xCoord, newYCoords));
+				StartCoroutine(NetworkTypeUpdate(targetIDs));
+				//NetworkTypeUpdate(targetIDs);
 			}
 		}
 		//If an uninteractable block was encountered, add the blocks sent to the top to a list
@@ -1148,33 +1029,50 @@ public class BlockManager : NetworkBehaviour
 
 	//Update synced typed
 	[Command]
-	void CmdUpdateSyncedTypes(int x, int y, int t)
+	//void CmdUpdateSyncedTypes(int x, int y, int t)
+	void CmdUpdateSyncedTypes(int id, int t)
 	{
-		syncedTypes[(int)(y * blockCount.x + x)] = t;
+		syncedTypes[id] = t;
 	}
 
 	//Update type on client
-	IEnumerator NetworkTypeUpdate(int xCoord, List<int> yCoords)
+	IEnumerator NetworkTypeUpdate(List<int> targetIDs)
 	{
 		BlockDetails details;
-
-		for (int i = 0; i < yCoords.Count; i++)
+		
+		for (int i = 0; i < targetIDs.Count; i++)
 		{
-			int syncIndex = (int)(yCoords[i] * blockCount.x + xCoord);
+			int targetID = targetIDs[i];
 
-			while (syncedTypes[syncIndex] == -1)
+			//print(targetID);
+			
+			while (syncedTypes[targetID] == -1)
 			{
 				yield return new WaitForEndOfFrame();
 			}
+			
+			details = allBlocksStatic[targetID].GetComponent<BlockDetails>();
 
-			details = allBlocks[xCoord, yCoords[i]].GetComponent<BlockDetails>();
-
-			details.type = (BlockTypes)syncedTypes[(int)(yCoords[i] * blockCount.x + xCoord)];
+			details.type = (BlockTypes)syncedTypes[targetID];
 			details.UpdateType();
-
-			//CmdUpdateSyncedTypes(xCoord, yCoords[i], -1);
-			syncedTypes[(int)(yCoords[i] * blockCount.x + xCoord)] = -1;
+			
+			syncedTypes[targetID] = -1;
 		}
+	}
+
+	IEnumerator NetworkTypeUpdateI(int targetID)
+	{
+		while (syncedTypes[targetID] == -1)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+		
+		BlockDetails details = allBlocksStatic[targetID].GetComponent<BlockDetails>();
+
+		details.type = (BlockTypes)syncedTypes[targetID];
+		details.UpdateType();
+		
+		syncedTypes[targetID] = -1;
 	}
 	#endregion
 
@@ -1182,6 +1080,15 @@ public class BlockManager : NetworkBehaviour
 	//Checks for matches and move blocks accordingly
 	void CheckForMatches(Vector2 pos, BlockTypes relevantType, int chainCount, int chainIndex)
 	{
+		if(!allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>().isInteractable)
+		{
+			//BlockDetails temp = allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>();
+
+			//print("Swapped block was uninteractable. Probably matched? ChainIndex: " + chainIndex + ". Interactability: " + temp.isInteractable.ToString() + " Falling?: " + temp.isFalling.ToString());
+
+			return;
+		}
+
 		BlockDetails details;
 
 		List<int> matchingHorizontalIndices = new List<int>();
@@ -1248,7 +1155,7 @@ public class BlockManager : NetworkBehaviour
 		
 		if(matchingHorizontalIndices.Count >= 2 || matchingVerticalIndices.Count >= 3)
 		{
-			if(hasAuthority && !isCursorControl && selectedDetails.coords == pos)
+			if(isLocalPlayer && !isCursorControl && selectedDetails.coords == pos)
 			{
 				selectedBlock = null;
 			}
@@ -1297,7 +1204,11 @@ public class BlockManager : NetworkBehaviour
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
-			StartCoroutine(HandleBlockDrop((int)pos.x, new List<int>(), -1));
+			int dropIndex = areDropsOccurring.Count;
+
+			areDropsOccurring.Add(true);
+
+			StartCoroutine(HandleBlockDrop((int)pos.x, new List<int>(), -1, dropIndex));
 
 			/*if(chainIndex > -1)
 			{
@@ -1336,9 +1247,13 @@ public class BlockManager : NetworkBehaviour
 		//Break matched blocks and drop new blocks
 		if (matchingHorizontalIndices.Count >= 2)
 		{
+			int dropIndex = areDropsOccurring.Count;
+
+			areDropsOccurring.Add(true);
+			
 			for (int x = 0; x < matchingHorizontalIndices.Count; x++)
 			{
-				StartCoroutine(HandleBlockDrop(matchingHorizontalIndices[x], new List<int>() { (int)pos.y }, newChainIndex));
+				StartCoroutine(HandleBlockDrop(matchingHorizontalIndices[x], new List<int>() { (int)pos.y }, newChainIndex, dropIndex));
 			}
 		}
 
@@ -1346,7 +1261,11 @@ public class BlockManager : NetworkBehaviour
 		{
 			matchingVerticalIndices.Sort();
 
-			StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex));
+			int dropIndex = areDropsOccurring.Count;
+
+			areDropsOccurring.Add(true);
+
+			StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex, dropIndex));
 		}
 	}
 

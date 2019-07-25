@@ -1,39 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public enum BlockTypes { A = 0, B = 1, C = 2, D = 3, E = 4};
 
-public class BlockDetails : MonoBehaviour
+public class BlockDetails : NetworkBehaviour
 {
-	[Tooltip("Coordinates of the block.")]
-	public Vector2 coords = Vector2.zero;
-
-	[Tooltip("Block type.")]
-	public BlockTypes type = BlockTypes.A;
+	//Which manager the client should look for. 0: client, 1: opponent's view
 	[HideInInspector]
-	public bool shouldChangeType = false;
+	[SyncVar]
+	public int managerSearchIndex = -1;
 
-	[Tooltip("Can the block be clicked on and used?")]
-	public bool isInteractable = true;
+	[Tooltip("Block ID. Unchanged throughout play session.")]
+	[SyncVar]
+	public int blockID = -1;
+
+	[Space(10)]
+
+	[Tooltip("Coordinates of the block.")]
+	[SyncVar]
+	public Vector2 coords = Vector2.zero;
+	[Tooltip("Block type.")]
+	[SyncVar]
+	public BlockTypes type = BlockTypes.A;
 
 	//Movement coroutine
 	[HideInInspector]
 	public Coroutine movementCoroutine;
+
+	[Space(10)]
+
+	[Tooltip("Can the block be clicked on and used?")]
+	public bool isInteractable = true;
 	
+	[Tooltip("Is the block falling?")]
+	public bool isFalling = false;
+	
+	[Tooltip("The chain this block will contribute to.")]
+	public int chainIndex = -1;
+
 	//Sprite renderer reference
 	[HideInInspector]
 	public SpriteRenderer spriteRenderer;
 
-	//Is the block falling? Used to count chains
-	[HideInInspector]
-	public bool isFalling = false;
-
-	//Index of current chain
+	//Sprite sheet for current tile set
 	//[HideInInspector]
-	public int chainIndex = -1;
-
-	//current temp
 	public Sprite[] spriteSheet;
 
 	//Setup
@@ -44,19 +56,48 @@ public class BlockDetails : MonoBehaviour
         StartCoroutine(DelayedTypeUpdate());
     }
 
+	//Set references
+	private void Start()
+	{
+		BlockManager master = null;
+
+		if (managerSearchIndex == 0)
+		{
+			master = Camera.main.GetComponent<ManagerIndentifier>().clientManager;
+		}
+		else if(managerSearchIndex == 1)
+		{
+			master = Camera.main.GetComponent<ManagerIndentifier>().projectedManager;
+		}
+
+		if(master == null)
+		{
+			return;
+		}
+
+		if(master.allBlocksStatic[blockID] != null)
+		{
+			return;
+		}
+
+		transform.SetParent(master.gameObject.transform);
+		
+		master.allBlocks[(int)coords.x, (int)coords.y] = gameObject;
+		master.allBlocksStatic[blockID] = gameObject;
+		spriteSheet = master.spriteSheets[master.spriteSheetIndex].spriteSheet;
+	}
+
 	//Delay updating the colour by a frame. Used for initial sync
-    IEnumerator DelayedTypeUpdate()
+	IEnumerator DelayedTypeUpdate()
     {
         yield return new WaitForEndOfFrame();
 
         UpdateType();
     }
 	
-	//Change colour to suit type
+	//Change sprite to suit type
 	public void UpdateType()
 	{
 		spriteRenderer.sprite = spriteSheet[(int)type];
-
-		shouldChangeType = false;
 	}
 }

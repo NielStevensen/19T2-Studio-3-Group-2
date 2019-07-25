@@ -565,8 +565,8 @@ GameObject:
   - component: {fileID: 6969340816384813600}
   - component: {fileID: 6969340816384813606}
   - component: {fileID: 6969340816384813605}
-  - component: {fileID: 7196216909978742877}
   - component: {fileID: 1951292527200229196}
+  - component: {fileID: 7196216909978742877}
   m_Layer: 8
   m_Name: EGO Blocks
   m_TagString: Untagged
@@ -611,17 +611,42 @@ MonoBehaviour:
   blockSize: 0.64
   blockCount: {x: 8, y: 10}
   blockRarities: c8000000c8000000c8000000c8000000c8000000
-  swapTime: 0.1
+  allBlocksStatic: []
+  swapTime: 0.2
   fallSpeed: 3
   isCursorControl: 1
   cursorPrefab: {fileID: 7142510313808808482, guid: 6c24dbc85da41de4483634e39c48f144,
     type: 3}
-  spriteSheet:
-  - {fileID: 21300000, guid: 56627de0542c9434e9239b1609dd6314, type: 3}
-  - {fileID: 21300000, guid: 157101f4dd26d6b479aedcff2e0a9ea9, type: 3}
-  - {fileID: 21300000, guid: d74fbd19212cdac46add8b6063f262af, type: 3}
-  - {fileID: 21300000, guid: f4fd951ad1e575848b48c49dd1cfd24f, type: 3}
-  - {fileID: 21300000, guid: 6cb54434058f78842b3fffedc29b394c, type: 3}
+  spriteSheets:
+  - name: Default
+    spriteSheet:
+    - {fileID: 21300000, guid: 56627de0542c9434e9239b1609dd6314, type: 3}
+    - {fileID: 21300000, guid: 157101f4dd26d6b479aedcff2e0a9ea9, type: 3}
+    - {fileID: 21300000, guid: d74fbd19212cdac46add8b6063f262af, type: 3}
+    - {fileID: 21300000, guid: f4fd951ad1e575848b48c49dd1cfd24f, type: 3}
+    - {fileID: 21300000, guid: 6cb54434058f78842b3fffedc29b394c, type: 3}
+  - name: Default
+    spriteSheet:
+    - {fileID: 21300000, guid: 56627de0542c9434e9239b1609dd6314, type: 3}
+    - {fileID: 21300000, guid: 157101f4dd26d6b479aedcff2e0a9ea9, type: 3}
+    - {fileID: 21300000, guid: d74fbd19212cdac46add8b6063f262af, type: 3}
+    - {fileID: 21300000, guid: f4fd951ad1e575848b48c49dd1cfd24f, type: 3}
+    - {fileID: 21300000, guid: 6cb54434058f78842b3fffedc29b394c, type: 3}
+  - name: Default
+    spriteSheet:
+    - {fileID: 21300000, guid: 56627de0542c9434e9239b1609dd6314, type: 3}
+    - {fileID: 21300000, guid: 157101f4dd26d6b479aedcff2e0a9ea9, type: 3}
+    - {fileID: 21300000, guid: d74fbd19212cdac46add8b6063f262af, type: 3}
+    - {fileID: 21300000, guid: f4fd951ad1e575848b48c49dd1cfd24f, type: 3}
+    - {fileID: 21300000, guid: 6cb54434058f78842b3fffedc29b394c, type: 3}
+  - name: Default
+    spriteSheet:
+    - {fileID: 21300000, guid: 56627de0542c9434e9239b1609dd6314, type: 3}
+    - {fileID: 21300000, guid: 157101f4dd26d6b479aedcff2e0a9ea9, type: 3}
+    - {fileID: 21300000, guid: d74fbd19212cdac46add8b6063f262af, type: 3}
+    - {fileID: 21300000, guid: f4fd951ad1e575848b48c49dd1cfd24f, type: 3}
+    - {fileID: 21300000, guid: 6cb54434058f78842b3fffedc29b394c, type: 3}
+  spriteSheetIndex: 0
 --- !u!114 &6969340816384813606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -677,6 +702,7 @@ MonoBehaviour:
   myType: 0
   Chains: 
   Combos: 
+  toPrint: 
   matchUpMatrix:
   - name: Fire
     matchUp:
@@ -702,6 +728,29 @@ MonoBehaviour:
     - 1
     - 0.5
     - 1
+  didWin: 0
+--- !u!114 &1951292527200229196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969340816384813601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c7f0b164f51dc4eab8db9e9a293eac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flip:
+  - {fileID: 8242841171020146010}
+  - {fileID: 1368261789865177955}
+  - {fileID: 7074949194183948419}
+  - {fileID: 1751153830233614811}
+  - {fileID: 1477732586365689968}
+  reverseFill:
+  - {fileID: 7343074089949593827}
+  - {fileID: 1812728709786534928}
+  customShader: {fileID: 2100000, guid: 863eb968d05a0924e9ad4674ee7b4e1d, type: 2}
 --- !u!114 &7196216909978742877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -735,28 +784,6 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &1951292527200229196
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6969340816384813601}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86c7f0b164f51dc4eab8db9e9a293eac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flip:
-  - {fileID: 8242841171020146010}
-  - {fileID: 1368261789865177955}
-  - {fileID: 7074949194183948419}
-  - {fileID: 1751153830233614811}
-  - {fileID: 1477732586365689968}
-  reverseFill:
-  - {fileID: 7343074089949593827}
-  - {fileID: 1812728709786534928}
-  customShader: {fileID: 2100000, guid: 863eb968d05a0924e9ad4674ee7b4e1d, type: 2}
 --- !u!1 &7074949194183948419
 GameObject:
   m_ObjectHideFlags: 0
