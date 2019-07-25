@@ -29,6 +29,7 @@ public class CombatHandler : NetworkBehaviour
     public float defence;
     public float dmgMod;
     public float defMod;
+    public string ability;
 
     [HideInInspector]
     public Image Bar;
@@ -178,6 +179,7 @@ public class CombatHandler : NetworkBehaviour
         else
         {
             opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * ((100-(defence + defMod)) /100));
+            opponent.defMod = 0;
         }
     }
 
@@ -195,6 +197,36 @@ public class CombatHandler : NetworkBehaviour
         {
             Attack();
         }
+
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            switch (ability)
+            {
+                case ("Fireball"):
+                    dmgMod = 1.4f;
+                    return;
+
+                case ("Leech"):
+                    Attack();
+                    health += 20;
+                    return;
+
+                case ("DoubleShot"):
+                    float secondatk = Current;
+                    dmgMod = .6f;
+                    Attack();
+                    StartCoroutine(Wait()); // wait between attacks
+                    Counts[myType] = secondatk; // set power for second attack
+                    dmgMod = .6f;
+                    Attack();
+                    return;
+
+                case ("Armour"):
+                    defMod = 15;
+                    return;
+            }
+        }
+
         //check win and lose conditions
         if (opponent != null && isLocalPlayer)
         {
@@ -260,6 +292,7 @@ public class CombatHandler : NetworkBehaviour
         {
             CmdDamage(Current / 30 * attack * stab * dmgMod, currentType);
             Current = 0;
+            dmgMod = 1;
             for (int a = 0; a < 4; a++)
             {
                 Counts[a] = 0f;
@@ -292,5 +325,10 @@ public class CombatHandler : NetworkBehaviour
             data.HighestChain = Chains[Chains.Count - 1];
         }
         SaveSystem.Save(data);
+    }
+
+    IEnumerator Wait()
+    {
+        yield return new WaitForSeconds(2);
     }
 }
