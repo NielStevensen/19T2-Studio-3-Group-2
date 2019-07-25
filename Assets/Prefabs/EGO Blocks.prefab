@@ -617,6 +617,7 @@ MonoBehaviour:
   isCursorControl: 1
   cursorPrefab: {fileID: 7142510313808808482, guid: 6c24dbc85da41de4483634e39c48f144,
     type: 3}
+  chainDetails: []
   spriteSheets:
   - name: Default
     spriteSheet:
@@ -682,6 +683,7 @@ MonoBehaviour:
   defence: 10
   dmgMod: 1
   defMod: 1
+  ability: Leech
   Bar: {fileID: 7343074089949593827}
   healthBar: {fileID: 1812728709786534928}
   capacity: 300

@@ -69,7 +69,7 @@ public class CombatHandler : NetworkBehaviour
 
     public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
 
-    bool isDead = false;
+    bool isleech = false;
     public bool didWin; // has the player won
     #endregion;
     private void Start()
@@ -179,6 +179,8 @@ public class CombatHandler : NetworkBehaviour
         else
         {
             opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * ((100-(defence + defMod)) /100));
+            if(isleech) health += (Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100)/2;
+            isleech = false;
             opponent.defMod = 0;
         }
     }
@@ -198,27 +200,25 @@ public class CombatHandler : NetworkBehaviour
             Attack();
         }
 
-        if(Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.Q) && Current > 200)
         {
             switch (ability)
             {
                 case ("Fireball"):
                     dmgMod = 1.4f;
+                    Attack();
                     return;
 
                 case ("Leech"):
                     Attack();
-                    health += 20;
+                    isleech = true;
                     return;
 
                 case ("DoubleShot"):
                     float secondatk = Current;
                     dmgMod = .6f;
                     Attack();
-                    StartCoroutine(Wait()); // wait between attacks
-                    Counts[myType] = secondatk; // set power for second attack
-                    dmgMod = .6f;
-                    Attack();
+                    StartCoroutine(attack2(secondatk)); // wait between attacks
                     return;
 
                 case ("Armour"):
@@ -327,8 +327,11 @@ public class CombatHandler : NetworkBehaviour
         SaveSystem.Save(data);
     }
 
-    IEnumerator Wait()
+    IEnumerator attack2(float secondatk)
     {
         yield return new WaitForSeconds(2);
+        Counts[myType] = secondatk; // set power for second attack
+        dmgMod = .6f;
+        Attack();
     }
 }

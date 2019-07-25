@@ -39,7 +39,7 @@ public class ChainDetails
 	public int swapIndex = -1;
 	public int chainNumber = -1;
 	public List<int> involvedIDs = new List<int>();
-
+	
 	public ChainDetails(int index, int number)
 	{
 		swapIndex = index;
@@ -837,7 +837,7 @@ public class BlockManager : NetworkBehaviour
 					{
 						details.chainIndex = chainIndex;
 
-						chainDetails[chainIndex].involvedIDs.Add(details.blockID);
+						//chainDetails[chainIndex].involvedIDs.Add(details.blockID);
 					}
 
 					relevantCoroutine = details.movementCoroutine;
@@ -854,7 +854,7 @@ public class BlockManager : NetworkBehaviour
 		#endregion
 		
 		//If no uninteractable blocks were encountered, drop the blocks sent to the top
-		if (shouldContinue)
+		if (shouldContinue && nullCount > 0)
 		{
 			List<int> targetIDs = new List<int>();
 
@@ -969,7 +969,7 @@ public class BlockManager : NetworkBehaviour
 				{
 					details.chainIndex = chainIndex;
 
-					chainDetails[chainIndex].involvedIDs.Add(details.blockID);
+					//chainDetails[chainIndex].involvedIDs.Add(details.blockID);
 				}
 
 				relevantCoroutine = details.movementCoroutine;
@@ -1224,12 +1224,12 @@ public class BlockManager : NetworkBehaviour
 			//to retrieve combo count for current, use comboCount
 
 			#region Chain counting
-			if (chainIndex == -1)
+			/*if (chainIndex == -1)
 			{
 				newChainIndex = swapIndex;
 			}
 			
-			chainDetails[newChainIndex].chainNumber++;
+			chainDetails[newChainIndex].chainNumber++;*/
 			#endregion
 			//to retrieve chain count for current swa, use chainDetails[newChainIndex]
 
@@ -1259,14 +1259,15 @@ public class BlockManager : NetworkBehaviour
 			#endregion
 
 			//atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount);
-			atkBar.FillBar(relevantType, chainDetails[newChainIndex].chainNumber, comboCount);
+			//atkBar.FillBar(relevantType, chainDetails[newChainIndex].chainNumber, comboCount);
+			atkBar.FillBar(relevantType, 1, comboCount);
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
 			StartCoroutine(HandleBlockDrop((int)pos.x, new List<int>(), swapIndex));
 
 			//If this block is part of a chain, check if the chain should end
-			if(chainIndex > -1)
+			/*if(chainIndex > -1)
 			{
 				bool areStillFalling = false;
 
@@ -1293,7 +1294,7 @@ public class BlockManager : NetworkBehaviour
 
 					chainDetails[relevantIndex].chainNumber = -1;
 				}
-			}
+			}*/
 
 			#region Old chain stuff
 			/*if(chainIndex > -1)
