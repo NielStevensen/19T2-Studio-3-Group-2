@@ -119,7 +119,7 @@ public class MenuScript : MonoBehaviour
 
     public void OnPlayClick()
     {
-        SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
     public void OnShopClick()
