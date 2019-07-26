@@ -34,6 +34,21 @@ public class SpriteSheet
 }
 
 [System.Serializable]
+public class ComboDetails
+{
+	//Index of the chainDetails this will contribute to
+	public int chainIndex = -1;
+	//Total blocks combo'd
+	public int[] comboNumbers = new int[5];
+
+	public ComboDetails(int index, int[] numbers)
+	{
+		chainIndex = index;
+		comboNumbers = numbers;
+	}
+}
+
+[System.Serializable]
 public class ChainDetails
 {
 	//Index of the swap that is causing the chain this is detailing
@@ -130,15 +145,9 @@ public class BlockManager : NetworkBehaviour
 	//Block dropping values
 	private GameObject[] highestBlocks; //Highest blocks in each column. Used to set spawned block height to prevent overlap
 	private List<GameObject>[] undroppedBlocks;
-	
-	//Chain counting list
-	//[HideInInspector]
-	private List<int> allChains = new List<int>();
 
-	[Space(10)]
-
-	//[HideInInspector]
-	[SerializeField]
+	//Combos and chains
+	private List<ComboDetails> comboDetails = new List<ComboDetails>();
 	private List<ChainDetails> chainDetails = new List<ChainDetails>();
 
 	[Space(10)]
@@ -589,8 +598,39 @@ public class BlockManager : NetworkBehaviour
 			return;
 		}
 
-		#region Combo/chain counting
-		//Chain counting
+		#region Combo counting
+		//If there are any combos, process the data
+		int comboCount = comboDetails.Count;
+
+		if (comboCount > 0)
+		{
+			int comboTotal = 0;
+
+			for (int i = 0; i < comboCount; i++)
+			{
+				for(int j = 0; j < 5; j++)
+				{
+					comboTotal += comboDetails[i].comboNumbers[j];
+				}
+
+				chainDetails[comboDetails[i].chainIndex].chainNumber++;
+
+				print("Combo total: " + comboTotal);
+				print("Chain: " + chainDetails[comboDetails[i].chainIndex].chainNumber);
+				print("");
+				
+				//Parse combo numbers for type specific number of blocks broken
+				//Parse comboTotal for total number of blocks broken in the combo
+				//Parse chainDetails[comboDetails[i].chainIndex].chainNumber for current chain number
+			}
+
+			//Memory management. Clear the list after processing the data
+			comboDetails.Clear();
+		}
+		#endregion
+
+		#region Chain counting
+		//Determine if there are still chains going
 		bool isStillChaining = false;
 
 		for (int i = 0; i < chainDetails.Count; i++)
@@ -603,27 +643,11 @@ public class BlockManager : NetworkBehaviour
 			}
 		}
 
+		//Memory management. If none are still going, clear the list
 		if (!isStillChaining)
 		{
 			chainDetails.Clear();
 		}
-
-		#region Old chain stuff
-		/*bool isStillChaining = false;
-
-		for (int i = 0; i < allChains.Count; i++)
-		{
-			if (allChains[i] > -1)
-			{
-				isStillChaining = true;
-			}
-		}
-
-		if (!isStillChaining)
-		{
-			allChains.Clear();
-		}*/
-		#endregion
 		#endregion
 	}
 
@@ -779,11 +803,9 @@ public class BlockManager : NetworkBehaviour
 				droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
 
 				droppingDetails[i].isInteractable = false;
-
-                //droppingDetails[i].spriteRenderer.color = Color.grey;
+				
                 droppingDetails[i].anim.SetTrigger(droppingDetails[i].trigHash);
-
-
+				
 				breakIDs += droppingDetails[i].blockID + "/";
 			}
 
@@ -805,8 +827,6 @@ public class BlockManager : NetworkBehaviour
 			{
 				droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
 				allBlocks[xCoord, yCoords[i]] = null;
-				
-				droppingDetails[i].spriteRenderer.color = Color.white;
 			}
 
 			highestBlocks[xCoord] = droppingBlocks[yCount - 1];
@@ -1010,17 +1030,20 @@ public class BlockManager : NetworkBehaviour
 		}
 		else
 		{
-			//If there were no empty spaces, 
+			//If there were no empty spaces, start process of clearing a chainDetail
 			if(nullCount == 0)
 			{
-				/*if (chainDetails[chainIndex].shouldClear)
+				if(chainDetails[chainIndex].involvedIDs.Count == 0)
 				{
-					chainDetails[chainIndex].chainNumber = -1;
+					if (chainDetails[chainIndex].shouldClear)
+					{
+						chainDetails[chainIndex].chainNumber = -1;
+					}
+					else
+					{
+						chainDetails[chainIndex].shouldClear = true;
+					}
 				}
-				else
-				{
-					chainDetails[chainIndex].shouldClear = true;
-				}*/
 			}
 
 			//If an uninteractable block was encountered, add the blocks sent to the top to a list
@@ -1031,6 +1054,7 @@ public class BlockManager : NetworkBehaviour
 		}
 	}
 
+	//might not be necessary anymore with network animator
 	#region Sync Breaking
 	//Command projected blocks to break
 	[Command]
@@ -1236,6 +1260,7 @@ public class BlockManager : NetworkBehaviour
 			}
 
 			#region Combo counting
+			//Count matching blocks to determine combo count
 			int horizontalMatchCount = matchingHorizontalIndices.Count;
 			int verticalMatchCount = matchingVerticalIndices.Count;
 
@@ -1251,47 +1276,52 @@ public class BlockManager : NetworkBehaviour
 			{
 				comboCount = horizontalMatchCount + verticalMatchCount;
 			}
-			#endregion
-			//to retrieve combo count for current, use comboCount
 
-			#region Chain counting
+			//If this was caused by a swap, make the combo contribute to the swap
 			if (chainIndex == -1)
 			{
 				newChainIndex = swapIndex;
 			}
-			
-			chainDetails[newChainIndex].chainNumber++;
-			#endregion
-			//to retrieve chain count for current swa, use chainDetails[newChainIndex]
 
-			#region Old chain stuff
-			//chain stuff need to redo
-			/*if (chainIndex == -1)
+			//Determine if there is already a combo from this chain goining on
+			bool doesComboExist = false;
+			int comboIndex = -1;
+
+			for(int i = 0; i < comboDetails.Count; i++)
 			{
-				newChainIndex = chainCount;
-
-				if (allChains.Count == chainCount)
+				if(comboDetails[i].chainIndex == newChainIndex)
 				{
-					allChains.Add(1);
+					doesComboExist = true;
+					comboIndex = i;
+
+					break;
 				}
 			}
-			else if(chainIndex > -1)
+
+			//If it does exist, add to it
+			if (doesComboExist)
 			{
-				//allChains[chainIndex] += 1;
-			}*/
+				comboDetails[comboIndex].comboNumbers[(int)relevantType] += comboCount;
+			}
+			//Else, create it
+			else
+			{
+				int[] comboInput = new int[5] { 0, 0, 0, 0, 0 };
+				comboInput[(int)relevantType] = comboCount;
 
-			//to retrieve chain count for current swap, use allChains[chainIndex]
+				comboDetails.Add(new ComboDetails(newChainIndex, comboInput));
+			}
 			#endregion
-
+			
+			//will this stuff still be used? Either way, it won't be used here
 			#region Old UI stuff
 			//print(allChains[newChainIndex]);
 			//mui.UpdateChains(allChains[newChainIndex]);
 			//mui.UpdateCombo(comboCount);
 			#endregion
-
-			//atkBar.FillBar(relevantType, allChains[newChainIndex], comboCount);
-			//atkBar.FillBar(relevantType, chainDetails[newChainIndex].chainNumber, comboCount);
-			atkBar.FillBar(relevantType, 1, comboCount);
+			
+			//put this elsewhere
+			atkBar.FillBar(relevantType, chainDetails[newChainIndex].chainNumber, comboCount);
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
@@ -1307,8 +1337,6 @@ public class BlockManager : NetworkBehaviour
 			//If this block is part of a chain, check if the chain should end
 			if(chainIndex > -1)
 			{
-				//bool areStillFalling = false;
-
 				BlockDetails details = allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>();
 
 				int relevantIndex = details.chainIndex;
@@ -1324,61 +1352,7 @@ public class BlockManager : NetworkBehaviour
 
 					chainDetails[relevantIndex].chainNumber = -1;
 				}
-
-				#region Old chain stuff
-				/*for (int i = 0; i < chainDetails[relevantIndex].involvedIDs.Count; i++)
-				{
-					if (allBlocksStatic[chainDetails[relevantIndex].involvedIDs[i]].isFalling)
-					{
-						areStillFalling = true;
-
-						break;
-					}
-				}
-
-				if (!areStillFalling)
-				{
-					//retrieve the total chain number from the relevant chain here
-
-					chainDetails[relevantIndex].chainNumber = -1;
-				}*/
-				#endregion
 			}
-
-			#region Old chain stuff
-			/*if(chainIndex > -1)
-			{
-				bool areStillFalling = false;
-
-				details = allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>();
-				
-				details.chainIndex = -1;
-
-				for(int x = 0; x < blockCount.x; x++)
-				{
-					for(int y = 0; y < blockCount.y; y++)
-					{
-						details = allBlocks[x, y].GetComponent<BlockDetails>();
-
-						if(details.chainIndex == chainIndex)
-						{
-							if (details.isFalling)
-							{
-								areStillFalling = true;
-							}
-						}
-					}
-				}
-
-				if (!areStillFalling)
-				{
-					if(chainIndex < allChains.Count)
-					{
-						allChains[chainIndex] = -1;
-					}
-				}
-			}*/
-			#endregion
 		}
 		#endregion
 
@@ -1431,6 +1405,7 @@ public class BlockManager : NetworkBehaviour
 
 	//might try use a parameter to specify z
 	//is this overload necessary
+	//might be useful if the old cursor style is restored
 	//Produce a vector 3 based on the coordinates provides
 	Vector3 CoordToPosition(int x, int y, bool useExtraDisplacement)
 	{
