@@ -803,11 +803,9 @@ public class BlockManager : NetworkBehaviour
 				droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
 
 				droppingDetails[i].isInteractable = false;
-
-                //droppingDetails[i].spriteRenderer.color = Color.grey;
+				
                 droppingDetails[i].anim.SetTrigger(droppingDetails[i].trigHash);
-
-
+				
 				breakIDs += droppingDetails[i].blockID + "/";
 			}
 
@@ -829,8 +827,6 @@ public class BlockManager : NetworkBehaviour
 			{
 				droppingBlocks[i].transform.position = newPos + new Vector3(0, blockSize, 0) * i;
 				allBlocks[xCoord, yCoords[i]] = null;
-				
-				droppingDetails[i].spriteRenderer.color = Color.white;
 			}
 
 			highestBlocks[xCoord] = droppingBlocks[yCount - 1];
@@ -1058,6 +1054,7 @@ public class BlockManager : NetworkBehaviour
 		}
 	}
 
+	//might not be necessary anymore with network animator
 	#region Sync Breaking
 	//Command projected blocks to break
 	[Command]

@@ -44,6 +44,7 @@ public class BlockDetails : NetworkBehaviour
 	[HideInInspector]
 	public SpriteRenderer spriteRenderer;
 
+	//might not be necessary anymore with animator
 	//Sprite sheet for current tile set
 	[HideInInspector]
 	public Sprite[] spriteSheet;
@@ -113,6 +114,4 @@ public class BlockDetails : NetworkBehaviour
         anim.SetInteger(typeHash, (int)type);
 	}
 	#endregion
-
-
 }
