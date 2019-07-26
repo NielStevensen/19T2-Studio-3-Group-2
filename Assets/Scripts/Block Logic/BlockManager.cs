@@ -803,8 +803,10 @@ public class BlockManager : NetworkBehaviour
 				droppingDetails.Add(droppingBlocks[i].GetComponent<BlockDetails>());
 
 				droppingDetails[i].isInteractable = false;
-				
-				droppingDetails[i].spriteRenderer.color = Color.grey;
+
+                //droppingDetails[i].spriteRenderer.color = Color.grey;
+                droppingDetails[i].anim.SetTrigger(droppingDetails[i].trigHash);
+
 
 				breakIDs += droppingDetails[i].blockID + "/";
 			}

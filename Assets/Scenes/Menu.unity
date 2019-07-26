@@ -2814,6 +2814,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 7582973955598773359, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Highest Combo: '
+      objectReference: {fileID: 0}
+    - target: {fileID: 8792134016758824163, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Highest Chain:'
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
 --- !u!1001 &3144350998413415356
@@ -2973,6 +2983,16 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 114578454409658722, guid: ca0ec1630db7d524ba56d17e22102d48,
+        type: 3}
+      propertyPath: m_MinValue
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114578454409658722, guid: ca0ec1630db7d524ba56d17e22102d48,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 114578454409658723, guid: ca0ec1630db7d524ba56d17e22102d48,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
@@ -3042,6 +3062,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114578454409658716, guid: ca0ec1630db7d524ba56d17e22102d48,
+        type: 3}
+      propertyPath: m_MinValue
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114578454409658716, guid: ca0ec1630db7d524ba56d17e22102d48,
+        type: 3}
+      propertyPath: m_MaxValue
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 114578454409658717, guid: ca0ec1630db7d524ba56d17e22102d48,
         type: 3}

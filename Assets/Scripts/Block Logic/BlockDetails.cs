@@ -48,10 +48,21 @@ public class BlockDetails : NetworkBehaviour
 	[HideInInspector]
 	public Sprite[] spriteSheet;
 
-	//Setup
+    //Animator
+    [HideInInspector]
+    public Animator anim;
+    private int typeHash;
+    [HideInInspector]
+    public int trigHash;
+
+    //Setup
     void Awake()
     {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        anim = GetComponent<Animator>();
+        typeHash = Animator.StringToHash("Type");
+        trigHash = Animator.StringToHash("Break");
 		
         StartCoroutine(DelayedTypeUpdate());
     }
@@ -99,7 +110,9 @@ public class BlockDetails : NetworkBehaviour
 	//Change sprite to suit type
 	public void UpdateType()
 	{
-		spriteRenderer.sprite = spriteSheet[(int)type];
+        anim.SetInteger(typeHash, (int)type);
 	}
 	#endregion
+
+
 }
