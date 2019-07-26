@@ -36,10 +36,17 @@ public class SpriteSheet
 [System.Serializable]
 public class ChainDetails
 {
+	//Index of the swap that is causing the chain this is detailing
 	public int swapIndex = -1;
+	//Number of matches in the detailed chain
 	public int chainNumber = -1;
+	//IDs of all blocks that are currently falling due to this chain
 	public List<int> involvedIDs = new List<int>();
-	
+
+	//If one of the two blocks swapped does not drop any blocks, set to true
+	//If the second does not drop any blocks, this will be true. At this point, set chainNumber to -1;
+	public bool shouldClear = false;
+
 	public ChainDetails(int index, int number)
 	{
 		swapIndex = index;
@@ -495,44 +502,7 @@ public class BlockManager : NetworkBehaviour
 			}
 		}
 		#endregion
-
-		#region Combo/chain counting
-		//Chain counting
-		bool isStillChaining = false;
-
-		for(int i = 0; i < chainDetails.Count; i++)
-		{
-			if(chainDetails[i].chainNumber > -1)
-			{
-				isStillChaining = true;
-
-				break;
-			}
-		}
-
-		if (!isStillChaining)
-		{
-			chainDetails.Clear();
-		}
-
-		#region Old chain stuff
-		/*bool isStillChaining = false;
-
-		for (int i = 0; i < allChains.Count; i++)
-		{
-			if (allChains[i] > -1)
-			{
-				isStillChaining = true;
-			}
-		}
-
-		if (!isStillChaining)
-		{
-			allChains.Clear();
-		}*/
-		#endregion
-		#endregion
-
+		
 		#region Debug stuff
 		//temp debug. get if any blocks are in the wrong state. hold control to force into the right state
 		if (Input.GetKeyDown(KeyCode.Minus))
@@ -608,6 +578,52 @@ public class BlockManager : NetworkBehaviour
 		{
 			DebugForceType(4);
 		}
+		#endregion
+	}
+
+	//Combo/chain counting
+	private void LateUpdate()
+	{
+		if (!isLocalPlayer)
+		{
+			return;
+		}
+
+		#region Combo/chain counting
+		//Chain counting
+		bool isStillChaining = false;
+
+		for (int i = 0; i < chainDetails.Count; i++)
+		{
+			if (chainDetails[i].chainNumber > -1)
+			{
+				isStillChaining = true;
+
+				break;
+			}
+		}
+
+		if (!isStillChaining)
+		{
+			chainDetails.Clear();
+		}
+
+		#region Old chain stuff
+		/*bool isStillChaining = false;
+
+		for (int i = 0; i < allChains.Count; i++)
+		{
+			if (allChains[i] > -1)
+			{
+				isStillChaining = true;
+			}
+		}
+
+		if (!isStillChaining)
+		{
+			allChains.Clear();
+		}*/
+		#endregion
 		#endregion
 	}
 
@@ -837,7 +853,7 @@ public class BlockManager : NetworkBehaviour
 					{
 						details.chainIndex = chainIndex;
 
-						//chainDetails[chainIndex].involvedIDs.Add(details.blockID);
+						chainDetails[chainIndex].involvedIDs.Add(details.blockID);
 					}
 
 					relevantCoroutine = details.movementCoroutine;
@@ -969,7 +985,7 @@ public class BlockManager : NetworkBehaviour
 				{
 					details.chainIndex = chainIndex;
 
-					//chainDetails[chainIndex].involvedIDs.Add(details.blockID);
+					chainDetails[chainIndex].involvedIDs.Add(details.blockID);
 				}
 
 				relevantCoroutine = details.movementCoroutine;
@@ -990,9 +1006,22 @@ public class BlockManager : NetworkBehaviour
 			}
 			#endregion
 		}
-		//If an uninteractable block was encountered, add the blocks sent to the top to a list
 		else
 		{
+			//If there were no empty spaces, 
+			if(nullCount == 0)
+			{
+				/*if (chainDetails[chainIndex].shouldClear)
+				{
+					chainDetails[chainIndex].chainNumber = -1;
+				}
+				else
+				{
+					chainDetails[chainIndex].shouldClear = true;
+				}*/
+			}
+
+			//If an uninteractable block was encountered, add the blocks sent to the top to a list
 			for (int i = 0; i < yCount; i++)
 			{
 				undroppedBlocks[xCoord].Add(droppingBlocks[i]);
@@ -1224,12 +1253,12 @@ public class BlockManager : NetworkBehaviour
 			//to retrieve combo count for current, use comboCount
 
 			#region Chain counting
-			/*if (chainIndex == -1)
+			if (chainIndex == -1)
 			{
 				newChainIndex = swapIndex;
 			}
 			
-			chainDetails[newChainIndex].chainNumber++;*/
+			chainDetails[newChainIndex].chainNumber++;
 			#endregion
 			//to retrieve chain count for current swa, use chainDetails[newChainIndex]
 
@@ -1264,12 +1293,19 @@ public class BlockManager : NetworkBehaviour
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
-			StartCoroutine(HandleBlockDrop((int)pos.x, new List<int>(), swapIndex));
+			int index = swapIndex;
+
+			if(index == -1)
+			{
+				index = chainIndex;
+			}
+
+			StartCoroutine(HandleBlockDrop((int)pos.x, new List<int>(), index));
 
 			//If this block is part of a chain, check if the chain should end
-			/*if(chainIndex > -1)
+			if(chainIndex > -1)
 			{
-				bool areStillFalling = false;
+				//bool areStillFalling = false;
 
 				BlockDetails details = allBlocks[(int)pos.x, (int)pos.y].GetComponent<BlockDetails>();
 
@@ -1277,8 +1313,18 @@ public class BlockManager : NetworkBehaviour
 
 				chainDetails[relevantIndex].involvedIDs.Remove(details.blockID);
 				details.chainIndex = -1;
-				
-				for(int i = 0; i < chainDetails[relevantIndex].involvedIDs.Count; i++)
+
+				if(chainDetails[relevantIndex].involvedIDs.Count == 0)
+				{
+					//retrieve the total chain number from the relevant chain here
+
+					print(chainDetails[relevantIndex].chainNumber);
+
+					chainDetails[relevantIndex].chainNumber = -1;
+				}
+
+				#region Old chain stuff
+				/*for (int i = 0; i < chainDetails[relevantIndex].involvedIDs.Count; i++)
 				{
 					if (allBlocksStatic[chainDetails[relevantIndex].involvedIDs[i]].isFalling)
 					{
@@ -1293,8 +1339,9 @@ public class BlockManager : NetworkBehaviour
 					//retrieve the total chain number from the relevant chain here
 
 					chainDetails[relevantIndex].chainNumber = -1;
-				}
-			}*/
+				}*/
+				#endregion
+			}
 
 			#region Old chain stuff
 			/*if(chainIndex > -1)
