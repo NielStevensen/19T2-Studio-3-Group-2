@@ -64,7 +64,7 @@ public class CustomNetworkManager : NetworkManager
 
     void SetupIpAdress ()
     {
-        string IPAdress = FindObjectOfType<InputField>().transform.FindChild("Text").GetComponent<Text>().text;
+        string IPAdress = FindObjectOfType<InputField>().transform.Find("Text").GetComponent<Text>().text;
         NetworkManager.singleton.networkAddress = IPAdress;
     }
 
