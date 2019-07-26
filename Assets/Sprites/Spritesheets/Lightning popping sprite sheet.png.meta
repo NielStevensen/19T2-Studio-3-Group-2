@@ -1,28 +1,25 @@
 fileFormatVersion: 2
-guid: 0db6d99ec692511479b1d620444d0d90
+guid: f326e48c039946a4b8416db590edc863
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5617960034369939684
-    second: Default water anim_0
+      213: -360195766788629993
+    second: Lightning popping sprite sheet_0
   - first:
-      213: 4715085986532064675
-    second: Default water anim_1
+      213: -3407131468246997475
+    second: Lightning popping sprite sheet_1
   - first:
-      213: -3827682518136868544
-    second: Default water anim_2
+      213: 5757632625296417836
+    second: Lightning popping sprite sheet_2
   - first:
-      213: -8983207797225774139
-    second: Default water anim_3
+      213: -4685159077192597551
+    second: Lightning popping sprite sheet_3
   - first:
-      213: -4758337423367645569
-    second: Default water anim_3
+      213: -5446883662296718764
+    second: Lightning popping sprite sheet_4
   - first:
-      213: 6856422370513438143
-    second: Default water anim_4
-  - first:
-      213: -8082036534630541208
-    second: Default water anim_5
+      213: 6608804327551886399
+    second: Lightning popping sprite sheet_5
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -52,7 +49,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
+    filterMode: 0
     aniso: -1
     mipBias: -100
     wrapU: 1
@@ -84,7 +81,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -94,19 +91,8 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 1
-    androidETC2FallbackOverride: 0
-  - serializedVersion: 2
-    buildTarget: iPhone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -117,7 +103,18 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -127,127 +124,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Default water anim_0
+      name: Lightning popping sprite sheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 1
+      pivot: {x: 0, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a4a92c01765efcc4296be00a425e303f
-      internalID: 5617960034369939684
+      spriteID: a4d15d792ccee8f409e965e962fc299b
+      internalID: -360195766788629993
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Default water anim_1
+      name: Lightning popping sprite sheet_1
       rect:
         serializedVersion: 2
         x: 32
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 1
+      pivot: {x: 0, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2fffb5521956a384090992093f7aca9b
-      internalID: 4715085986532064675
+      spriteID: 5bb06c0d3fc5abd44812aa7d052ee962
+      internalID: -3407131468246997475
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Default water anim_2
+      name: Lightning popping sprite sheet_2
       rect:
         serializedVersion: 2
         x: 64
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 1
+      pivot: {x: 0, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 081c1691f4d62184da21f3d75a4be499
-      internalID: -3827682518136868544
+      spriteID: f408f3fda243a9248b4d06f67f728331
+      internalID: 5757632625296417836
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Default water anim_3
+      name: Lightning popping sprite sheet_3
       rect:
         serializedVersion: 2
         x: 96
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 1
+      pivot: {x: 0, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a15a87dc7e5b98848b878ef99a6ba0b1
-      internalID: -4758337423367645569
+      spriteID: d4c9feab42ee3b641a3ab5cc527c4f18
+      internalID: -4685159077192597551
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Default water anim_4
+      name: Lightning popping sprite sheet_4
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 1
+      pivot: {x: 0, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cbef47b11009c18469a081bfdcffda38
-      internalID: 6856422370513438143
+      spriteID: 70fb4ed466085aa4cab717d612b45774
+      internalID: -5446883662296718764
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Default water anim_5
+      name: Lightning popping sprite sheet_5
       rect:
         serializedVersion: 2
         x: 160
         y: 0
         width: 32
         height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 1
+      pivot: {x: 0, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d5aa7560e0af61e4a84dd85f2818dd26
-      internalID: -8082036534630541208
+      spriteID: edfefd09add39234c8df9ce02d2c1d13
+      internalID: 6608804327551886399
       vertices: []
       indices: 
       edges: []
@@ -255,7 +252,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 2a3f8175742f43240b47b8f7c39372e2
+    spriteID: 59a1d69c2c1ed3b478b9ee5d26efe5d7
     internalID: 0
     vertices: []
     indices: 

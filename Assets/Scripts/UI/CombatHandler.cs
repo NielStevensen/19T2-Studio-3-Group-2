@@ -59,6 +59,7 @@ public class CombatHandler : NetworkBehaviour
 
     public int myType;
 
+    [SyncVar]
     int currentType;
     float currentHighest;
 
@@ -151,8 +152,29 @@ public class CombatHandler : NetworkBehaviour
                 Bar.color = Color.blue;
                 break;
         }
+        CmdUpdate();
+    }
+    [Command]
+    void CmdUpdate()
+    {
+        RpcUpdate();
     }
 
+    [ClientRpc]
+    void RpcUpdate()
+    {
+        opponent.Bar.fillAmount = opponent.Current / opponent.capacity;
+        if (opponent.Current > opponent.capacity)
+        {
+            opponent.Current = opponent.capacity;
+        }
+        opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
+        if (opponent.health > opponent.maxhealth)
+        {
+            opponent.health = opponent.maxhealth;
+        }
+
+    }
     void Heal(int chain, int combo)
     {
         health += (chain + combo);

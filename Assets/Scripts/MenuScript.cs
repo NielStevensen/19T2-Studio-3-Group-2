@@ -86,15 +86,15 @@ public class MenuScript : MonoBehaviour
         }
     }
 
-    public void OnMusicVolumeChange()
-    {
-        MusicSource.volume = MusicVolume.value;
-    }
+    //public void OnMusicVolumeChange()
+    //{
+    //    MusicSource.volume = MusicVolume.value;
+    //}
 
-    public void OnSFXVolumeChange()
-    {
-        SFXSource.volume = SFXVolume.value;
-    }
+    //public void OnSFXVolumeChange()
+    //{
+    //    SFXSource.volume = SFXVolume.value;
+    //}
 
     public void OnSaturationChange()
     {

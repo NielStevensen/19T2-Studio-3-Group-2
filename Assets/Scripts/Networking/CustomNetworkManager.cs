@@ -12,33 +12,6 @@ public class CustomNetworkManager : NetworkManager
     public int lobbySceneNum = 0;
     public int port = 7777;
 
-    /*private bool wasLoaded = false;
-
-    public GameObject manager;
-
-    private void Awake()
-    {
-        manager = GameObject.Find("Custom Network Manager");
-
-        if(manager == null)
-        {
-            manager = gameObject;
-
-            manager.name = "Custom Network Manager";
-
-            DontDestroyOnLoad(manager);
-        }
-        else
-        {
-            if(gameObject.name != "Custom Network Manager")
-            {
-                wasLoaded = true;
-
-                Destroy(gameObject);
-            }
-        }
-    }*/
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -49,8 +22,6 @@ public class CustomNetworkManager : NetworkManager
 
     public void Startuphost()
     {
-        print("start up");
-
         SetPort();
         NetworkManager.singleton.StartHost();
     }
@@ -64,7 +35,7 @@ public class CustomNetworkManager : NetworkManager
 
     void SetupIpAdress ()
     {
-        string IPAdress = FindObjectOfType<InputField>().transform.FindChild("Text").GetComponent<Text>().text;
+        string IPAdress = FindObjectOfType<InputField>().transform.Find("Text").GetComponent<Text>().text;
         NetworkManager.singleton.networkAddress = IPAdress;
     }
 
@@ -76,7 +47,7 @@ public class CustomNetworkManager : NetworkManager
 
     private void OnLevelWasLoaded(int level)
     {
-        if(level == lobbySceneNum)// && !wasLoaded)
+        if(level == lobbySceneNum)
         {
             print("test");
 
@@ -87,8 +58,6 @@ public class CustomNetworkManager : NetworkManager
             Button joinButton = GameObject.Find("JoinButton").GetComponent<Button>();
             joinButton.onClick.RemoveAllListeners();
             joinButton.onClick.AddListener(Joingame);
-
-            //wasLoaded = true;
         }
     }
 }
