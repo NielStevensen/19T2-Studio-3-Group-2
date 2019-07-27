@@ -19,9 +19,9 @@ public class MenuScript : MonoBehaviour
     public GameObject ProfileMenu;
     public GameObject ShopMenu;
 
-    public Material BackgroundMaterial;
-    public Material TitleMaterial;
-    public Material ButtonMaterial;
+    //public Material BackgroundMaterial;
+    //public Material TitleMaterial;
+    //public Material ButtonMaterial;
 
     public AudioClip[] SFX;
     public AudioClip[] Music;
@@ -32,12 +32,15 @@ public class MenuScript : MonoBehaviour
     private string Name;
     private Color TempColour;
 
+    public GreyScale Greyscale;
+
     public InputField.SubmitEvent SubmitEvent;
 
     private Canvas MenuCanvas;
 
     private void OnEnable()
     {
+        Greyscale = GetComponent<GreyScale>();
         MenuCanvas = FindObjectOfType<Canvas>();
     }
 
@@ -98,23 +101,17 @@ public class MenuScript : MonoBehaviour
 
     public void OnSaturationChange()
     {
-        BackgroundMaterial.SetFloat("_Saturation", SaturationLevel.value);
-        TitleMaterial.SetFloat("_Saturation", SaturationLevel.value);
-        ButtonMaterial.SetFloat("_Saturation", SaturationLevel.value);
+        Greyscale.Saturation = SaturationLevel.value;
     }
 
     public void OnContrastChange()
     {
-        BackgroundMaterial.SetFloat("_Contrast", ContrastLevel.value);
-        TitleMaterial.SetFloat("_Contrast", ContrastLevel.value);
-        ButtonMaterial.SetFloat("_Contrast", ContrastLevel.value);
+        Greyscale.Contrast = ContrastLevel.value;
     }
 
     public void OnExposureChange()
     {
-        BackgroundMaterial.SetFloat("_Exposure", ExposureLevel.value);
-        TitleMaterial.SetFloat("_Exposure", ExposureLevel.value);
-        ButtonMaterial.SetFloat("_Exposure", ExposureLevel.value);
+        Greyscale.Exposure = ExposureLevel.value;
     }
 
     public void OnPlayClick()

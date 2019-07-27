@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2154701534006493058}
   - component: {fileID: 1973500456502300263}
-  m_Layer: 0
+  - component: {fileID: 8491494281681562478}
+  - component: {fileID: 6434815312578359815}
+  m_Layer: 9
   m_Name: MenuManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,21 +52,10 @@ MonoBehaviour:
   SaturationLevel: {fileID: 0}
   ContrastLevel: {fileID: 0}
   ExposureLevel: {fileID: 0}
-  SaveButton: {fileID: 0}
-  PlayButton: {fileID: 0}
-  ShopButton: {fileID: 0}
-  SettingsButton: {fileID: 0}
-  ProfileButton: {fileID: 0}
-  CloseProfileButton: {fileID: 0}
-  QuitButton: {fileID: 0}
-  BackButton: {fileID: 0}
   MainMenu: {fileID: 0}
   SettingsMenu: {fileID: 0}
-  Profile: {fileID: 0}
-  Shop: {fileID: 0}
-  BackgroundMaterial: {fileID: 0}
-  TitleMaterial: {fileID: 0}
-  ButtonMaterial: {fileID: 0}
+  ProfileMenu: {fileID: 0}
+  ShopMenu: {fileID: 0}
   SFX: []
   Music: []
   MusicSource: {fileID: 0}
@@ -74,3 +65,35 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.InputField+SubmitEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &8491494281681562478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2154701534006493068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d1e8101d79f1f04983ac299b252b545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Saturation: 0
+  Contrast: 0
+  Exposure: 0
+--- !u!114 &6434815312578359815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2154701534006493068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedProfile: {fileID: 11400000, guid: a1eab6543b3d4b34dbd73b8375db6153, type: 2}
+  isGlobal: 1
+  blendDistance: 0
+  weight: 1
+  priority: 0
