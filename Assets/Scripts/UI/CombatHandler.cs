@@ -144,29 +144,28 @@ public class CombatHandler : NetworkBehaviour
         }
         if (opponent != null)
         {
-            CmdUpdate();
+            CmdUpdate(Current, capacity);
         }
     }
     [Command]
-    void CmdUpdate()
+    void CmdUpdate(float currentCharge , float chargeCapacity)
     {
-        RpcUpdate();
+        RpcUpdate(currentCharge, chargeCapacity);
     }
 
     [ClientRpc]
-    void RpcUpdate()
+    void RpcUpdate(float currentCharge, float chargeCapacity)
     {
-        opponent.Bar.fillAmount = opponent.Current / opponent.capacity;
-        if (opponent.Current > opponent.capacity)
+        Bar.fillAmount = currentCharge / chargeCapacity;
+        if (currentCharge > chargeCapacity)
         {
-            opponent.Current = opponent.capacity;
+            Current = capacity;
         }
-        opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
-        if (opponent.health > opponent.maxhealth)
+        healthBar.fillAmount = health / maxhealth;
+        if (health > maxhealth)
         {
-            opponent.health = opponent.maxhealth;
+            health = maxhealth;
         }
-
     }
     void Heal(int type, int combo)
     {
@@ -217,6 +216,7 @@ public class CombatHandler : NetworkBehaviour
         //abilities
         if (Input.GetKeyDown(KeyCode.Q) && Current > 200)
         {
+            //switch based on the ability field of the charecter
             switch (ability)
             {
                 case ("Fireball"):
@@ -233,7 +233,7 @@ public class CombatHandler : NetworkBehaviour
                     float secondatk = Current;
                     dmgMod = .6f;
                     Attack();
-                    StartCoroutine(attack2(secondatk)); // wait between attacks
+                    StartCoroutine(attack2(secondatk)); //coroutine for wait between attacks
                     return;
 
                 case ("Armour"):
@@ -354,15 +354,17 @@ public class CombatHandler : NetworkBehaviour
         {
             data = new SaveData(0, 0, 0);
         }
-
+        //if the player win add 1 win to total wins
         if (didWin)
         {
             data.Wins += 1;
         }
+        //update highest if it higher than current save
         if (Combos.Count > 0 && Combos[Combos.Count - 1] > data.HighestCombo)
         {
             data.HighestCombo = Combos[Combos.Count - 1];
         }
+        //update highest if it higher than current save
         if (Chains.Count > 0 && Chains[Chains.Count - 1] > data.HighestChain)
         {
             data.HighestChain = Chains[Chains.Count - 1];
