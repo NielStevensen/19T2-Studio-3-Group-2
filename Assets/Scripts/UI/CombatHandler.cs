@@ -91,34 +91,24 @@ public class CombatHandler : NetworkBehaviour
         }
     }
 
-    public void FillBar(BlockTypes colour, int chainCount, int comboCount)
+    public void FillBar(int[] colour, int chainCount, int comboCount)
     {
         if (comboCount > 3)
         {
             Combos.Add(comboCount);
         }
-        if(Chains .Capacity > 0 &&Chains[Chains.Capacity -1] + 1 == chainCount)
+        for (int a = 0; a < 5; a ++)
         {
-            Chains.Add(chainCount);
+            if (a < 4 && colour[a] > 0)
+            {
+                Counts[a] += colour[a] * chainCount + comboCount;
+            }
+            else
+            {
+                Heal(colour[a], comboCount);
+            }
         }
-        switch (colour)
-        {
-            case BlockTypes.A:
-                Counts[0] += comboCount * chainCount + comboCount;
-                break;
-            case BlockTypes.B:
-                Counts[1] += comboCount * chainCount + comboCount;
-                break;
-            case BlockTypes.C:
-                Counts[2] += comboCount * chainCount + comboCount;
-                break;
-            case BlockTypes.D:
-                Counts[3] += comboCount * chainCount + comboCount;
-                break;
-            case BlockTypes.E:
-                Heal(chainCount, comboCount);
-                break;
-        }
+
 
         Current = Counts[0] + Counts[1] + Counts[2] + Counts[3];
         Bar.fillAmount = Current / capacity;
@@ -152,7 +142,10 @@ public class CombatHandler : NetworkBehaviour
                 Bar.color = Color.blue;
                 break;
         }
-        CmdUpdate();
+        if (opponent != null)
+        {
+            CmdUpdate();
+        }
     }
     [Command]
     void CmdUpdate()
@@ -175,9 +168,9 @@ public class CombatHandler : NetworkBehaviour
         }
 
     }
-    void Heal(int chain, int combo)
+    void Heal(int type, int combo)
     {
-        health += (chain + combo);
+        health += (type + combo);
         healthBar.fillAmount = health / maxhealth;
         if (health > maxhealth)
         {
@@ -221,7 +214,7 @@ public class CombatHandler : NetworkBehaviour
         {
             Attack();
         }
-
+        //abilities
         if (Input.GetKeyDown(KeyCode.Q) && Current > 200)
         {
             switch (ability)
@@ -272,6 +265,7 @@ public class CombatHandler : NetworkBehaviour
 
     public void printStats( GameObject stats)
     {
+        //sort and print combos
         Combos.Sort();
 
         int highestValue = Combos[Combos.Count - 1];
@@ -295,6 +289,33 @@ public class CombatHandler : NetworkBehaviour
                 toPrint += "\n " + (a + 1) + " Combo: " + comboCount[a].ToString();
             }
         }
+        stats.GetComponentsInChildren<Text>()[1].text += toPrint;
+
+        //sort and print chains
+        Chains.Sort();
+
+        highestValue = Chains[Chains.Count - 1];
+
+        List<int> chainCount = new List<int>();
+
+        for (int i = 0; i < highestValue; i++)
+        {
+            chainCount.Add(0);
+        }
+
+        for (int i = 0; i < Chains.Count; i++)
+        {
+            chainCount[Chains[i] - 1]++;
+        }
+
+        if (chainCount.Count > 3)
+        {
+            for (int a = 3; a < chainCount.Count; a++)
+            {
+                toPrint += "\n " + (a + 1) + " Chain: " + chainCount[a].ToString();
+            }
+        }
+        // print to ui
         stats.GetComponentsInChildren<Text>()[1].text += toPrint;
         UpdateSave(); // update save statistics
     }

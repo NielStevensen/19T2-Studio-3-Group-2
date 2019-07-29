@@ -615,14 +615,8 @@ public class BlockManager : NetworkBehaviour
 
 				chainDetails[comboDetails[i].chainIndex].chainNumber++;
 
-				print("Combo total: " + comboTotal);
-				print("Chain: " + chainDetails[comboDetails[i].chainIndex].chainNumber);
-				print("");
-				
-				//Parse combo numbers for type specific number of blocks broken
-				//Parse comboTotal for total number of blocks broken in the combo
-				//Parse chainDetails[comboDetails[i].chainIndex].chainNumber for current chain number
-			}
+                atkBar.FillBar(comboDetails[i].comboNumbers, chainDetails[comboDetails[i].chainIndex].chainNumber, comboTotal);
+            }
 
 			//Memory management. Clear the list after processing the data
 			comboDetails.Clear();
@@ -805,8 +799,9 @@ public class BlockManager : NetworkBehaviour
 				droppingDetails[i].isInteractable = false;
 				
                 droppingDetails[i].anim.SetTrigger(droppingDetails[i].trigHash);
-				
-				breakIDs += droppingDetails[i].blockID + "/";
+                droppingDetails[i].anim.SetInteger(droppingDetails[i].typeHash, -1);
+
+                breakIDs += droppingDetails[i].blockID + "/";
 			}
 
 			CmdBreakProjectedBlocks(breakIDs);
@@ -1311,17 +1306,7 @@ public class BlockManager : NetworkBehaviour
 
 				comboDetails.Add(new ComboDetails(newChainIndex, comboInput));
 			}
-			#endregion
-			
-			//will this stuff still be used? Either way, it won't be used here
-			#region Old UI stuff
-			//print(allChains[newChainIndex]);
-			//mui.UpdateChains(allChains[newChainIndex]);
-			//mui.UpdateCombo(comboCount);
-			#endregion
-			
-			//put this elsewhere
-			atkBar.FillBar(relevantType, chainDetails[newChainIndex].chainNumber, comboCount);
+			#endregion		
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
@@ -1349,8 +1334,8 @@ public class BlockManager : NetworkBehaviour
 					//retrieve the total chain number from the relevant chain here
 
 					print(chainDetails[relevantIndex].chainNumber);
-
-					chainDetails[relevantIndex].chainNumber = -1;
+                    atkBar.Chains.Add(chainDetails[relevantIndex].chainNumber);
+                    chainDetails[relevantIndex].chainNumber = -1;
 				}
 			}
 		}

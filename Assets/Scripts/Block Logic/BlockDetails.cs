@@ -52,7 +52,7 @@ public class BlockDetails : NetworkBehaviour
     //Animator
     [HideInInspector]
     public Animator anim;
-    private int typeHash;
+    public int typeHash;
     [HideInInspector]
     public int trigHash;
 

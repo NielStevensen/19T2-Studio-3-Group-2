@@ -28,7 +28,6 @@ public class MenuScript : MonoBehaviour
     public AudioSource MusicSource;
     public AudioSource SFXSource;
 
-    private bool GameOver = false;
     private string Name;
     private Color TempColour;
 

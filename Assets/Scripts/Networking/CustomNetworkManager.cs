@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 public class CustomNetworkManager : NetworkManager
 {
@@ -22,21 +21,17 @@ public class CustomNetworkManager : NetworkManager
 
     public void Startuphost()
     {
+        NetworkServer.Reset();
         SetPort();
+        SetIPAddressServer();
         NetworkManager.singleton.StartHost();
     }
 
     public void Joingame ()
     {
-        SetupIpAdress();
         SetPort();
+        SetIPAddressClient();
         NetworkManager.singleton.StartClient();
-    }
-
-    void SetupIpAdress ()
-    {
-        string IPAdress = FindObjectOfType<InputField>().transform.Find("Text").GetComponent<Text>().text;
-        NetworkManager.singleton.networkAddress = IPAdress;
     }
 
     void SetPort()
@@ -44,13 +39,31 @@ public class CustomNetworkManager : NetworkManager
         NetworkManager.singleton.networkPort = port;
     }
 
+    void SetIPAddressServer()
+    {
+        string ipAddress = FindObjectOfType<InputField>().transform.Find("Text").GetComponent<Text>().text;
+        
+        if (ipAddress != "")
+        {
+            NetworkManager.singleton.serverBindToIP = true;
+            NetworkManager.singleton.serverBindAddress = ipAddress;
+        }
+    }
+
+    void SetIPAddressClient()
+    {
+        string ipAddress = FindObjectOfType<InputField>().transform.Find("Text").GetComponent<Text>().text;
+
+        if(ipAddress != "")
+        {
+            NetworkManager.singleton.networkAddress = ipAddress;
+        }
+    }
 
     private void OnLevelWasLoaded(int level)
     {
         if(level == lobbySceneNum)
         {
-            print("test");
-
             Button startButton = GameObject.Find("StartHostButton").GetComponent<Button>();
             startButton.onClick.RemoveAllListeners();
             startButton.onClick.AddListener(Startuphost);
