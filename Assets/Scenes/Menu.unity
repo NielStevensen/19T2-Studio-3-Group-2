@@ -882,12 +882,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5431d40dc6916dc4bbfc50d79b79d601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainMenu: {fileID: 0}
-  SettingsMenu: {fileID: 0}
-  ProfileMenu: {fileID: 0}
-  ShopMenu: {fileID: 0}
+  MainMenu: {fileID: 580918188}
+  SettingsMenu: {fileID: 235002650}
+  ProfileMenu: {fileID: 1072548922635126357}
+  ShopMenu: {fileID: 1603226109}
   Aspectratio: 0
-  IsMobile: 1
+  IsMobile: 0
 --- !u!114 &1040905256 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1973500456502300263, guid: 66be26b7d2ce7324aa9f4c4394448038,
