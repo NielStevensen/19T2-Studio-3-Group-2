@@ -44,6 +44,8 @@ public class CombatHandler : NetworkBehaviour
     [SyncVar]
     public float Current;
 
+    public Color Barcolour;
+
     [Tooltip("current health")]
     [SyncVar]
     public float health;
@@ -142,39 +144,44 @@ public class CombatHandler : NetworkBehaviour
                 Bar.color = Color.blue;
                 break;
         }
+        Barcolour = Bar.color;
         if (opponent != null)
         {
-            CmdUpdate();
+            CmdUpdate(Current, capacity,Barcolour);
         }
     }
     [Command]
-    void CmdUpdate()
+    void CmdUpdate(float currentCharge , float chargeCapacity, Color BarCol)
     {
-        RpcUpdate();
+        RpcUpdate(currentCharge, chargeCapacity,BarCol);
     }
 
     [ClientRpc]
-    void RpcUpdate()
+    void RpcUpdate(float currentCharge, float chargeCapacity,Color BarCol)
     {
-        opponent.Bar.fillAmount = opponent.Current / opponent.capacity;
-        if (opponent.Current > opponent.capacity)
+        if(isLocalPlayer)
         {
-            opponent.Current = opponent.capacity;
+            return;
         }
-        opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
-        if (opponent.health > opponent.maxhealth)
-        {
-            opponent.health = opponent.maxhealth;
-        }
-
-    }
-    void Heal(int type, int combo)
-    {
-        health += (type + combo);
+        Bar.fillAmount = currentCharge / chargeCapacity;
+        Bar.color = BarCol;
+        
         healthBar.fillAmount = health / maxhealth;
         if (health > maxhealth)
         {
             health = maxhealth;
+        }
+    }
+    void Heal(int type, int combo)
+    {
+        if (type > 0)
+        {
+            health += (type + combo);
+            healthBar.fillAmount = health / maxhealth;
+            if (health > maxhealth)
+            {
+                health = maxhealth;
+            }
         }
     }
 
@@ -197,18 +204,17 @@ public class CombatHandler : NetworkBehaviour
             if(isleech) health += (Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100)/2;
             isleech = false;
             opponent.defMod = 0;
+            opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
         }
     }
 
     public void Update()
     {
-       
-        if (opponent != null)
+        if (isLocalPlayer)
         {
-            opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
+            healthBar.fillAmount = health / maxhealth;
+            Bar.fillAmount = Current / capacity;
         }
-        healthBar.fillAmount = health / maxhealth;
-        Bar.fillAmount = Current / capacity;
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -217,6 +223,7 @@ public class CombatHandler : NetworkBehaviour
         //abilities
         if (Input.GetKeyDown(KeyCode.Q) && Current > 200)
         {
+            //switch based on the ability field of the charecter
             switch (ability)
             {
                 case ("Fireball"):
@@ -233,7 +240,7 @@ public class CombatHandler : NetworkBehaviour
                     float secondatk = Current;
                     dmgMod = .6f;
                     Attack();
-                    StartCoroutine(attack2(secondatk)); // wait between attacks
+                    StartCoroutine(attack2(secondatk)); //coroutine for wait between attacks
                     return;
 
                 case ("Armour"):
@@ -335,6 +342,7 @@ public class CombatHandler : NetworkBehaviour
         {
             CmdDamage(Current / 30 * attack * stab * dmgMod, currentType);
             Current = 0;
+            currentHighest = 0;
             dmgMod = 1;
             for (int a = 0; a < 4; a++)
             {
@@ -354,15 +362,17 @@ public class CombatHandler : NetworkBehaviour
         {
             data = new SaveData(0, 0, 0);
         }
-
+        //if the player win add 1 win to total wins
         if (didWin)
         {
             data.Wins += 1;
         }
+        //update highest if it higher than current save
         if (Combos.Count > 0 && Combos[Combos.Count - 1] > data.HighestCombo)
         {
             data.HighestCombo = Combos[Combos.Count - 1];
         }
+        //update highest if it higher than current save
         if (Chains.Count > 0 && Chains[Chains.Count - 1] > data.HighestChain)
         {
             data.HighestChain = Chains[Chains.Count - 1];
