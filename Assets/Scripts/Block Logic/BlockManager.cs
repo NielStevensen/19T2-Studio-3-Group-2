@@ -1331,10 +1331,8 @@ public class BlockManager : NetworkBehaviour
 
 				if(chainDetails[relevantIndex].involvedIDs.Count == 0)
 				{
-					//retrieve the total chain number from the relevant chain here
-
-					print(chainDetails[relevantIndex].chainNumber);
                     atkBar.Chains.Add(chainDetails[relevantIndex].chainNumber);
+
                     chainDetails[relevantIndex].chainNumber = -1;
 				}
 			}

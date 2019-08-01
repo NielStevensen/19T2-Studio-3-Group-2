@@ -7,6 +7,7 @@ public enum BlockTypes { A = 0, B = 1, C = 2, D = 3, E = 4};
 
 public class BlockDetails : NetworkBehaviour
 {
+	#region Variables
 	//Which manager the client should look for. 0: client, 1: opponent's view
 	[HideInInspector]
 	[SyncVar]
@@ -52,12 +53,14 @@ public class BlockDetails : NetworkBehaviour
     //Animator
     [HideInInspector]
     public Animator anim;
+	[HideInInspector]
     public int typeHash;
     [HideInInspector]
     public int trigHash;
+	#endregion
 
-    //Setup
-    void Awake()
+	//Setup
+	void Awake()
     {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
