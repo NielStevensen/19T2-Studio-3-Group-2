@@ -44,6 +44,8 @@ public class CombatHandler : NetworkBehaviour
     [SyncVar]
     public float Current;
 
+    public Color Barcolour;
+
     [Tooltip("current health")]
     [SyncVar]
     public float health;
@@ -142,25 +144,28 @@ public class CombatHandler : NetworkBehaviour
                 Bar.color = Color.blue;
                 break;
         }
+        Barcolour = Bar.color;
         if (opponent != null)
         {
-            CmdUpdate(Current, capacity);
+            CmdUpdate(Current, capacity,Barcolour);
         }
     }
     [Command]
-    void CmdUpdate(float currentCharge , float chargeCapacity)
+    void CmdUpdate(float currentCharge , float chargeCapacity, Color BarCol)
     {
-        RpcUpdate(currentCharge, chargeCapacity);
+        RpcUpdate(currentCharge, chargeCapacity,BarCol);
     }
 
     [ClientRpc]
-    void RpcUpdate(float currentCharge, float chargeCapacity)
+    void RpcUpdate(float currentCharge, float chargeCapacity,Color BarCol)
     {
-        Bar.fillAmount = currentCharge / chargeCapacity;
-        if (currentCharge > chargeCapacity)
+        if(isLocalPlayer)
         {
-            Current = capacity;
+            return;
         }
+        Bar.fillAmount = currentCharge / chargeCapacity;
+        Bar.color = BarCol;
+        
         healthBar.fillAmount = health / maxhealth;
         if (health > maxhealth)
         {
@@ -169,11 +174,14 @@ public class CombatHandler : NetworkBehaviour
     }
     void Heal(int type, int combo)
     {
-        health += (type + combo);
-        healthBar.fillAmount = health / maxhealth;
-        if (health > maxhealth)
+        if (type > 0)
         {
-            health = maxhealth;
+            health += (type + combo);
+            healthBar.fillAmount = health / maxhealth;
+            if (health > maxhealth)
+            {
+                health = maxhealth;
+            }
         }
     }
 
@@ -196,18 +204,17 @@ public class CombatHandler : NetworkBehaviour
             if(isleech) health += (Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100)/2;
             isleech = false;
             opponent.defMod = 0;
+            opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
         }
     }
 
     public void Update()
     {
-       
-        if (opponent != null)
+        if (isLocalPlayer)
         {
-            opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
+            healthBar.fillAmount = health / maxhealth;
+            Bar.fillAmount = Current / capacity;
         }
-        healthBar.fillAmount = health / maxhealth;
-        Bar.fillAmount = Current / capacity;
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -335,6 +342,7 @@ public class CombatHandler : NetworkBehaviour
         {
             CmdDamage(Current / 30 * attack * stab * dmgMod, currentType);
             Current = 0;
+            currentHighest = 0;
             dmgMod = 1;
             for (int a = 0; a < 4; a++)
             {
