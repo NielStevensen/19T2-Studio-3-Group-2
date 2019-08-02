@@ -19,10 +19,6 @@ public class MenuScript : MonoBehaviour
     public GameObject ProfileMenu;
     public GameObject ShopMenu;
 
-    //public Material BackgroundMaterial;
-    //public Material TitleMaterial;
-    //public Material ButtonMaterial;
-
     public AudioClip[] SFX;
     public AudioClip[] Music;
     public AudioSource MusicSource;
@@ -89,15 +85,15 @@ public class MenuScript : MonoBehaviour
         }
     }
 
-    //public void OnMusicVolumeChange()
-    //{
-    //    MusicSource.volume = MusicVolume.value;
-    //}
+    public void OnMusicVolumeChange()
+    {
+        MusicSource.volume = MusicVolume.value;
+    }
 
-    //public void OnSFXVolumeChange()
-    //{
-    //    SFXSource.volume = SFXVolume.value;
-    //}
+    public void OnSFXVolumeChange()
+    {
+        SFXSource.volume = SFXVolume.value;
+    }
 
     public void OnSaturationChange()
     {
