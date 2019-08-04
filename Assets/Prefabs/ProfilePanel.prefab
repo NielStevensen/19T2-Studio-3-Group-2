@@ -1432,7 +1432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MouseOver: {fileID: 8300000, guid: 8c258dca7e08fb1438113b0b75348f71, type: 3}
   MouseClick: {fileID: 8300000, guid: 4fb135d3c45ee7343ba34122f8adc35f, type: 3}
-  SFXSource: {fileID: 9154420451682339557}
+  SFXSource: {fileID: 2043915072138370913}
 --- !u!82 &2043915072138370913
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3061,7 +3061,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MouseOver: {fileID: 8300000, guid: 8c258dca7e08fb1438113b0b75348f71, type: 3}
   MouseClick: {fileID: 8300000, guid: 4fb135d3c45ee7343ba34122f8adc35f, type: 3}
-  SFXSource: {fileID: 9154420451682339557}
+  SFXSource: {fileID: 6236236876200809547}
 --- !u!82 &6236236876200809547
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3343,7 +3343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MouseOver: {fileID: 8300000, guid: 8c258dca7e08fb1438113b0b75348f71, type: 3}
   MouseClick: {fileID: 8300000, guid: 4fb135d3c45ee7343ba34122f8adc35f, type: 3}
-  SFXSource: {fileID: 9154420451682339557}
+  SFXSource: {fileID: 6101627329576870940}
 --- !u!82 &6101627329576870940
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3625,7 +3625,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MouseOver: {fileID: 8300000, guid: 8c258dca7e08fb1438113b0b75348f71, type: 3}
   MouseClick: {fileID: 8300000, guid: 4fb135d3c45ee7343ba34122f8adc35f, type: 3}
-  SFXSource: {fileID: 9154420451682339557}
+  SFXSource: {fileID: 3865863887613461077}
 --- !u!82 &3865863887613461077
 AudioSource:
   m_ObjectHideFlags: 0

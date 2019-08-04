@@ -448,9 +448,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036e48e62194580419bdde9de7f80f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MouseOver: {fileID: 0}
-  MouseClick: {fileID: 0}
-  SFXSource: {fileID: 0}
+  MouseOver: {fileID: 8300000, guid: 8c258dca7e08fb1438113b0b75348f71, type: 3}
+  MouseClick: {fileID: 8300000, guid: 4fb135d3c45ee7343ba34122f8adc35f, type: 3}
+  SFXSource: {fileID: 2613995787050466618}
 --- !u!82 &2613995787050466618
 AudioSource:
   m_ObjectHideFlags: 0
@@ -462,7 +462,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -2996,9 +2996,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 036e48e62194580419bdde9de7f80f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MouseOver: {fileID: 0}
-  MouseClick: {fileID: 0}
-  SFXSource: {fileID: 0}
+  MouseOver: {fileID: 8300000, guid: 8c258dca7e08fb1438113b0b75348f71, type: 3}
+  MouseClick: {fileID: 8300000, guid: 4fb135d3c45ee7343ba34122f8adc35f, type: 3}
+  SFXSource: {fileID: 6840407775200238990}
 --- !u!82 &6840407775200238990
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3010,7 +3010,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
