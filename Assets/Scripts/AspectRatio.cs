@@ -14,7 +14,6 @@ public class AspectRatio : MonoBehaviour
 
     [Header("General")]
     [SerializeField] private float Aspectratio;
-    [SerializeField] private bool IsMobile = false;
 
     [Header("Main")]
     [SerializeField] private GameObject MainMenu;
@@ -34,7 +33,7 @@ public class AspectRatio : MonoBehaviour
         Width = Screen.width;
         Height = Screen.height;
 
-        if (IsMobile == true)
+        if (Application.isMobilePlatform == true)
         {
             Debug.Log("mobile");
             Screen.orientation = ScreenOrientation.Portrait;
