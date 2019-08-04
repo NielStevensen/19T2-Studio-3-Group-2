@@ -360,23 +360,28 @@ public class CombatHandler : NetworkBehaviour
         }
         else
         {
-            data = new SaveData(0, 0, 0);
+            data = new SaveData(0, 0, 0, 0);
         }
         //if the player win add 1 win to total wins
         if (didWin)
         {
             data.Wins += 1;
+            data.currency += 10;
         }
+       
         //update highest if it higher than current save
         if (Combos.Count > 0 && Combos[Combos.Count - 1] > data.HighestCombo)
         {
             data.HighestCombo = Combos[Combos.Count - 1];
+            data.currency += (Combos[Combos.Count - 1]);
         }
         //update highest if it higher than current save
         if (Chains.Count > 0 && Chains[Chains.Count - 1] > data.HighestChain)
         {
             data.HighestChain = Chains[Chains.Count - 1];
+            data.currency += (Chains[Chains.Count - 1]);
         }
+
         SaveSystem.Save(data);
     }
 
