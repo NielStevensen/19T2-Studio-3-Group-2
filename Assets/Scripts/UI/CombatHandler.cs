@@ -148,30 +148,41 @@ public class CombatHandler : NetworkBehaviour
         Barcolour = Bar.color;
         if (opponent != null)
         {
-            CmdUpdate(Current, capacity,Barcolour);
+            CmdUpdate(Current, capacity,currentType,health,maxhealth);
         }
     }
     [Command]
-    void CmdUpdate(float currentCharge , float chargeCapacity, Color BarCol)
+    void CmdUpdate(float currentCharge, float chargeCapacity, int typenum, float health, float maxhealth)
     {
-        RpcUpdate(currentCharge, chargeCapacity,BarCol);
+        RpcUpdate(currentCharge,chargeCapacity, typenum, health,maxhealth);
     }
 
     [ClientRpc]
-    void RpcUpdate(float currentCharge, float chargeCapacity,Color BarCol)
+    void RpcUpdate(float currentCharge, float chargeCapacity, int typenum, float currenthealth, float healthcapacity)
     {
-        //if(isLocalPlayer)
-        //{
-        //    return;
-        //}
-        Bar.fillAmount = currentCharge / chargeCapacity;
-        Bar.color = BarCol;
-        
-        healthBar.fillAmount = health / maxhealth;
-        if (health > maxhealth)
+        if (isLocalPlayer)
         {
-            health = maxhealth;
+            return;
         }
+        Bar.fillAmount = currentCharge / chargeCapacity;
+        switch (typenum) // update colour based on the specified index
+        {
+            case 0:
+                Bar.color = Color.red;
+                break;
+            case 1:
+                Bar.color = Color.yellow;
+                break;
+            case 2:
+                Bar.color = Color.green;
+                break;
+            case 3:
+                Bar.color = Color.blue;
+                break;
+        }
+        Symbol.sprite = tiles[typenum]; // change bar to type specified by cmd
+
+        healthBar.fillAmount = currenthealth / healthcapacity;
     }
     void Heal(int type, int combo)
     {
@@ -215,6 +226,7 @@ public class CombatHandler : NetworkBehaviour
         {
             healthBar.fillAmount = health / maxhealth;
             Bar.fillAmount = Current / capacity;
+            CmdUpdate(Current, capacity, currentType, health, maxhealth);
         }
 
         if (Input.GetButtonDown("Jump"))
