@@ -10,11 +10,11 @@ public class ButtonSounds : MonoBehaviour
 
     public void OnMouseEnter()
     {
-        SFXSource.PlayOneShot(MouseOver, 100);
+        SFXSource.PlayOneShot(MouseOver, 50);
     }
 
     public void OnMouseDown()
     {
-        SFXSource.PlayOneShot(MouseClick, 100);
+        SFXSource.PlayOneShot(MouseClick, 50);
     }
 }
