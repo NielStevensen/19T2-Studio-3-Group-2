@@ -29,16 +29,9 @@ public class MenuScript : MonoBehaviour
     private Color TempColour;
 
     public GreyScale Greyscale;
+    public Canvas MenuCanvas;
 
     public InputField.SubmitEvent SubmitEvent;
-
-    private Canvas MenuCanvas;
-
-    private void OnEnable()
-    {
-        Greyscale = GetComponent<GreyScale>();
-        MenuCanvas = FindObjectOfType<Canvas>();
-    }
 
     void Start()
     {

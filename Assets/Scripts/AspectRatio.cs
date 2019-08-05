@@ -13,6 +13,7 @@ public class AspectRatio : MonoBehaviour
     private Canvas MainCanvas;
 
     [Header("General")]
+    [SerializeField] private bool IsMobile = false;
     [SerializeField] private float Aspectratio;
 
     [Header("Main")]
@@ -33,7 +34,7 @@ public class AspectRatio : MonoBehaviour
         Width = Screen.width;
         Height = Screen.height;
 
-        if (Application.isMobilePlatform == true)
+        if (IsMobile == true)
         {
             Debug.Log("mobile");
             Screen.orientation = ScreenOrientation.Portrait;
@@ -110,10 +111,13 @@ public class AspectRatio : MonoBehaviour
                     ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.top = 750;
                     ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.left = 340;
                     ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
+
+                    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().padding.top = 750;
+                    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().cellSize = new Vector2(190, 75);
                 #endregion
 
                 #region Shop Menu
-                    ShopMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 300;
+                ShopMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 300;
                     ShopMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().cellSize = new Vector2(240, 240);
                     ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(-125f, -246f, 125f, 246f);
                     ShopMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(0f, 0f, 0f, 0f);
@@ -212,6 +216,9 @@ public class AspectRatio : MonoBehaviour
                     ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.top = 425;
                     ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.left = 725;
                     ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
+
+                    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().padding.top = 420;
+                    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().cellSize = new Vector2(220, 75);
                 #endregion
 
                 #region Shop Menu
