@@ -55,6 +55,7 @@ public class CombatHandler : NetworkBehaviour
 
     [HideInInspector]
     public float[] Counts;
+
     public Sprite[] tiles;
     [HideInInspector]
     public Image Symbol;
@@ -159,10 +160,10 @@ public class CombatHandler : NetworkBehaviour
     [ClientRpc]
     void RpcUpdate(float currentCharge, float chargeCapacity,Color BarCol)
     {
-        if(isLocalPlayer)
-        {
-            return;
-        }
+        //if(isLocalPlayer)
+        //{
+        //    return;
+        //}
         Bar.fillAmount = currentCharge / chargeCapacity;
         Bar.color = BarCol;
         

@@ -632,6 +632,18 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 6519991398807315969}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &967171507 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5299227846845376210, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3067106725566788851}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &967984008
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178,6 +1190,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1593118061 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3525231103725234098, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3067106725566788851}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1603226108
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1659,6 +1683,22 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1603226108}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1603226111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603226109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8af504b3a04962746b5c179e4ffe4924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combos: {fileID: 0}
+  chains: {fileID: 0}
+  wins: {fileID: 0}
+  currency: {fileID: 2137645773}
 --- !u!1 &1611475216
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,6 +1971,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 66be26b7d2ce7324aa9f4c4394448038, type: 3}
+--- !u!114 &1925489677 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 757006870711395545, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3067106725566788851}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1930778217
 GameObject:
   m_ObjectHideFlags: 0
@@ -2079,6 +2131,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2137576833}
   m_CullTransparentMesh: 0
+--- !u!114 &2137645773 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4483743147930961309, guid: b913706a1c0069f4286d57abece4caf5,
+    type: 3}
+  m_PrefabInstance: {fileID: 1603226108}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1072548922635126357 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2626435040799339174, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
@@ -2091,6 +2155,22 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3067106725566788851}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1072548922635126359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072548922635126357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8af504b3a04962746b5c179e4ffe4924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  combos: {fileID: 1593118061}
+  chains: {fileID: 1925489677}
+  wins: {fileID: 967171507}
+  currency: {fileID: 0}
 --- !u!114 &1072548924498392198 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2626435042157166709, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
