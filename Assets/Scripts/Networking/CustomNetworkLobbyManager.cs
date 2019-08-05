@@ -9,71 +9,114 @@ public class CustomNetworkLobbyManager : NetworkLobbyManager
     [Space(10)]
 
 	//Exposed variables
+	[Tooltip("The build index of this scene.")]
     public int lobbySceneNum = 0;
+	[Tooltip("The port to use.")]
     public int port = 7777;
 
+	[Space(10)]
+
+	//Menu EGO
+	[Tooltip("Lobby menu with host and join functionality.")]
+	public GameObject lobbyMenu;
+	[Tooltip("Waiting room menu with ready up functionality.")]
+	public GameObject waitingMenu;
+
+	//Set initial state
+	private void Start()
+	{
+		waitingMenu.SetActive(false);
+	}
 	//temp. unecessary
-    private void Update()
+	private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        /*if (Input.GetKeyDown(KeyCode.P))
         {
-            NetworkManager.singleton.StopHost();
-        }
+			NetworkLobbyManager.singleton.StopHost();
+        }*/
     }
 
+	#region Starting a game
 	//Start host
-    public void Startuphost()
+	public void Startuphost()
     {
         NetworkServer.Reset();
         SetPort();
         SetIPAddressServer();
-        NetworkManager.singleton.StartHost();
+		NetworkLobbyManager.singleton.StartHost();
+
+		ToggleCanvas(false);
     }
 
-    public void Joingame ()
+	//Join a game
+    public void JoinGame ()
     {
         SetPort();
         SetIPAddressClient();
-        NetworkManager.singleton.StartClient();
+		NetworkLobbyManager.singleton.StartClient();
     }
 
+	public void OnStartClient()
+	{
+		ToggleCanvas(false);
+	}
+
+	//Set port
     void SetPort()
     {
-        NetworkManager.singleton.networkPort = port;
+		NetworkLobbyManager.singleton.networkPort = port;
     }
 
+	//Serverside IP stuff
     void SetIPAddressServer()
     {
         string ipAddress = FindObjectOfType<InputField>().transform.Find("Text").GetComponent<Text>().text;
-        
+		
         if (ipAddress != "")
         {
-            NetworkManager.singleton.serverBindToIP = true;
-            NetworkManager.singleton.serverBindAddress = ipAddress;
+			NetworkLobbyManager.singleton.serverBindToIP = true;
+			NetworkLobbyManager.singleton.serverBindAddress = ipAddress;
         }
     }
 
-    void SetIPAddressClient()
+	//Clientside IP stuff
+	void SetIPAddressClient()
     {
         string ipAddress = FindObjectOfType<InputField>().transform.Find("Text").GetComponent<Text>().text;
 
         if(ipAddress != "")
         {
-            NetworkManager.singleton.networkAddress = ipAddress;
+			NetworkLobbyManager.singleton.networkAddress = ipAddress;
         }
     }
+	#endregion
 
+	#region Scene management
+	//Swap between lobby and waiting room
+	public void ToggleCanvas(bool isLobby)
+	{
+		lobbyMenu.SetActive(isLobby);
+		waitingMenu.SetActive(!isLobby);
+	}
+
+	//Set up references on loading the lobby scene
     private void OnLevelWasLoaded(int level)
     {
         if(level == lobbySceneNum)
         {
-            Button startButton = GameObject.Find("StartHostButton").GetComponent<Button>();
+			lobbyMenu = GameObject.Find("Lobby Panel");
+			waitingMenu = GameObject.Find("Waiting Panel");
+
+			waitingMenu.SetActive(false);
+
+			Button startButton = GameObject.Find("StartHostButton").GetComponent<Button>();
             startButton.onClick.RemoveAllListeners();
             startButton.onClick.AddListener(Startuphost);
 
             Button joinButton = GameObject.Find("JoinButton").GetComponent<Button>();
             joinButton.onClick.RemoveAllListeners();
-            joinButton.onClick.AddListener(Joingame);
+            joinButton.onClick.AddListener(JoinGame);
         }
     }
+	#endregion
 }
