@@ -1216,7 +1216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5431d40dc6916dc4bbfc50d79b79d601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsMobile: 1
+  IsMobile: 0
   Aspectratio: 0
   MainMenu: {fileID: 580918188}
   SettingsMenu: {fileID: 235002650}
@@ -1890,7 +1890,7 @@ PrefabInstance:
     - target: {fileID: 8344712845855016952, guid: b913706a1c0069f4286d57abece4caf5,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -224.95
+      value: -237.5
       objectReference: {fileID: 0}
     - target: {fileID: 8344712845855016952, guid: b913706a1c0069f4286d57abece4caf5,
         type: 3}
@@ -2185,7 +2185,7 @@ PrefabInstance:
     - target: {fileID: 2814965407684017304, guid: b913706a1c0069f4286d57abece4caf5,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 220
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 2814965407684017304, guid: b913706a1c0069f4286d57abece4caf5,
         type: 3}
