@@ -247,8 +247,8 @@ public class AspectRatio : MonoBehaviour
                     ShopMenu.transform.GetChild(4).GetComponent<GridLayoutGroup>().padding.left = 725;
                     ShopMenu.transform.GetChild(4).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
 
-                    ShopMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().padding.top = 420;
-                    ShopMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().cellSize = new Vector2(220, 75);
+                    ShopMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().padding.top = 380;
+                    ShopMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().cellSize = new Vector2(260, 75);
                 #endregion
             }
 
