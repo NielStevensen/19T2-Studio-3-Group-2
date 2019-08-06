@@ -57,22 +57,22 @@ public class AspectRatio : MonoBehaviour
 
                 #region Settings Menu
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.left = 550;
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 650;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 500;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 65);
 
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().padding.top = 750;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().padding.top = 1000;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
 
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.left = -330;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.right = 0;
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 650;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 500;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
 
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().padding.top = 150;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().padding.top = 250;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 45);
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().spacing = new Vector2(0, 25);
 
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().padding.top = 525;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().padding.top = 650;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().spacing = new Vector2(75, 0);
                 #endregion
@@ -187,17 +187,17 @@ public class AspectRatio : MonoBehaviour
 
                 #region Settings Menu
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.left = 975;
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 450;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 525;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().cellSize = new Vector2(230, 55);
 
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().padding.top = 450;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().padding.top = 500;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
 
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.right = 785;
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 450;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 525;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
 
-                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().padding.bottom = 150;
+                    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().padding.bottom = 200;
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().cellSize = new Vector2(500, 45);
                     SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().spacing = new Vector2(0, 25);
 
