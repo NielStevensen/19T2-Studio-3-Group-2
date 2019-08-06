@@ -21,17 +21,19 @@ public class MenuScript : MonoBehaviour
 
     public AudioClip[] SFX;
     public AudioClip[] Music;
+    public Image[] ShopArray;
     public AudioSource MusicSource;
     public AudioSource SFXSource;
+
+    public GreyScale Greyscale;
+    public Canvas MenuCanvas;
+    [SerializeField] private int ArrayCounter = 0;
+
+    public InputField.SubmitEvent SubmitEvent;
 
     private bool GameOver = false;
     private string Name;
     private Color TempColour;
-
-    public GreyScale Greyscale;
-    public Canvas MenuCanvas;
-
-    public InputField.SubmitEvent SubmitEvent;
 
     void Start()
     {
@@ -194,12 +196,50 @@ public class MenuScript : MonoBehaviour
 
     public void OnShopLeftClick()
     {
+        ArrayCounter--;
 
+        if(ArrayCounter == -1)
+        {
+            ArrayCounter = 7;
+        }
+
+        if (ArrayCounter < 4)
+        {
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(true);
+        }
+
+        else
+        {
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(false);
+        }
+
+        Debug.Log(ArrayCounter);
     }
 
     public void OnShopRightClick()
     {
+        ArrayCounter++;
 
+        if(ArrayCounter == 8)
+        {
+            ArrayCounter = 0;
+        }
+
+        if (ArrayCounter > 3)
+        {
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(false);
+        }
+
+        else
+        {
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
+            ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(true);
+        }
+
+        Debug.Log(ArrayCounter);
     }
 
     public void OnEnterName()

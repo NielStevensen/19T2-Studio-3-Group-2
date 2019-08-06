@@ -44,6 +44,11 @@ public class CustomNetworkManager : NetworkManager
         NetworkManager.singleton.networkPort = port;
     }
 
+    public void Home()
+    {
+        SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
+    }
+
 
     private void OnLevelWasLoaded(int level)
     {
