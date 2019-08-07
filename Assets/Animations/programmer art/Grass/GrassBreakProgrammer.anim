@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GrassBreak
+  m_Name: GrassBreakProgrammer
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,16 +20,16 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 115580726369787211, guid: f4f96d12d01a1e744adaad62c90db016,
+      value: {fileID: 7946995767108814450, guid: 9622945a8e2c19740ab899ddb9e64a4f,
         type: 3}
     - time: 0.016666668
-      value: {fileID: -747152907076017051, guid: f4f96d12d01a1e744adaad62c90db016,
+      value: {fileID: -1938888913693172877, guid: 9622945a8e2c19740ab899ddb9e64a4f,
         type: 3}
     - time: 0.033333335
-      value: {fileID: -12015131629736788, guid: f4f96d12d01a1e744adaad62c90db016,
+      value: {fileID: 3211459880379503271, guid: 9622945a8e2c19740ab899ddb9e64a4f,
         type: 3}
     - time: 0.05
-      value: {fileID: 4193163663903387581, guid: f4f96d12d01a1e744adaad62c90db016,
+      value: {fileID: 6097650501292960610, guid: 9622945a8e2c19740ab899ddb9e64a4f,
         type: 3}
     - time: 0.06666667
       value: {fileID: -4971623732904527522, guid: a00b09ea693c4054baefe523dfcf9007,
@@ -56,10 +56,10 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 115580726369787211, guid: f4f96d12d01a1e744adaad62c90db016, type: 3}
-    - {fileID: -747152907076017051, guid: f4f96d12d01a1e744adaad62c90db016, type: 3}
-    - {fileID: -12015131629736788, guid: f4f96d12d01a1e744adaad62c90db016, type: 3}
-    - {fileID: 4193163663903387581, guid: f4f96d12d01a1e744adaad62c90db016, type: 3}
+    - {fileID: 7946995767108814450, guid: 9622945a8e2c19740ab899ddb9e64a4f, type: 3}
+    - {fileID: -1938888913693172877, guid: 9622945a8e2c19740ab899ddb9e64a4f, type: 3}
+    - {fileID: 3211459880379503271, guid: 9622945a8e2c19740ab899ddb9e64a4f, type: 3}
+    - {fileID: 6097650501292960610, guid: 9622945a8e2c19740ab899ddb9e64a4f, type: 3}
     - {fileID: -4971623732904527522, guid: a00b09ea693c4054baefe523dfcf9007, type: 3}
     - {fileID: -8798815326570525454, guid: a00b09ea693c4054baefe523dfcf9007, type: 3}
   m_AnimationClipSettings:

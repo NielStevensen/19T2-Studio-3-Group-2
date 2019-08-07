@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FireBreak
+  m_Name: FireBreakProgrammer
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,16 +20,16 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 7182160664019495988, guid: 40f553f1e9e7b104892406b4ccef635f,
+      value: {fileID: 3433960913837046768, guid: 1912565e61e13e447bfe56a7aa09c62e,
         type: 3}
     - time: 0.016666668
-      value: {fileID: -7748203635283857587, guid: 40f553f1e9e7b104892406b4ccef635f,
+      value: {fileID: -5446273706926505320, guid: 1912565e61e13e447bfe56a7aa09c62e,
         type: 3}
     - time: 0.033333335
-      value: {fileID: -6831507297335287036, guid: 40f553f1e9e7b104892406b4ccef635f,
+      value: {fileID: 4008707423088660879, guid: 1912565e61e13e447bfe56a7aa09c62e,
         type: 3}
     - time: 0.05
-      value: {fileID: 2531576330033042520, guid: 40f553f1e9e7b104892406b4ccef635f,
+      value: {fileID: -6868223701647656774, guid: 1912565e61e13e447bfe56a7aa09c62e,
         type: 3}
     - time: 0.06666667
       value: {fileID: -3360801463758833600, guid: 40f553f1e9e7b104892406b4ccef635f,
@@ -56,10 +56,10 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 7182160664019495988, guid: 40f553f1e9e7b104892406b4ccef635f, type: 3}
-    - {fileID: -7748203635283857587, guid: 40f553f1e9e7b104892406b4ccef635f, type: 3}
-    - {fileID: -6831507297335287036, guid: 40f553f1e9e7b104892406b4ccef635f, type: 3}
-    - {fileID: 2531576330033042520, guid: 40f553f1e9e7b104892406b4ccef635f, type: 3}
+    - {fileID: 3433960913837046768, guid: 1912565e61e13e447bfe56a7aa09c62e, type: 3}
+    - {fileID: -5446273706926505320, guid: 1912565e61e13e447bfe56a7aa09c62e, type: 3}
+    - {fileID: 4008707423088660879, guid: 1912565e61e13e447bfe56a7aa09c62e, type: 3}
+    - {fileID: -6868223701647656774, guid: 1912565e61e13e447bfe56a7aa09c62e, type: 3}
     - {fileID: -3360801463758833600, guid: 40f553f1e9e7b104892406b4ccef635f, type: 3}
     - {fileID: 6082891457934751381, guid: 40f553f1e9e7b104892406b4ccef635f, type: 3}
   m_AnimationClipSettings:

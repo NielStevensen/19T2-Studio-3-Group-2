@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterIdle
+  m_Name: WaterIdleProgrammer
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,7 +20,7 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: -4988839344654109566, guid: a00b09ea693c4054baefe523dfcf9007,
+      value: {fileID: 4314945508558539747, guid: 94db42bdf30b5c249b4e48041600d41b,
         type: 3}
     attribute: m_Sprite
     path: 
@@ -41,7 +41,7 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: -4988839344654109566, guid: a00b09ea693c4054baefe523dfcf9007, type: 3}
+    - {fileID: 4314945508558539747, guid: 94db42bdf30b5c249b4e48041600d41b, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HealIdle
+  m_Name: HealIdleProgrammer
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,7 +20,7 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 1470708185978147499, guid: b561242d756b1074187fb2beefd76b5e,
+      value: {fileID: -2135368638033594109, guid: 0d988983d769f2f42a0044998969c8be,
         type: 3}
     attribute: m_Sprite
     path: 
@@ -41,7 +41,7 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 1470708185978147499, guid: b561242d756b1074187fb2beefd76b5e, type: 3}
+    - {fileID: -2135368638033594109, guid: 0d988983d769f2f42a0044998969c8be, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

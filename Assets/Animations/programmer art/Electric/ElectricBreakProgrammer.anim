@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ElectricBreak
+  m_Name: ElectricBreakProgrammer
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,16 +20,16 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: -360195766788629993, guid: f326e48c039946a4b8416db590edc863,
+      value: {fileID: -1129569258144165450, guid: 82c065c51f16a524a9ed08107ccda4f3,
         type: 3}
     - time: 0.016666668
-      value: {fileID: -3407131468246997475, guid: f326e48c039946a4b8416db590edc863,
+      value: {fileID: -5136418605087602457, guid: 82c065c51f16a524a9ed08107ccda4f3,
         type: 3}
     - time: 0.033333335
-      value: {fileID: 5757632625296417836, guid: f326e48c039946a4b8416db590edc863,
+      value: {fileID: -161331222820284637, guid: 82c065c51f16a524a9ed08107ccda4f3,
         type: 3}
     - time: 0.05
-      value: {fileID: -4685159077192597551, guid: f326e48c039946a4b8416db590edc863,
+      value: {fileID: 4493113064393411388, guid: 82c065c51f16a524a9ed08107ccda4f3,
         type: 3}
     - time: 0.06666667
       value: {fileID: -4971623732904527522, guid: a00b09ea693c4054baefe523dfcf9007,
@@ -56,10 +56,10 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: -360195766788629993, guid: f326e48c039946a4b8416db590edc863, type: 3}
-    - {fileID: -3407131468246997475, guid: f326e48c039946a4b8416db590edc863, type: 3}
-    - {fileID: 5757632625296417836, guid: f326e48c039946a4b8416db590edc863, type: 3}
-    - {fileID: -4685159077192597551, guid: f326e48c039946a4b8416db590edc863, type: 3}
+    - {fileID: -1129569258144165450, guid: 82c065c51f16a524a9ed08107ccda4f3, type: 3}
+    - {fileID: -5136418605087602457, guid: 82c065c51f16a524a9ed08107ccda4f3, type: 3}
+    - {fileID: -161331222820284637, guid: 82c065c51f16a524a9ed08107ccda4f3, type: 3}
+    - {fileID: 4493113064393411388, guid: 82c065c51f16a524a9ed08107ccda4f3, type: 3}
     - {fileID: -4971623732904527522, guid: a00b09ea693c4054baefe523dfcf9007, type: 3}
     - {fileID: -8798815326570525454, guid: a00b09ea693c4054baefe523dfcf9007, type: 3}
   m_AnimationClipSettings:

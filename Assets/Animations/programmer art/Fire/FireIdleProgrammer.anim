@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FireIdle
+  m_Name: FireIdleProgrammer
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,7 +20,7 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 7182160664019495988, guid: 40f553f1e9e7b104892406b4ccef635f,
+      value: {fileID: 3433960913837046768, guid: 1912565e61e13e447bfe56a7aa09c62e,
         type: 3}
     attribute: m_Sprite
     path: 
@@ -41,7 +41,7 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 7182160664019495988, guid: 40f553f1e9e7b104892406b4ccef635f, type: 3}
+    - {fileID: 3433960913837046768, guid: 1912565e61e13e447bfe56a7aa09c62e, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
