@@ -10,110 +10,63 @@ public class CustomLobbyPlayer : NetworkLobbyPlayer
 	[Tooltip("Build index of the lobby scene.")]
 	public int lobbySceneNum;
 
-	//UI objects
-	private Button readyButton;
-	private Text readyButtonText;
-	private Button cycleFighterLeft;
-	private Button cycleFighterRight;
-	private Button cycleTilesLeft;
-	private Button cycleTilesRight;
+	//Reference manager
+	private ReferenceManager references;
 
+	//UI objects
+	//Text objects
+	public Text hostNameText;
+	public Text clientNameText;
+	public Text hostReadyText;
+	public Text clientReadyText;
+	//Cycle buttons
+	public Button cycleFighterLeft;
+	public Button cycleFighterRight;
+	public Button cycleTilesLeft;
+	public Button cycleTilesRight;
+	//Ready button
+	public Button readyButton;
+	public Text readyButtonText;
+	
 	//Retrieve references
 	private void Awake()
 	{
-		readyButton = GameObject.Find("Button Ready").GetComponent<Button>();
-		readyButtonText = readyButton.transform.GetChild(0).GetComponent<Text>();
-		
-		readyButton.onClick.RemoveAllListeners();
-		readyButton.onClick.AddListener(OnReadyClicked);
-
-		cycleFighterLeft = GameObject.Find("Button fighter left").GetComponent<Button>();
-		cycleFighterRight = GameObject.Find("Button fighter right").GetComponent<Button>();
-		cycleTilesLeft = GameObject.Find("Button tiles left").GetComponent<Button>();
-		cycleTilesRight = GameObject.Find("Button tiles right").GetComponent<Button>();
+		RetrieveReferences();
 	}
 
 	private void OnLevelWasLoaded(int level)
 	{
 		if (level == lobbySceneNum)
 		{
-			readyButton = GameObject.Find("Button Ready").GetComponent<Button>();
-			readyButtonText = readyButton.transform.GetChild(0).GetComponent<Text>();
-
-			readyButton.onClick.RemoveAllListeners();
-			readyButton.onClick.AddListener(OnReadyClicked);
-
-			cycleFighterLeft = GameObject.Find("Button fighter left").GetComponent<Button>();
-			cycleFighterRight = GameObject.Find("Button fighter right").GetComponent<Button>();
-			cycleTilesLeft = GameObject.Find("Button tiles left").GetComponent<Button>();
-			cycleTilesRight = GameObject.Find("Button tiles right").GetComponent<Button>();
+			RetrieveReferences();
 		}
 	}
 
-	//Setup stuff when entering the lobby
-	public override void OnClientEnterLobby()
+	//Retrieve references from another script
+	void RetrieveReferences()
 	{
-		base.OnClientEnterLobby();
-		
-		/*if (isLocalPlayer)
-		{
-			SetupLocalPlayer();
-		}
-		else
-		{
-			SetupOtherPlayer();
-		}*/
-	}
+		references = FindObjectOfType<ReferenceManager>();
 
-	//Setup on receiving authority - is this required?
-	public override void OnStartAuthority()
-	{
-		base.OnStartAuthority();
-		
-		//SetupLocalPlayer();
-	}
-	
-	//Set the text and interactability of the ready button as well as define listening
-	void SetupLocalPlayer()
-	{
-		readyButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
-		readyButton.interactable = true;
-		
+		hostNameText = references.hostName;
+		clientNameText = references.clientName;
+		hostReadyText = references.hostReady;
+		clientReadyText = references.clientReady;
+
+		cycleFighterLeft = references.cycleFighterLeft;
+		cycleFighterRight = references.cycleFighterRight;
+		cycleTilesLeft = references.cycleTilesLeft;
+		cycleTilesRight =	references.cycleTilesRight;
+
+		readyButton = references.readyButton;
+		readyButtonText = references.readyButtonText;
+
 		readyButton.onClick.RemoveAllListeners();
 		readyButton.onClick.AddListener(OnReadyClicked);
-	}
-
-	//Set the text and interactability of the ready button
-	void SetupOtherPlayer()
-	{
-		readyButton.transform.GetChild(0).GetComponent<Text>().text = "...";
-		readyButton.interactable = false;
-
-		OnClientReady(false);
-	}
-
-	//Set ready button text and interactability based on ready state
-	public override void OnClientReady(bool readyState)
-	{
-		/*if (readyState)
-		{
-			Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
-			textComponent.text = "READY";
-			readyButton.interactable = false;
-		}
-		else
-		{
-			Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
-			textComponent.text = isLocalPlayer ? "JOIN" : "...";
-			readyButton.interactable = isLocalPlayer;
-		}*/
 	}
 	
 	//Set ready
 	public void OnReadyClicked()
 	{
-		print(readyToBegin);
-
 		if (!readyToBegin)
 		{
 			readyButtonText.text = "UNREADY...";
@@ -133,7 +86,49 @@ public class CustomLobbyPlayer : NetworkLobbyPlayer
 			SendNotReadyToBeginMessage();
 		}
 
+		CmdUpdateReadyText(readyToBegin, isServer);
+
 		StartCoroutine(DelayedReset());
+	}
+
+	//Ripple ready state text update
+	[Command]
+	void CmdUpdateReadyText(bool isReady, bool isHost)
+	{
+		RpcUpdateReadyText(isReady, isHost);
+	}
+
+	//Receive ready state text update
+	[ClientRpc]
+	void RpcUpdateReadyText(bool isReady, bool isHost)
+	{
+		if (isLocalPlayer)
+		{
+			return;
+		}
+
+		if (isReady)
+		{
+			if (isHost)
+			{
+				hostReadyText.text = "READY!";
+			}
+			else
+			{
+				clientReadyText.text = "READY!";
+			}
+		}
+		else
+		{
+			if (isHost)
+			{
+				hostReadyText.text = "NOT READY...";
+			}
+			else
+			{
+				clientReadyText.text = "NOT READY...!";
+			}
+		}
 	}
 
 	//Toggle cycle button interactability

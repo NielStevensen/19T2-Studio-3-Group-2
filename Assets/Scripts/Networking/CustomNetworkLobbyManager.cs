@@ -21,12 +21,7 @@ public class CustomNetworkLobbyManager : NetworkLobbyManager
 	public GameObject lobbyMenu;
 	[Tooltip("Waiting room menu with ready up functionality.")]
 	public GameObject waitingMenu;
-
-	//Set initial state
-	private void Start()
-	{
-		waitingMenu.SetActive(false);
-	}
+	
 	//temp. unecessary
 	private void Update()
     {
@@ -56,7 +51,8 @@ public class CustomNetworkLobbyManager : NetworkLobbyManager
 		NetworkLobbyManager.singleton.StartClient();
     }
 
-	public void OnStartClient()
+	//this doesn't work
+	public override void OnLobbyClientEnter()
 	{
 		ToggleCanvas(false);
 	}
@@ -106,9 +102,7 @@ public class CustomNetworkLobbyManager : NetworkLobbyManager
         {
 			lobbyMenu = GameObject.Find("Lobby Panel");
 			waitingMenu = GameObject.Find("Waiting Panel");
-
-			waitingMenu.SetActive(false);
-
+			
 			Button startButton = GameObject.Find("StartHostButton").GetComponent<Button>();
             startButton.onClick.RemoveAllListeners();
             startButton.onClick.AddListener(Startuphost);
