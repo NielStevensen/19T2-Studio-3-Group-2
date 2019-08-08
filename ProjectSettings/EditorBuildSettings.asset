@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NetworkField.unity
     guid: 9e10a7ec1df728b45b9501fe5d36835b
+  - enabled: 1
+    path: Assets/Scenes/MobileField.unity
+    guid: b9fcd89a27a9051448934c874e767043
   m_configObjects: {}

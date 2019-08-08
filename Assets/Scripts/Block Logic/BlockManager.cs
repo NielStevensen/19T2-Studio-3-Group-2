@@ -150,14 +150,10 @@ public class BlockManager : NetworkBehaviour
 	private List<ComboDetails> comboDetails = new List<ComboDetails>();
 	private List<ChainDetails> chainDetails = new List<ChainDetails>();
 
-	[Space(10)]
-
-	//Sprite sheets
-	[Tooltip("All sprite sheets.")]
-	public SpriteSheet[] spriteSheets = new SpriteSheet[4];
-	[Tooltip("The index of the sprite sheet the player is using.")]
-	public int spriteSheetIndex = 0;
-
+	//Has the game started?
+	[HideInInspector]
+	public bool hasGameStarted = false;
+	
 	//UI objects
 	private MatchUI mui;
     private CombatHandler atkBar;
@@ -188,28 +184,30 @@ public class BlockManager : NetworkBehaviour
 			gameObject.name = "Projected manager";
 		}
 
-		if (isCursorControl)
-        {
-            //Cursor.visible = false;
-            //Cursor.lockState = CursorLockMode.Locked;
-        }
-
 		bottomLeftExtreme = new Vector2(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom);
 		topRightExtreme = new Vector2(transform.position.x + playFieldBounds.right, transform.position.y + playFieldBounds.top);
 
 		displacement3D = new Vector3(blockSize / 2, blockSize / 2, 0);
 		displacement2D = new Vector2(blockSize / 2, blockSize / 2);
 
-		blockMax = blockCount - new Vector2(1, 1);
-		
-		if (isLocalPlayer && isCursorControl)
-		{
-			cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2) - 1, Mathf.Min(2, blockCount.y));
-			
-			cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
+		//Read from save file to determine which control scheme the player is using
 
-			cursorRenderer = cursor.GetComponent<SpriteRenderer>();
+		if (isCursorControl)
+        {
+			//Cursor.visible = false;
+			//Cursor.lockState = CursorLockMode.Locked;
+
+			if (!isServer && isLocalPlayer)
+			{
+				cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2), Mathf.Min(2, blockCount.y));
+
+				cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
+
+				cursorRenderer = cursor.GetComponent<SpriteRenderer>();
+			}
 		}
+		
+		blockMax = blockCount - new Vector2(1, 1);
 		
 		highestBlocks = new GameObject[(int)blockCount.x];
 		undroppedBlocks = new List<GameObject>[(int)blockCount.x];
@@ -224,20 +222,23 @@ public class BlockManager : NetworkBehaviour
             RandomiseTypes();
         }
 
-		if (isLocalPlayer)
-		{
-			int index = 0;
-
-			if (isServer)
-			{
-				index = 1;
-			}
-
-			CmdSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, index);
-		}
-
 		mui = gameObject.GetComponent<MatchUI>();
 		atkBar = gameObject.GetComponent<CombatHandler>();
+
+		//Delay to ensure that the boards generate and input is read after both players have connected
+		if (isLocalPlayer)
+		{
+			if (isServer)
+			{
+				StartCoroutine(WaitToStart(1));
+			}
+			else
+			{
+				CmdSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, 0);
+
+				hasGameStarted = true;
+			}
+		}
 	}
 
 	#region Initial block setup
@@ -312,6 +313,17 @@ public class BlockManager : NetworkBehaviour
 		return BlockTypes.A;
 	}
 	
+	//Wait until the opponent joins, then start the game
+	IEnumerator WaitToStart(int index)
+	{
+		while (NetworkServer.connections.Count < 2)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+
+		CmdSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, index);
+	}
+
 	//Spawn blocks over the network
 	[Command]
 	void CmdSetupBlocks(float xBase, float yBase, int index)
@@ -343,10 +355,20 @@ public class BlockManager : NetworkBehaviour
 				details.blockID = ID;
 				details.coords = new Vector2(x, y);
 				details.type = (BlockTypes)generatedTypes[yCoord + x];
-				details.spriteSheet = spriteSheets[0].spriteSheet;
 				
 				NetworkServer.SpawnWithClientAuthority(block, connectionToClient);
 			}
+		}
+
+		hasGameStarted = true;
+
+		if (isLocalPlayer && isCursorControl)
+		{
+			cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2) - 1, Mathf.Min(2, blockCount.y));
+
+			cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
+
+			cursorRenderer = cursor.GetComponent<SpriteRenderer>();
 		}
 	}
 	#endregion
@@ -358,7 +380,12 @@ public class BlockManager : NetworkBehaviour
         {
             return;
         }
-		
+
+		if (!hasGameStarted)
+		{
+			return;
+		}
+
 		#region Swap input
 		//Handle swap input
 		if (isCursorControl)
@@ -1080,14 +1107,14 @@ public class BlockManager : NetworkBehaviour
 		{
 			allDetails[i] = allBlocksStatic[int.Parse(stringIDs[i])];
 
-			allDetails[i].spriteRenderer.color = Color.grey;
+			//tell blocka to play break animation here
 		}
 
 		yield return new WaitForSeconds(0.375f);
 
 		foreach(BlockDetails details in allDetails)
 		{
-			details.spriteRenderer.color = Color.white;
+			//tell blocks to return to normal here 
 		}
 	}
 	#endregion

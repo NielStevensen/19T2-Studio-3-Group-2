@@ -40,16 +40,7 @@ public class BlockDetails : NetworkBehaviour
 	
 	[Tooltip("The chain this block will contribute to.")]
 	public int chainIndex = -1;
-
-	//Sprite renderer reference
-	[HideInInspector]
-	public SpriteRenderer spriteRenderer;
-
-	//might not be necessary anymore with animator
-	//Sprite sheet for current tile set
-	[HideInInspector]
-	public Sprite[] spriteSheet;
-
+	
     //Animator
     [HideInInspector]
     public Animator anim;
@@ -62,8 +53,6 @@ public class BlockDetails : NetworkBehaviour
 	//Setup
 	void Awake()
     {
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-
         anim = GetComponent<Animator>();
         typeHash = Animator.StringToHash("Type");
         trigHash = Animator.StringToHash("Break");
@@ -99,7 +88,6 @@ public class BlockDetails : NetworkBehaviour
 		
 		master.allBlocks[(int)coords.x, (int)coords.y] = gameObject;
 		master.allBlocksStatic[blockID] = this;
-		spriteSheet = master.spriteSheets[master.spriteSheetIndex].spriteSheet;
 	}
 
 	#region Type update
