@@ -44,13 +44,5 @@ public class FlipUI : NetworkBehaviour
             }
         }
 #endif
-#if UNITY_ANDROID
-       //rearagnge UI
-#endif
     }
-
-    public void setSets ()
-    {
-    }
-
 }
