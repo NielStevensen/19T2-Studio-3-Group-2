@@ -209,20 +209,28 @@ public class BlockManager : NetworkBehaviour
 		displacement3D = new Vector3(blockSize / 2, blockSize / 2, 0);
 		displacement2D = new Vector2(blockSize / 2, blockSize / 2);
 
-		//Read from save file to determine which control scheme the player is using
+		if (isLocalPlayer)
+		{
+			//Read from save file to determine which control scheme the player is using
+			#if UNITY_EDITOR || UNITY_STANDALONE
+			isCursorControl = SaveSystem.LoadSave().isCursorControl;
+			#elif UNITY_ANDROID
+			isCursorControl = false;
+			#endif
 
-		if (isCursorControl)
-        {
-			//Cursor.visible = false;
-			//Cursor.lockState = CursorLockMode.Locked;
-
-			if (!isServer && isLocalPlayer)
+			if (isCursorControl)
 			{
-				cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2), Mathf.Min(2, blockCount.y));
+				//Cursor.visible = false;
+				//Cursor.lockState = CursorLockMode.Locked;
 
-				cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
+				if (!isServer)
+				{
+					cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2), Mathf.Min(2, blockCount.y));
 
-				cursorRenderer = cursor.GetComponent<SpriteRenderer>();
+					cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
+
+					cursorRenderer = cursor.GetComponent<SpriteRenderer>();
+				}
 			}
 		}
 		
@@ -291,8 +299,6 @@ public class BlockManager : NetworkBehaviour
         {
             for (int x = 0; x < blockCount.x; x++)
             {
-                print(allBlocks[x, y] == null);
-
                 allBlocks[x, y].GetComponent<BlockDetails>().anim.SetInteger("Set", setIndex);
             }
         }
@@ -1139,6 +1145,10 @@ public class BlockManager : NetworkBehaviour
 			return;
 		}
 
+		#if UNITY_ANDROID
+		return;
+		#endif
+
 		BreakProjectedBlocks(listIDs);
 	}
 
@@ -1211,7 +1221,7 @@ public class BlockManager : NetworkBehaviour
 			return;
 		}
 
-		#region Check for matches
+	#region Check for matches
 		List<int> matchingHorizontalIndices = new List<int>();
 		List<int> matchingVerticalIndices = new List<int>() { (int)pos.y };
 		
@@ -1263,7 +1273,7 @@ public class BlockManager : NetworkBehaviour
 				break;
 			}
 		}
-		#endregion
+	#endregion
 
 		//If no vertical match was made, add the swapped block to horizontal matches
 		if (matchingHorizontalIndices.Count >= 2 && matchingVerticalIndices.Count < 3)
@@ -1271,7 +1281,7 @@ public class BlockManager : NetworkBehaviour
 			matchingHorizontalIndices.Add((int)pos.x);
 		}
 
-		#region Calculate combos and chains
+	#region Calculate combos and chains
 		//Calculate combos and chains
 		int comboCount = 0;
 		int newChainIndex = chainIndex;
@@ -1284,7 +1294,7 @@ public class BlockManager : NetworkBehaviour
 				selectedBlock = null;
 			}
 
-			#region Combo counting
+	#region Combo counting
 			//Count matching blocks to determine combo count
 			int horizontalMatchCount = matchingHorizontalIndices.Count;
 			int verticalMatchCount = matchingVerticalIndices.Count;
@@ -1336,7 +1346,7 @@ public class BlockManager : NetworkBehaviour
 
 				comboDetails.Add(new ComboDetails(newChainIndex, comboInput));
 			}
-			#endregion		
+	#endregion
         }
 		else if(matchingHorizontalIndices.Count < 2 || matchingVerticalIndices.Count < 3)
 		{
@@ -1367,9 +1377,9 @@ public class BlockManager : NetworkBehaviour
 				}
 			}
 		}
-		#endregion
+	#endregion
 
-		#region Handle breaking and dropping
+	#region Handle breaking and dropping
 		//Break matched blocks and drop new blocks
 		if (matchingHorizontalIndices.Count >= 2)
 		{
@@ -1385,7 +1395,7 @@ public class BlockManager : NetworkBehaviour
 			
 			StartCoroutine(HandleBlockDrop((int)pos.x, matchingVerticalIndices, newChainIndex));
 		}
-		#endregion
+	#endregion
 	}
 
 	//Check if the block at the provided indices is not null and is the right type

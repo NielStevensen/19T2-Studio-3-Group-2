@@ -8,10 +8,13 @@ public class CustomNetworkManager : NetworkManager
 {
     [Space(10)]
 
+	//Network manager values
+	[Tooltip("The build index of this scene.")]
     public int lobbySceneNum = 0;
+	[Tooltip("The port to use.")]
     public int port = 7777;
-
-    private void Update()
+	
+	private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
