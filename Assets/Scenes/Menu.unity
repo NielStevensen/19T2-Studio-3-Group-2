@@ -4094,6 +4094,11 @@ PrefabInstance:
       propertyPath: m_Volume
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7347615284332901389, guid: 44a5198198739b248b96fabd3aa07e78,
+        type: 3}
+      propertyPath: MouseOver
+      value: 
+      objectReference: {fileID: 8300000, guid: 70e02441ad3cd8f488092b6a4933e446, type: 3}
     - target: {fileID: 5762781538682406303, guid: 44a5198198739b248b96fabd3aa07e78,
         type: 3}
       propertyPath: m_LocalPosition.x
