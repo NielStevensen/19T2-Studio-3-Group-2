@@ -13,7 +13,6 @@ public class AspectRatio : MonoBehaviour
     private Canvas MainCanvas;
 
     [Header("General")]
-    [SerializeField] private bool IsMobile = false;
     [SerializeField] private float Aspectratio;
 
     [Header("Main")]
@@ -35,7 +34,7 @@ public class AspectRatio : MonoBehaviour
         Width = Screen.width;
         Height = Screen.height;
 
-        if (IsMobile == true)
+        if (Application.isMobilePlatform == true)
         {
             Debug.Log("mobile");
             Screen.orientation = ScreenOrientation.Portrait;
@@ -290,7 +289,7 @@ public class AspectRatio : MonoBehaviour
                 #endregion
 
                 #region HomeButton
-                HomeButton.GetComponent<GridLayoutGroup>().padding.top = 550;
+                    HomeButton.GetComponent<GridLayoutGroup>().padding.top = 550;
                 #endregion
             }
 
