@@ -23,13 +23,14 @@ public class CombatHandler : NetworkBehaviour
     public CombatHandler opponent;
     public CombatHandler[] scriptRefs;
     public GameObject statUI;
+    public Shader barcolourchange;
 
-    public GameObject classSelection;
     public float attack;
     public float defence;
     public float dmgMod;
     public float defMod;
     public string ability;
+    bool hadOpponent = false;
 
     [HideInInspector]
     public Image Bar;
@@ -83,17 +84,22 @@ public class CombatHandler : NetworkBehaviour
     #endregion;
     private void Start()
     {
+        Bar.material = new Material(barcolourchange);
+        Bar.material.renderQueue = 2001;
+        Bar.material.SetTexture("_TexTure", Bar.sprite.texture);
         GetComponentInChildren<Canvas>().worldCamera = Camera.main;
-        if(GameObject.FindObjectsOfType<CombatHandler>().Length  > 1)
+        if (GameObject.FindObjectsOfType<CombatHandler>().Length > 1)
         {
             scriptRefs = GameObject.FindObjectsOfType<CombatHandler>();
             foreach (CombatHandler a in scriptRefs)
             {
                 if (a != this)
-                { 
+                {
                     // set a reference to opponents script then refrence yourself
                     opponent = a;
                     opponent.opponent = this;
+                    hadOpponent = true;
+                    opponent.hadOpponent = true;
                 }
             }
         }
@@ -105,7 +111,7 @@ public class CombatHandler : NetworkBehaviour
         {
             Combos.Add(comboCount);
         }
-        for (int a = 0; a < 5; a ++)
+        for (int a = 0; a < 5; a++)
         {
             if (a < 4 && colour[a] > 0)
             {
@@ -138,28 +144,28 @@ public class CombatHandler : NetworkBehaviour
         switch (currentType)
         {
             case 0:
-                Bar.color = Color.red;
+                Bar.material.color = Color.red;
                 break;
             case 1:
-                Bar.color = Color.yellow;
+                Bar.material.color = Color.yellow;
                 break;
             case 2:
-                Bar.color = Color.green;
+                Bar.material.color = Color.green;
                 break;
             case 3:
-                Bar.color = Color.blue;
+                Bar.material.color = Color.blue;
                 break;
         }
         Barcolour = Bar.color;
         if (opponent != null)
         {
-            CmdUpdate(Current, capacity,currentType,health,maxhealth);
+            CmdUpdate(Current, capacity, currentType, health, maxhealth);
         }
     }
     [Command]
     void CmdUpdate(float currentCharge, float chargeCapacity, int typenum, float health, float maxhealth)
     {
-        RpcUpdate(currentCharge,chargeCapacity, typenum, health,maxhealth);
+        RpcUpdate(currentCharge, chargeCapacity, typenum, health, maxhealth);
     }
 
     [ClientRpc]
@@ -173,16 +179,16 @@ public class CombatHandler : NetworkBehaviour
         switch (typenum) // update colour based on the specified index
         {
             case 0:
-                Bar.color = Color.red;
+                Bar.material.color = Color.red;
                 break;
             case 1:
-                Bar.color = Color.yellow;
+                Bar.material.color = Color.yellow;
                 break;
             case 2:
-                Bar.color = Color.green;
+                Bar.material.color = Color.green;
                 break;
             case 3:
-                Bar.color = Color.blue;
+                Bar.material.color = Color.blue;
                 break;
         }
         Symbol.sprite = tiles[typenum]; // change bar to type specified by cmd
@@ -217,8 +223,8 @@ public class CombatHandler : NetworkBehaviour
         }
         else
         {
-            opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * ((100-(defence + defMod)) /100));
-            if(isleech) health += (Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100)/2;
+            opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100));
+            if (isleech) health += (Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100) / 2;
             isleech = false;
             opponent.defMod = 0;
             opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
@@ -266,9 +272,20 @@ public class CombatHandler : NetworkBehaviour
                     return;
             }
         }
+        if(opponent == null && hadOpponent)
+        {
+            if (isClient)
+            {
+                NetworkManager.singleton.StopClient();
+            }
+            else
+            {
+                NetworkManager.singleton.StopHost();
+            }
+        }
 
         //check win and lose conditions
-        if (opponent != null && isLocalPlayer)
+        if (opponent!= null && isLocalPlayer)
         {
             if (opponent.health <= 0)
             {
@@ -288,7 +305,7 @@ public class CombatHandler : NetworkBehaviour
         }
     }
 
-    public void printStats( GameObject stats)
+    public void printStats(GameObject stats)
     {
         //sort and print combos
         Combos.Sort();
@@ -297,17 +314,17 @@ public class CombatHandler : NetworkBehaviour
 
         List<int> comboCount = new List<int>();
 
-        for(int i = 0; i < highestValue; i++)
+        for (int i = 0; i < highestValue; i++)
         {
             comboCount.Add(0);
         }
 
-        for(int i = 0; i < Combos.Count; i++)
+        for (int i = 0; i < Combos.Count; i++)
         {
             comboCount[Combos[i] - 1]++;
         }
 
-        if(comboCount.Count > 3)
+        if (comboCount.Count > 3)
         {
             for (int a = 3; a < comboCount.Count; a++)
             {
@@ -379,7 +396,7 @@ public class CombatHandler : NetworkBehaviour
             data.Wins += 1;
             data.currency += 10;
         }
-       
+
         //update highest if it higher than current save
         if (Combos.Count > 0 && Combos[Combos.Count - 1] > data.HighestCombo)
         {

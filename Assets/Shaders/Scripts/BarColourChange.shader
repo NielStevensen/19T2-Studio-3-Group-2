@@ -4,7 +4,7 @@
 	{
 		 _Color("BarColour", Color) = (1,1,1,1)
 		 _TexTure("BarTexture", 2D) = "white" {}
-		 _Range("Brightness",Range(0,10)) = 7.5
+		 _Range("Brightness",Range(0,10)) = 2
 	}
 
 		SubShader

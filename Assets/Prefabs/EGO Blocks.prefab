@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_Material: {fileID: 2100000, guid: 863eb968d05a0924e9ad4674ee7b4e1d, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 0.309
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -290,7 +290,7 @@ RectTransform:
   m_GameObject: {fileID: 6510191048144080613}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.1062539, y: 1.6524494, z: 1.153}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 833687575}
   m_RootOrder: 6
@@ -298,7 +298,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -617, y: -490}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 300, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4630683613313427901
 CanvasRenderer:
@@ -330,12 +330,12 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -400,8 +400,8 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: d13b31e9101cdb542a51ae72042f5e56, type: 2}
+  m_Color: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -567,8 +567,7 @@ MonoBehaviour:
   opponent: {fileID: 0}
   scriptRefs: []
   statUI: {fileID: 6189224303237009101, guid: bb21e8808fcaacf41b631ddefce4a91b, type: 3}
-  classSelection: {fileID: 7150710300330844436, guid: 2925e75b5d5c6ce40a2e959344d8627f,
-    type: 3}
+  barcolourchange: {fileID: 4800000, guid: 9ad34dc96660f2d4fbb82243670494bc, type: 3}
   attack: 10
   defence: 10
   dmgMod: 1
@@ -640,6 +639,8 @@ MonoBehaviour:
   - {fileID: 8242841171020146010}
   - {fileID: 1368261789865177955}
   - {fileID: 7074949194183948419}
+  - {fileID: 6925582244679016246}
+  - {fileID: 6510191048144080613}
   reverseFill:
   - {fileID: 7343074089949593827}
   - {fileID: 1812728709786534928}
