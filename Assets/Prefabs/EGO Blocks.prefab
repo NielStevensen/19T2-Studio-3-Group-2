@@ -592,6 +592,8 @@ MonoBehaviour:
   - {fileID: 115580726369787211, guid: f4f96d12d01a1e744adaad62c90db016, type: 3}
   - {fileID: -4988839344654109566, guid: a00b09ea693c4054baefe523dfcf9007, type: 3}
   Symbol: {fileID: 4151175466297621438}
+  healthSymbol: {fileID: 8820523502845851175}
+  nameField: {fileID: 2901726483498987329}
   myType: 0
   Chains: 
   Combos: 

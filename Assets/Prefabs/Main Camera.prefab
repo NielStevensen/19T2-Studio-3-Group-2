@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6519991399674603306}
   - component: {fileID: 6519991399674603308}
   - component: {fileID: 9149965192570505300}
+  - component: {fileID: 4990575091101489569}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -98,3 +99,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clientManager: {fileID: 0}
   projectedManager: {fileID: 0}
+--- !u!114 &4990575091101489569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6519991399674603307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67f44d7f8c9132c47b533f484ca2a9af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hostTileExamples: []
+  clientTileExamples: []
+  hostFighter: {fileID: 0}
+  clientFighter: {fileID: 0}
+  hostType: {fileID: 0}
+  clientType: {fileID: 0}
+  fighters: []
+  sets: []

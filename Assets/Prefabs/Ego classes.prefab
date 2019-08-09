@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4647531085725613380}
   - component: {fileID: 2552389682044271994}
   - component: {fileID: 4367432977399287661}
-  - component: {fileID: 4784771719554579612}
   m_Layer: 5
   m_Name: class select (4)
   m_TagString: Untagged
@@ -120,7 +119,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4784771719554579612}
+      - m_Target: {fileID: 0}
         m_MethodName: setclass
         m_Mode: 1
         m_Arguments:
@@ -133,30 +132,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &4784771719554579612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 243503371801319210}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0549be67fe8fecc4cacadb8285180d32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats:
-    element: 2
-    maxHealth: 540
-    attack: 21
-    defence: 19
-    ability: 
-  refrence: {fileID: 0}
-  buttons:
-  - {fileID: 1285101263543000634}
-  - {fileID: 6766802344170741661}
-  - {fileID: 6255423503614389535}
-  - {fileID: 243503371801319210}
 --- !u!1 &639998675682974683
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +325,6 @@ GameObject:
   - component: {fileID: 7691310061446043043}
   - component: {fileID: 5700463472918655572}
   - component: {fileID: 321572366873736573}
-  - component: {fileID: 490403668332569686}
   m_Layer: 5
   m_Name: class select (1)
   m_TagString: Untagged
@@ -458,7 +432,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 490403668332569686}
+      - m_Target: {fileID: 0}
         m_MethodName: setclass
         m_Mode: 1
         m_Arguments:
@@ -471,30 +445,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &490403668332569686
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1285101263543000634}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0549be67fe8fecc4cacadb8285180d32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats:
-    element: 2
-    maxHealth: 540
-    attack: 21
-    defence: 19
-    ability: 
-  refrence: {fileID: 0}
-  buttons:
-  - {fileID: 1285101263543000634}
-  - {fileID: 6766802344170741661}
-  - {fileID: 6255423503614389535}
-  - {fileID: 243503371801319210}
 --- !u!1 &2212683964135093578
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,7 +536,6 @@ GameObject:
   - component: {fileID: 7011932599004087023}
   - component: {fileID: 1484944362173314726}
   - component: {fileID: 4091083171350795829}
-  - component: {fileID: 5659556065749761328}
   m_Layer: 5
   m_Name: class select (3)
   m_TagString: Untagged
@@ -694,7 +643,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5659556065749761328}
+      - m_Target: {fileID: 0}
         m_MethodName: setclass
         m_Mode: 1
         m_Arguments:
@@ -707,30 +656,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &5659556065749761328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6255423503614389535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0549be67fe8fecc4cacadb8285180d32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats:
-    element: 2
-    maxHealth: 540
-    attack: 21
-    defence: 19
-    ability: 
-  refrence: {fileID: 0}
-  buttons:
-  - {fileID: 1285101263543000634}
-  - {fileID: 6766802344170741661}
-  - {fileID: 6255423503614389535}
-  - {fileID: 243503371801319210}
 --- !u!1 &6766802344170741661
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,7 +668,6 @@ GameObject:
   - component: {fileID: 3270908788090132272}
   - component: {fileID: 322412986437647668}
   - component: {fileID: 3362542791110626664}
-  - component: {fileID: 1261764366163759128}
   m_Layer: 5
   m_Name: class select (2)
   m_TagString: Untagged
@@ -851,7 +775,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1261764366163759128}
+      - m_Target: {fileID: 0}
         m_MethodName: setclass
         m_Mode: 1
         m_Arguments:
@@ -864,30 +788,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &1261764366163759128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6766802344170741661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0549be67fe8fecc4cacadb8285180d32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  stats:
-    element: 2
-    maxHealth: 540
-    attack: 21
-    defence: 19
-    ability: 
-  refrence: {fileID: 0}
-  buttons:
-  - {fileID: 1285101263543000634}
-  - {fileID: 6766802344170741661}
-  - {fileID: 6255423503614389535}
-  - {fileID: 243503371801319210}
 --- !u!1 &7150710300330844436
 GameObject:
   m_ObjectHideFlags: 0

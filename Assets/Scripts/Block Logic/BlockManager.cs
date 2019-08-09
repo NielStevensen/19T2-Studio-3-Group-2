@@ -150,6 +150,16 @@ public class BlockManager : NetworkBehaviour
 	private List<ComboDetails> comboDetails = new List<ComboDetails>();
 	private List<ChainDetails> chainDetails = new List<ChainDetails>();
 
+    //Save data
+    [SyncVar]
+    private bool isGameHost = false;
+    [SyncVar]
+    private int fighterIndex = -1;
+    [SyncVar]
+    private int setIndex = -1;
+    [SyncVar]
+    private string displayName = "Player";
+
 	//Has the game started?
 	[HideInInspector]
 	public bool hasGameStarted = false;
@@ -183,6 +193,15 @@ public class BlockManager : NetworkBehaviour
 
 			gameObject.name = "Projected manager";
 		}
+
+        if (isLocalPlayer)
+        {
+            SaveData data = SaveSystem.LoadSave();
+
+            CmdSetUIValues(isServer, data.fighterIndex, data.tileSetIndex, data.profileName);
+        }
+
+        StartCoroutine(SetUI());
 
 		bottomLeftExtreme = new Vector2(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom);
 		topRightExtreme = new Vector2(transform.position.x + playFieldBounds.right, transform.position.y + playFieldBounds.top);
@@ -241,9 +260,48 @@ public class BlockManager : NetworkBehaviour
 		}
 	}
 
-	#region Initial block setup
-	//Generate the first set of randomised blocks. Prevent spawning matching blocks in lines of 3 or more
-	void RandomiseTypes()
+    #region Initial UI setup
+    //Set values to sync
+    [Command]
+    void CmdSetUIValues(bool _isGameHost, int _fighterIndex, int _setIndex, string _name)
+    {
+        isGameHost = _isGameHost;
+        fighterIndex = _fighterIndex;
+        setIndex = _setIndex;
+        displayName = _name;
+    }
+
+    //Wait to receive values before seting up UI
+    IEnumerator SetUI()
+    {
+        while(fighterIndex == -1 || setIndex == -1)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        FindObjectOfType<UiSetup>().SetupUI(isGameHost, fighterIndex, setIndex);
+        GetComponent<CombatHandler>().UiLayout(setIndex, fighterIndex, displayName);
+
+        while (!hasGameStarted)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        for (int y = 0; y < blockCount.y; y++)
+        {
+            for (int x = 0; x < blockCount.x; x++)
+            {
+                print(allBlocks[x, y] == null);
+
+                allBlocks[x, y].GetComponent<BlockDetails>().anim.SetInteger("Set", setIndex);
+            }
+        }
+    }
+    #endregion
+
+    #region Initial block setup
+    //Generate the first set of randomised blocks. Prevent spawning matching blocks in lines of 3 or more
+    void RandomiseTypes()
     {
         int yCoord;
 
@@ -355,7 +413,7 @@ public class BlockManager : NetworkBehaviour
 				details.blockID = ID;
 				details.coords = new Vector2(x, y);
 				details.type = (BlockTypes)generatedTypes[yCoord + x];
-				
+
 				NetworkServer.SpawnWithClientAuthority(block, connectionToClient);
 			}
 		}
@@ -994,10 +1052,6 @@ public class BlockManager : NetworkBehaviour
 			}
 			#endregion
 
-			//Sync values
-			string changeIDs = "";
-			string changeTypes = "";
-
 			#region Drop blocks above the board
 			//Drop the blocks
 			for (int i = 0; i < blocksToDrop.Count; i++)
@@ -1022,9 +1076,6 @@ public class BlockManager : NetworkBehaviour
 				details.type = newType;
 				details.UpdateType();
 
-				changeIDs += details.blockID + "/";
-				changeTypes += (int)newType + "/";
-
 				if (details.chainIndex == -1)
 				{
 					details.chainIndex = chainIndex;
@@ -1042,11 +1093,6 @@ public class BlockManager : NetworkBehaviour
 				details.movementCoroutine = StartCoroutine(DropBlock(details.gameObject, details, CoordToPosition(xCoord, newY), chainIndex));
 				
 				nullCount--;
-			}
-
-			if(changeIDs.Length > 0)
-			{
-				CmdUpdateProjectedBlocks(changeIDs, changeTypes);
 			}
 			#endregion
 		}
@@ -1076,7 +1122,6 @@ public class BlockManager : NetworkBehaviour
 		}
 	}
 
-	//might not be necessary anymore with network animator
 	#region Sync Breaking
 	//Command projected blocks to break
 	[Command]
@@ -1094,69 +1139,27 @@ public class BlockManager : NetworkBehaviour
 			return;
 		}
 
-		StartCoroutine(BreakProjectedBlocks(listIDs));
+		BreakProjectedBlocks(listIDs);
 	}
 
 	//Break and restore projected blocks
-	IEnumerator BreakProjectedBlocks(string listIDs)
+	void BreakProjectedBlocks(string listIDs)
 	{
 		string[] stringIDs = listIDs.Split('/');
 		BlockDetails[] allDetails = new BlockDetails[stringIDs.Length - 1];
 
-		for (int i = 0; i < stringIDs.Length - 1; i++)
-		{
-			allDetails[i] = allBlocksStatic[int.Parse(stringIDs[i])];
+        for (int i = 0; i < stringIDs.Length - 1; i++)
+        {
+            allDetails[i] = allBlocksStatic[int.Parse(stringIDs[i])];
 
-			//tell blocka to play break animation here
-		}
+            //tell blocka to play break animation here
 
-		yield return new WaitForSeconds(0.375f);
-
-		foreach(BlockDetails details in allDetails)
-		{
-			//tell blocks to return to normal here 
-		}
+            allDetails[i].anim.SetTrigger(allDetails[i].trigHash);
+            Debug.Log(allDetails[i].blockID);
+        }
 	}
 	#endregion
 
-	#region Sync new types
-	//Command projected blocks to break
-	[Command]
-	void CmdUpdateProjectedBlocks(string listIDs, string listTypes)
-	{
-		RpcUpdateProjectedBlocks(listIDs, listTypes);
-	}
-
-	//Start breaking projected blocks
-	[ClientRpc]
-	void RpcUpdateProjectedBlocks(string listIDs, string listTypes)
-	{
-		if (isLocalPlayer)
-		{
-			return;
-		}
-
-		StartCoroutine(UpdateProjectedBlocks(listIDs, listTypes));
-	}
-
-	//Break and restore projected blocks
-	IEnumerator UpdateProjectedBlocks(string listIDs, string listTypes)
-	{
-		string[] stringIDs = listIDs.Split('/');
-		string[] stringTypes = listTypes.Split('/');
-		
-		yield return new WaitForEndOfFrame();
-
-		for (int i = 0; i < stringIDs.Length - 1; i++)
-		{
-			BlockDetails details = allBlocksStatic[int.Parse(stringIDs[i])];
-
-			details.type = (BlockTypes)int.Parse(stringTypes[i]);
-			details.UpdateType();
-		}
-	}
-	#endregion
-	
 	//Control block falling and align if necessary
 	IEnumerator DropBlock(GameObject obj, BlockDetails details, Vector3 destination, int chainIndex)
 	{

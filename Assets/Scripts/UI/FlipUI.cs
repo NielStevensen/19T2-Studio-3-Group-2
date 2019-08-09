@@ -10,7 +10,7 @@ public class FlipUI : NetworkBehaviour
     public GameObject[] flip;
     public Image[] reverseFill;
     public Material customShader;
-    public void  Start()
+    public void Start()
     {
 #if UNITY_EDITOR || UNITY_STANDALONE
         if (isServer)
@@ -19,7 +19,7 @@ public class FlipUI : NetworkBehaviour
             {
                 foreach (GameObject a in flip)
                 {
-                    a.transform.localScale = new Vector3(-1, 1, 1);
+                    a.transform.localScale = new Vector3(a.transform.localScale.x * -1, a.transform.localScale.y, a.transform.localScale.z);
                 }
 
                 foreach (Image a in reverseFill)
@@ -34,7 +34,7 @@ public class FlipUI : NetworkBehaviour
             {
                 foreach (GameObject a in flip)
                 {
-                    a.transform.localScale = new Vector3(-1, 1, 1);
+                    a.transform.localScale = new Vector3(a.transform.localScale.x * -1, a.transform.localScale.y, a.transform.localScale.z);
                 }
 
                 foreach (Image a in reverseFill)
@@ -43,9 +43,14 @@ public class FlipUI : NetworkBehaviour
                 }
             }
         }
-        #endif
+#endif
 #if UNITY_ANDROID
        //rearagnge UI
 #endif
     }
+
+    public void setSets ()
+    {
+    }
+
 }

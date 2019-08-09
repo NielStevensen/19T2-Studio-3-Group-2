@@ -60,6 +60,11 @@ public class CombatHandler : NetworkBehaviour
     [HideInInspector]
     public Image Symbol;
 
+    //[HideInInspector]
+    public Image healthSymbol;
+
+    public Text nameField;
+
     public int myType;
 
     [SyncVar]
@@ -366,15 +371,8 @@ public class CombatHandler : NetworkBehaviour
 
     void UpdateSave()
     {
-        SaveData data;
-        if (SaveSystem.LoadSave() != null)
-        {
-            data = SaveSystem.LoadSave();
-        }
-        else
-        {
-            data = new SaveData(0, 0, 0, 0);
-        }
+        SaveData data = SaveSystem.LoadSave();
+
         //if the player win add 1 win to total wins
         if (didWin)
         {
@@ -404,5 +402,14 @@ public class CombatHandler : NetworkBehaviour
         Counts[myType] = secondatk; // set power for second attack
         dmgMod = .6f;
         Attack();
+    }
+
+    public void UiLayout(int setIndex, int fighterIndex, string name)
+    {
+        tiles = FindObjectOfType<UiSetup>().sets[setIndex].set;
+        healthSymbol.sprite = tiles[4];
+
+        Symbol.sprite = tiles[AvatarStats.allFighters[fighterIndex].element];
+        nameField.text = name;
     }
 }

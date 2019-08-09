@@ -103,8 +103,6 @@ MonoBehaviour:
   isInteractable: 1
   isFalling: 0
   chainIndex: -1
-  spriteRenderer: {fileID: 0}
-  spriteSheet: []
   anim: {fileID: 0}
   typeHash: 0
   trigHash: 0
@@ -195,7 +193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Animator: {fileID: -2723765428424793118}
-  m_ParameterSendBits: 0
+  m_ParameterSendBits: 1
   param0: 
   param1: 
   param2: 

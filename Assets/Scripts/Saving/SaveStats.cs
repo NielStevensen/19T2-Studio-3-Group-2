@@ -53,12 +53,4 @@ public class SaveData
 		Wins = info.Wins;
 		currency = info.currency;
     }
-
-    public SaveData(int a, int b, int c, int d)
-    {
-		HighestCombo = a;
-		HighestChain = b;
-		Wins = c;
-		currency = 0;
-    }
 }
