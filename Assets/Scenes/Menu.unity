@@ -757,8 +757,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1040905256}
-        m_MethodName: OnBackClick
+      - m_Target: {fileID: 1603226112}
+        m_MethodName: OnPurchaseCurrency
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

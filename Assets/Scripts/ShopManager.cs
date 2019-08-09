@@ -107,6 +107,12 @@ public class ShopManager : MonoBehaviour
 	//Purchase ingame currency
 	public void OnPurchaseCurrency()
 	{
-		//monetisation stuff goes here
-	}
+        data.currency++;
+
+        SaveSystem.Save(data);
+
+        currencyText.text = data.currency.ToString();
+
+        Application.OpenURL("https://gords.itch.io/fantasy-puzzle-arena");
+    }
 }
