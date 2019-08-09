@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 
 [System.Serializable]
@@ -255,16 +256,7 @@ public class BlockManager : NetworkBehaviour
 		//Delay to ensure that the boards generate and input is read after both players have connected
 		if (isLocalPlayer)
 		{
-			if (isServer)
-			{
-				StartCoroutine(WaitToStart(1));
-			}
-			else
-			{
-				CmdSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, 0);
-
-				hasGameStarted = true;
-			}
+			StartCoroutine(WaitToStart(isServer? 1 : 0));
 		}
 	}
 
@@ -294,6 +286,11 @@ public class BlockManager : NetworkBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
+
+		while(allBlocks[0, 0] == null)
+		{
+			yield return new WaitForEndOfFrame();
+		}
 
         for (int y = 0; y < blockCount.y; y++)
         {
@@ -377,15 +374,69 @@ public class BlockManager : NetworkBehaviour
 		return BlockTypes.A;
 	}
 	
-	//Wait until the opponent joins, then start the game
+	//Wait until the opponent joins, do a countdown, then start the game
 	IEnumerator WaitToStart(int index)
 	{
-		while (NetworkServer.connections.Count < 2)
+		//If this is the server, wait until an opponent connects
+		if (isServer)
+		{
+			while (NetworkServer.connections.Count < 2)
+			{
+				yield return new WaitForEndOfFrame();
+			}
+		}
+		
+		//Connection info pop up fields
+		float elapsedTime = 0.0f;
+		int timeDisplay = 10;
+		GameObject connectionPopUp = GameObject.Find("Canvas Connection Info");
+		Text popUpText = connectionPopUp.GetComponentInChildren<Text>();
+		
+		//While the countdown is still going(server) or the game hasn't started(client), maintain the pop up
+		while (ShouldKeepPopUp(elapsedTime))
+		{
+			int newDisplay = Mathf.Max(Mathf.FloorToInt(2.99f - elapsedTime), 0);
+
+			if (timeDisplay > newDisplay)
+			{
+				timeDisplay = newDisplay;
+
+				popUpText.text = "Match starts in " + timeDisplay;
+			}
+
+			elapsedTime += Time.deltaTime;
+
+			yield return new WaitForEndOfFrame();
+		}
+
+		//Communicate that the game has started
+		if (isServer)
+		{
+			CmdCommunicateGameStart();
+		}
+		
+		//Wait until everyone receives the command to start
+		while (!hasGameStarted)
 		{
 			yield return new WaitForEndOfFrame();
 		}
 
+		connectionPopUp.SetActive(false);
+
 		CmdSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, index);
+	}
+
+	//Get whether or not the pop up should be maitained
+	bool ShouldKeepPopUp(float input)
+	{
+		if (isServer)
+		{
+			return input < 3.0f;
+		}
+		else
+		{
+			return !hasGameStarted;
+		}
 	}
 
 	//Spawn blocks over the network
@@ -423,9 +474,7 @@ public class BlockManager : NetworkBehaviour
 				NetworkServer.SpawnWithClientAuthority(block, connectionToClient);
 			}
 		}
-
-		hasGameStarted = true;
-
+		
 		if (isLocalPlayer && isCursorControl)
 		{
 			cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2) - 1, Mathf.Min(2, blockCount.y));
@@ -433,6 +482,23 @@ public class BlockManager : NetworkBehaviour
 			cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
 
 			cursorRenderer = cursor.GetComponent<SpriteRenderer>();
+		}
+	}
+
+	//Tell the server to communicate that the game should start
+	[Command]
+	void CmdCommunicateGameStart()
+	{
+		RpcCommunicateGameStart();
+	}
+
+	//Communicate that the game has started
+	[ClientRpc]
+	void RpcCommunicateGameStart()
+	{
+		foreach(BlockManager manager in FindObjectsOfType<BlockManager>())
+		{
+			manager.hasGameStarted = true;
 		}
 	}
 	#endregion
