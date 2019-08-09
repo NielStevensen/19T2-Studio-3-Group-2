@@ -795,7 +795,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 5.64, y: 3.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -810,7 +810,7 @@ Transform:
   m_GameObject: {fileID: 1042063221}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.4, y: -1.1, z: 0}
-  m_LocalScale: {x: 4, y: 5, z: 1}
+  m_LocalScale: {x: -2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1106075694}
   m_RootOrder: 2
@@ -1418,15 +1418,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6519991399674603306, guid: e2900575602ae804ba53fbcd185de5b8,
-        type: 3}
-      propertyPath: m_Depth
-      value: 50
-      objectReference: {fileID: 0}
     - target: {fileID: 6519991399674603307, guid: e2900575602ae804ba53fbcd185de5b8,
         type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 6519991399674603306, guid: e2900575602ae804ba53fbcd185de5b8,
+        type: 3}
+      propertyPath: m_Depth
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6519991399674603311, guid: e2900575602ae804ba53fbcd185de5b8,
         type: 3}
@@ -1587,25 +1587,25 @@ PrefabInstance:
         type: 3}
       propertyPath: fighters.Array.data[0]
       value: 
-      objectReference: {fileID: 7182160664019495988, guid: 40f553f1e9e7b104892406b4ccef635f,
+      objectReference: {fileID: -1644927792403253410, guid: 6fddf5d3b47999b479017ce26b592ee3,
         type: 3}
     - target: {fileID: 4990575091101489569, guid: e2900575602ae804ba53fbcd185de5b8,
         type: 3}
       propertyPath: fighters.Array.data[1]
       value: 
-      objectReference: {fileID: -360195766788629993, guid: f326e48c039946a4b8416db590edc863,
+      objectReference: {fileID: -7990673575999142852, guid: 0012e11e8f1ad7b47afda461ff7a1129,
         type: 3}
     - target: {fileID: 4990575091101489569, guid: e2900575602ae804ba53fbcd185de5b8,
         type: 3}
       propertyPath: fighters.Array.data[2]
       value: 
-      objectReference: {fileID: 115580726369787211, guid: f4f96d12d01a1e744adaad62c90db016,
+      objectReference: {fileID: -2546171930021428025, guid: ae58869247b64424280a0b4296fc1200,
         type: 3}
     - target: {fileID: 4990575091101489569, guid: e2900575602ae804ba53fbcd185de5b8,
         type: 3}
       propertyPath: fighters.Array.data[3]
       value: 
-      objectReference: {fileID: -4988839344654109566, guid: a00b09ea693c4054baefe523dfcf9007,
+      objectReference: {fileID: 3019100688035015348, guid: 19e9444d5c1142c43b844f80b961a7d6,
         type: 3}
     - target: {fileID: 4990575091101489569, guid: e2900575602ae804ba53fbcd185de5b8,
         type: 3}
@@ -1887,7 +1887,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 1.11, y: 1.06}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -1902,7 +1902,7 @@ Transform:
   m_GameObject: {fileID: 1873046487}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.4, y: -1.1, z: 0}
-  m_LocalScale: {x: 4, y: 5, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 1106075694}
   m_RootOrder: 0
