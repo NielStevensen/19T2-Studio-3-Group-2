@@ -201,8 +201,8 @@ public class BlockManager : NetworkBehaviour
 
             CmdSetUIValues(isServer, data.fighterIndex, data.tileSetIndex, data.profileName);
         }
-
-        StartCoroutine(SetUI());
+		
+		StartCoroutine(SetUI());
 
 		bottomLeftExtreme = new Vector2(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom);
 		topRightExtreme = new Vector2(transform.position.x + playFieldBounds.right, transform.position.y + playFieldBounds.top);
@@ -234,7 +234,15 @@ public class BlockManager : NetworkBehaviour
 				}
 			}
 		}
-		
+		else
+		{
+			#if UNITY_ANDROID
+			//if on mobile, do not bother flipping the UI and disable the combat UI canvas
+			GetComponent<FlipUI>().enabled = false;
+			GetComponentInChildren<Canvas>().enabled = false;
+			#endif
+		}
+
 		blockMax = blockCount - new Vector2(1, 1);
 		
 		highestBlocks = new GameObject[(int)blockCount.x];
@@ -274,37 +282,55 @@ public class BlockManager : NetworkBehaviour
     //Wait to receive values before seting up UI
     IEnumerator SetUI()
     {
-        while(fighterIndex == -1 || setIndex == -1)
+		while (fighterIndex == -1 || setIndex == -1)
         {
             yield return new WaitForEndOfFrame();
         }
 
-        FindObjectOfType<UiSetup>().SetupUI(isGameHost, fighterIndex, setIndex);
-        GetComponent<CombatHandler>().UiLayout(setIndex, fighterIndex, displayName);
+		#if UNITY_EDITOR || UNITY_STANDALONE
+		//on pc, set up type chart based on both player's tile sets
+		FindObjectOfType<UiSetup>().SetupUI(isGameHost, isGameHost, fighterIndex, setIndex);
+		#elif UNITY_ANDROID
+		//on mobile, set up type chart soley based on client's tile set
+		FindObjectOfType<UiSetup>().SetupUI(isGameHost, isLocalPlayer, fighterIndex, setIndex);
+		#endif
 
-        while (!hasGameStarted)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-		while(allBlocks[0, 0] == null)
+		#if UNITY_ANDROID
+		//if on mobile and not the local player, do not need to set up combat ui or tile sprites
+		if (!isLocalPlayer)
 		{
-			yield return new WaitForEndOfFrame();
+			yield break;
 		}
+		#endif
 
-        for (int y = 0; y < blockCount.y; y++)
-        {
-            for (int x = 0; x < blockCount.x; x++)
-            {
-                allBlocks[x, y].GetComponent<BlockDetails>().anim.SetInteger("Set", setIndex);
-            }
-        }
-    }
-    #endregion
+		GetComponent<CombatHandler>().UiLayout(setIndex, fighterIndex, displayName);
 
-    #region Initial block setup
-    //Generate the first set of randomised blocks. Prevent spawning matching blocks in lines of 3 or more
-    void RandomiseTypes()
+		if (isLocalPlayer)
+		{
+			while (!hasGameStarted)
+			{
+				yield return new WaitForEndOfFrame();
+			}
+			
+			for (int y = 0; y < blockCount.y; y++)
+			{
+				for (int x = 0; x < blockCount.x; x++)
+				{
+					while (allBlocks[x, y] == null)
+					{
+						yield return new WaitForEndOfFrame();
+					}
+					
+					allBlocks[x, y].GetComponent<BlockDetails>().anim.SetInteger("Set", setIndex);
+				}
+			}
+		}
+	}
+	#endregion
+
+	#region Initial block setup
+	//Generate the first set of randomised blocks. Prevent spawning matching blocks in lines of 3 or more
+	void RandomiseTypes()
     {
         int yCoord;
 
@@ -423,7 +449,13 @@ public class BlockManager : NetworkBehaviour
 
 		connectionPopUp.SetActive(false);
 
+		#if UNITY_EDITOR || UNITY_STANDALONE
+		//on pc, command the spawn of networked blocks
 		CmdSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, index);
+		#elif UNITY_ANDROID
+		//on mobile, spawn local blocks
+		LocalSetupBlocks(transform.position.x + playFieldBounds.left, transform.position.y + playFieldBounds.bottom, index);
+		#endif
 	}
 
 	//Get whether or not the pop up should be maitained
@@ -436,6 +468,23 @@ public class BlockManager : NetworkBehaviour
 		else
 		{
 			return !hasGameStarted;
+		}
+	}
+
+	//Tell the server to communicate that the game should start
+	[Command]
+	void CmdCommunicateGameStart()
+	{
+		RpcCommunicateGameStart();
+	}
+
+	//Communicate that the game has started
+	[ClientRpc]
+	void RpcCommunicateGameStart()
+	{
+		foreach (BlockManager manager in FindObjectsOfType<BlockManager>())
+		{
+			manager.hasGameStarted = true;
 		}
 	}
 
@@ -485,20 +534,46 @@ public class BlockManager : NetworkBehaviour
 		}
 	}
 
-	//Tell the server to communicate that the game should start
-	[Command]
-	void CmdCommunicateGameStart()
+	//Spawn blocks locally
+	void LocalSetupBlocks(float xBase, float yBase, int index)
 	{
-		RpcCommunicateGameStart();
-	}
+		float yPos;
 
-	//Communicate that the game has started
-	[ClientRpc]
-	void RpcCommunicateGameStart()
-	{
-		foreach(BlockManager manager in FindObjectsOfType<BlockManager>())
+		int yCoord;
+
+		for (int y = 0; y < blockCount.y; y++)
 		{
-			manager.hasGameStarted = true;
+			yPos = yBase + y * blockSize;
+
+			yCoord = y * (int)blockCount.x;
+
+			for (int x = 0; x < blockCount.x; x++)
+			{
+				Vector3 pos = new Vector3(xBase + x * blockSize, yPos, 0) + displacement3D;
+
+				int ID = y * (int)blockCount.x + x;
+				GameObject block = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
+
+				allBlocks[x, y] = block;
+
+				BlockDetails details = allBlocks[x, y].GetComponent<BlockDetails>();
+
+				allBlocksStatic[ID] = details;
+
+				details.managerSearchIndex = index;
+				details.blockID = ID;
+				details.coords = new Vector2(x, y);
+				details.type = (BlockTypes)generatedTypes[yCoord + x];
+			}
+		}
+
+		if (isServer && isCursorControl)
+		{
+			cursorPos = new Vector2(Mathf.FloorToInt(blockCount.x / 2) - 1, Mathf.Min(2, blockCount.y));
+
+			cursor = Instantiate(cursorPrefab, CoordToPosition((int)cursorPos.x, (int)cursorPos.y, true), Quaternion.identity, gameObject.transform);
+
+			cursorRenderer = cursor.GetComponent<SpriteRenderer>();
 		}
 	}
 	#endregion
@@ -1212,6 +1287,7 @@ public class BlockManager : NetworkBehaviour
 		}
 
 		#if UNITY_ANDROID
+		//if on mobile, do not bother telling other's projected blocks to break. they don't exist
 		return;
 		#endif
 
@@ -1227,11 +1303,8 @@ public class BlockManager : NetworkBehaviour
         for (int i = 0; i < stringIDs.Length - 1; i++)
         {
             allDetails[i] = allBlocksStatic[int.Parse(stringIDs[i])];
-
-            //tell blocka to play break animation here
-
+			
             allDetails[i].anim.SetTrigger(allDetails[i].trigHash);
-            Debug.Log(allDetails[i].blockID);
         }
 	}
 	#endregion
@@ -1491,10 +1564,7 @@ public class BlockManager : NetworkBehaviour
 	{
 		return CoordToPosition(x, y, false);
 	}
-
-	//might try use a parameter to specify z
-	//is this overload necessary
-	//might be useful if the old cursor style is restored
+	
 	//Produce a vector 3 based on the coordinates provides
 	Vector3 CoordToPosition(int x, int y, bool useExtraDisplacement)
 	{

@@ -723,8 +723,6 @@ MonoBehaviour:
   matchMaker: {fileID: 0}
   lobbySceneNum: 1
   port: 7777
-  onlineScenePC: NetworkField
-  onlineSceneMobile: MobileField
 --- !u!4 &1375752698
 Transform:
   m_ObjectHideFlags: 0

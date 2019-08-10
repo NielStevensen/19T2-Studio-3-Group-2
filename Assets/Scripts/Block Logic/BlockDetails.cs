@@ -9,7 +9,7 @@ public class BlockDetails : NetworkBehaviour
 {
 	#region Variables
 	//Which manager the client should look for. 0: client, 1: opponent's view
-	//[HideInInspector]
+	[HideInInspector]
 	[SyncVar]
 	public int managerSearchIndex = -1;
 	
@@ -63,6 +63,12 @@ public class BlockDetails : NetworkBehaviour
 	//Set references
 	private void Start()
 	{
+		#if UNITY_ANDROID
+		//if on mobile, because the blocks are local, remove networking components
+		Destroy(GetComponent<NetworkTransform>());
+		Destroy(GetComponent<NetworkAnimator>());
+		#endif
+
 		BlockManager master = null;
 
 		if (managerSearchIndex == 0)
@@ -78,27 +84,7 @@ public class BlockDetails : NetworkBehaviour
 		{
 			return;
 		}
-		else
-		{
-#if UNITY_ANDROID
-			//if on mobile, if this block is the projected on the client, destroy it
-			if (managerSearchIndex == 0 && isServer)
-			{
-				Destroy(gameObject);
-			}
-#endif
-		}
-
-#if UNITY_ANDROID
-		//if on mobile, if this block is for the projected board, destroy it
-		if (!master.isLocalPlayer)
-		{
-			Destroy(gameObject);
-
-			return;
-		}
-#endif
-
+		
 		if (master.allBlocksStatic[blockID] != null)
 		{
 			return;
@@ -109,8 +95,8 @@ public class BlockDetails : NetworkBehaviour
 		master.allBlocks[(int)coords.x, (int)coords.y] = gameObject;
 		master.allBlocksStatic[blockID] = this;
 	}
-
-#region Type update
+	
+	#region Type update
 	//Delay updating the colour by a frame. Used for initial sync
 	IEnumerator DelayedTypeUpdate()
     {
@@ -124,5 +110,5 @@ public class BlockDetails : NetworkBehaviour
 	{
         anim.SetInteger(typeHash, (int)type);
 	}
-#endregion
+	#endregion
 }
