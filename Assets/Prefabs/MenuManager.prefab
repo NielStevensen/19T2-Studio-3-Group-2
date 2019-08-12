@@ -40,7 +40,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2154701534006493068}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62f5d23d24f313046ba067e68b6fde5d, type: 3}
+  m_Script: {fileID: 11500000, guid: 156648dc72681d048bc0f396be1f8681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   NameField: {fileID: 0}
@@ -50,25 +50,18 @@ MonoBehaviour:
   SaturationLevel: {fileID: 0}
   ContrastLevel: {fileID: 0}
   ExposureLevel: {fileID: 0}
-  SaveButton: {fileID: 0}
-  PlayButton: {fileID: 0}
-  ShopButton: {fileID: 0}
-  SettingsButton: {fileID: 0}
-  ProfileButton: {fileID: 0}
-  CloseProfileButton: {fileID: 0}
-  QuitButton: {fileID: 0}
-  BackButton: {fileID: 0}
   MainMenu: {fileID: 0}
   SettingsMenu: {fileID: 0}
-  Profile: {fileID: 0}
-  Shop: {fileID: 0}
-  BackgroundMaterial: {fileID: 0}
-  TitleMaterial: {fileID: 0}
-  ButtonMaterial: {fileID: 0}
+  ProfileMenu: {fileID: 0}
+  ShopMenu: {fileID: 0}
   SFX: []
   Music: []
+  ShopArray: []
   MusicSource: {fileID: 0}
   SFXSource: {fileID: 0}
+  Greyscale: {fileID: 0}
+  MenuCanvas: {fileID: 0}
+  ArrayCounter: 0
   SubmitEvent:
     m_PersistentCalls:
       m_Calls: []

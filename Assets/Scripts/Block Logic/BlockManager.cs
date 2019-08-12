@@ -238,7 +238,7 @@ public class BlockManager : NetworkBehaviour
 		{
 			#if UNITY_ANDROID
 			//if on mobile, do not bother flipping the UI and disable the combat UI canvas
-			GetComponent<FlipUI>().enabled = false;
+			GetComponent<ArrangeUI>().enabled = false;
 			GetComponentInChildren<Canvas>().enabled = false;
 			#endif
 		}

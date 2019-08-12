@@ -47,11 +47,9 @@ public class ProfileManager : MonoBehaviour
 	[Tooltip("Wins display.")]
 	public Text winsText;
 	[Tooltip("Combos display.")]
-	public Text ComboText;
+	public Text comboText;
 	[Tooltip("Chains display.")]
-	public Text ChainText;
-	[Tooltip("Currency display.")]
-	public Text CurrencyText;
+	public Text chainText;
 
 	//Set the initial state of things
 	private void OnEnable()
@@ -82,9 +80,8 @@ public class ProfileManager : MonoBehaviour
 
 		//Set stats display
 		winsText.text = data.Wins.ToString();
-		ComboText.text = data.HighestCombo.ToString();
-		ChainText.text = data.HighestChain.ToString();
-		CurrencyText.text = data.currency.ToString();
+		comboText.text = data.HighestCombo.ToString();
+		chainText.text = data.HighestChain.ToString();
 	}
 
 	//Set profile display name

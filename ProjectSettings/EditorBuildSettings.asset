@@ -7,13 +7,13 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/Scenes/Menu.unity
-    guid: 77f47e86f82a09d44852884349c75463
+    guid: 6e0b74d53c506944f80e3fc4cb0951cc
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
-    guid: 281e35be9bdc06f4fb9fde09a855e462
+    guid: e448f63b18569544f914e7b562044dd3
   - enabled: 1
     path: Assets/Scenes/NetworkField.unity
-    guid: 9e10a7ec1df728b45b9501fe5d36835b
+    guid: 62210980909c5454b8392006a433e040
   - enabled: 1
     path: Assets/Scenes/MobileField.unity
     guid: b9fcd89a27a9051448934c874e767043

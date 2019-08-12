@@ -6,219 +6,246 @@ using UnityEngine.SceneManagement;
 
 public class MenuScript : MonoBehaviour
 {
-    public InputField NameField;
-    public Toggle ColourGrading;
-    public Slider MusicVolume;
-    public Slider SFXVolume;
-    public Slider SaturationLevel;
-    public Slider ContrastLevel;
-    public Slider ExposureLevel;
+	public InputField NameField;
+	public Toggle ColourGrading;
+	public Slider MusicVolume;
+	public Slider SFXVolume;
+	public Slider SaturationLevel;
+	public Slider ContrastLevel;
+	public Slider ExposureLevel;
 
-    public GameObject MainMenu;
-    public GameObject SettingsMenu;
-    public GameObject ProfileMenu;
-    public GameObject ShopMenu;
+	public GameObject MainMenu;
+	public GameObject SettingsMenu;
+	public GameObject ProfileMenu;
+	public GameObject ShopMenu;
 
-    public Material BackgroundMaterial;
-    public Material TitleMaterial;
-    public Material ButtonMaterial;
+	public AudioClip[] SFX;
+	public AudioClip[] Music;
+	public Image[] ShopArray;
+	public AudioSource MusicSource;
+	public AudioSource SFXSource;
 
-    public AudioClip[] SFX;
-    public AudioClip[] Music;
-    public AudioSource MusicSource;
-    public AudioSource SFXSource;
+	public GreyScale Greyscale;
+	public Canvas MenuCanvas;
+	[SerializeField] private int ArrayCounter = 0;
 
-    private string Name;
-    private Color TempColour;
+	public InputField.SubmitEvent SubmitEvent;
 
-    public InputField.SubmitEvent SubmitEvent;
+	private bool GameOver = false;
+	private string Name;
+	private Color TempColour;
 
-    private Canvas MenuCanvas;
+	void Start()
+	{
+		//ColourGradingToggle();
+	}
 
-    private void OnEnable()
-    {
-        MenuCanvas = FindObjectOfType<Canvas>();
-    }
+	public void ColourGradingToggle()
+	{
+		if (!ColourGrading.isOn)
+		{
+			TempColour = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+			SaturationLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
+			SaturationLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
+			SaturationLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
+			SaturationLevel.GetComponent<Slider>().enabled = false;
 
-    void Start()
-    {
-        ColourGradingToggle();
-    }
+			ContrastLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
+			ContrastLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
+			ContrastLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
+			ContrastLevel.GetComponent<Slider>().enabled = false;
 
-    public void ColourGradingToggle()
-    {
-        if (!ColourGrading.isOn)
-        {
-            TempColour = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-            SaturationLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
-            SaturationLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
-            SaturationLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
-            SaturationLevel.GetComponent<Slider>().enabled = false;
+			ExposureLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
+			ExposureLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
+			ExposureLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
+			ExposureLevel.GetComponent<Slider>().enabled = false;
+		}
+		else
+		{
+			TempColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+			SaturationLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
+			SaturationLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
+			SaturationLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
+			SaturationLevel.GetComponent<Slider>().enabled = true;
 
-            ContrastLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
-            ContrastLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
-            ContrastLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
-            ContrastLevel.GetComponent<Slider>().enabled = false;
+			ContrastLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
+			ContrastLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
+			ContrastLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
+			ContrastLevel.GetComponent<Slider>().enabled = true;
 
-            ExposureLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
-            ExposureLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = false;
-            ExposureLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
-            ExposureLevel.GetComponent<Slider>().enabled = false;
-        }
-        else
-        {
-            TempColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-            SaturationLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
-            SaturationLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
-            SaturationLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
-            SaturationLevel.GetComponent<Slider>().enabled = true;
+			ExposureLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
+			ExposureLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
+			ExposureLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
+			ExposureLevel.GetComponent<Slider>().enabled = true;
+		}
+	}
 
-            ContrastLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
-            ContrastLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
-            ContrastLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
-            ContrastLevel.GetComponent<Slider>().enabled = true;
+	public void OnMusicVolumeChange()
+	{
+		MusicSource.volume = MusicVolume.value;
+	}
 
-            ExposureLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
-            ExposureLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
-            ExposureLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
-            ExposureLevel.GetComponent<Slider>().enabled = true;
-        }
-    }
+	public void OnSFXVolumeChange()
+	{
+		SFXSource.volume = SFXVolume.value;
+	}
 
-    //public void OnMusicVolumeChange()
-    //{
-    //    MusicSource.volume = MusicVolume.value;
-    //}
+	public void OnSaturationChange()
+	{
+		Greyscale.Saturation = SaturationLevel.value;
+	}
 
-    //public void OnSFXVolumeChange()
-    //{
-    //    SFXSource.volume = SFXVolume.value;
-    //}
+	public void OnContrastChange()
+	{
+		Greyscale.Contrast = ContrastLevel.value;
+	}
 
-    public void OnSaturationChange()
-    {
-        BackgroundMaterial.SetFloat("_Saturation", SaturationLevel.value);
-        TitleMaterial.SetFloat("_Saturation", SaturationLevel.value);
-        ButtonMaterial.SetFloat("_Saturation", SaturationLevel.value);
-    }
+	public void OnExposureChange()
+	{
+		Greyscale.Exposure = ExposureLevel.value;
+	}
 
-    public void OnContrastChange()
-    {
-        BackgroundMaterial.SetFloat("_Contrast", ContrastLevel.value);
-        TitleMaterial.SetFloat("_Contrast", ContrastLevel.value);
-        ButtonMaterial.SetFloat("_Contrast", ContrastLevel.value);
-    }
+	public void OnPlayClick()
+	{
+		SceneManager.LoadScene(1, LoadSceneMode.Single);
+	}
 
-    public void OnExposureChange()
-    {
-        BackgroundMaterial.SetFloat("_Exposure", ExposureLevel.value);
-        TitleMaterial.SetFloat("_Exposure", ExposureLevel.value);
-        ButtonMaterial.SetFloat("_Exposure", ExposureLevel.value);
-    }
+	public void OnShopClick()
+	{
+		MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
+		MainMenu.SetActive(false);
+		SettingsMenu.SetActive(false);
+		ProfileMenu.SetActive(false);
+		ShopMenu.SetActive(true);
+	}
 
-    public void OnPlayClick()
-    {
-        SceneManager.LoadScene(1, LoadSceneMode.Single);
-    }
+	public void OnSettingsClick()
+	{
+		MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
+		MainMenu.SetActive(false);
+		SettingsMenu.SetActive(true);
+		ProfileMenu.SetActive(false);
+		ShopMenu.SetActive(false);
+	}
 
-    public void OnShopClick()
-    {
-        MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(false);
-        ProfileMenu.SetActive(false);
-        ShopMenu.SetActive(true);
-    }
+	public void OnQuitClick()
+	{
+		Application.Quit();
+	}
 
-    public void OnSettingsClick()
-    {
-        MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(true);
-        ProfileMenu.SetActive(false);
-        ShopMenu.SetActive(false);
-    }
+	public void OnProfileClick()
+	{
+		MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
+		ProfileMenu.SetActive(true);
+		MainMenu.SetActive(false);
+		SettingsMenu.SetActive(false);
+		ShopMenu.SetActive(false);
+	}
 
-    public void OnQuitClick()
-    {
-        Application.Quit();
-    }
+	public void OnProfileClose()
+	{
+		MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
+		ProfileMenu.SetActive(false);
+		MainMenu.SetActive(false);
+		SettingsMenu.SetActive(true);
+		ShopMenu.SetActive(false);
+	}
 
-    public void OnProfileClick()
-    {
-        MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
-        ProfileMenu.SetActive(true);
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(false);
-        ShopMenu.SetActive(false);
-    }
+	public void OnSaveClick()
+	{
+		MainMenu.SetActive(true);
+		SettingsMenu.SetActive(false);
+		ProfileMenu.SetActive(false);
+		ShopMenu.SetActive(false);
+		MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
+	}
 
-    public void OnProfileClose()
-    {
-        MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
-        ProfileMenu.SetActive(false);
-        MainMenu.SetActive(false);
-        SettingsMenu.SetActive(true);
-        ShopMenu.SetActive(false);
-    }
+	public void OnBackClick()
+	{
+		MainMenu.SetActive(true);
+		SettingsMenu.SetActive(false);
+		ProfileMenu.SetActive(false);
+		ShopMenu.SetActive(false);
+		MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
+	}
 
-    public void OnSaveClick()
-    {
-        MainMenu.SetActive(true);
-        SettingsMenu.SetActive(false);
-        ProfileMenu.SetActive(false);
-        ShopMenu.SetActive(false);
-        MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
-    }
+	public void OnTileSetLeftClick()
+	{
 
-    public void OnBackClick()
-    {
-        MainMenu.SetActive(true);
-        SettingsMenu.SetActive(false);
-        ProfileMenu.SetActive(false);
-        ShopMenu.SetActive(false);
-        MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
-    }
+	}
 
-    public void OnTileSetLeftClick()
-    {
+	public void OnTileSetRightClick()
+	{
 
-    }
+	}
 
-    public void OnTileSetRightClick()
-    {
+	public void OnPortaitLeftClick()
+	{
 
-    }
+	}
 
-    public void OnPortaitLeftClick()
-    {
+	public void OnPortraitRightClick()
+	{
 
-    }
+	}
 
-    public void OnPortraitRightClick()
-    {
+	public void OnPurchaseClick()
+	{
 
-    }
+	}
 
-    public void OnPurchaseClick()
-    {
+	public void OnShopLeftClick()
+	{
+		ArrayCounter--;
 
-    }
+		if (ArrayCounter == -1)
+		{
+			ArrayCounter = 7;
+		}
 
-    public void OnShopLeftClick()
-    {
+		if (ArrayCounter < 4)
+		{
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(true);
+		}
 
-    }
+		else
+		{
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(false);
+		}
 
-    public void OnShopRightClick()
-    {
+		Debug.Log(ArrayCounter);
+	}
 
-    }
+	public void OnShopRightClick()
+	{
+		ArrayCounter++;
 
-    public void OnEnterName()
-    {
-        Name = NameField.text;
-        NameField.onEndEdit = SubmitEvent;
-        Debug.Log(Name);
-    }
+		if (ArrayCounter == 8)
+		{
+			ArrayCounter = 0;
+		}
+
+		if (ArrayCounter > 3)
+		{
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(false);
+		}
+
+		else
+		{
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
+			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(true);
+		}
+
+		Debug.Log(ArrayCounter);
+	}
+
+	public void OnEnterName()
+	{
+		Name = NameField.text;
+		NameField.onEndEdit = SubmitEvent;
+		Debug.Log(Name);
+	}
 }
