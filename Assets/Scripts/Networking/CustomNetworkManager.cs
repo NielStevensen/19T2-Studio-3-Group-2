@@ -63,10 +63,8 @@ public class CustomNetworkManager : NetworkManager
         }
     }
 
-    private void OnLevelWasLoaded(int level)
+    public void AddListners()
     {
-        if(level == lobbySceneNum)
-        {
             Button startButton = GameObject.Find("StartHostButton").GetComponent<Button>();
             startButton.onClick.RemoveAllListeners();
             startButton.onClick.AddListener(Startuphost);
@@ -74,6 +72,5 @@ public class CustomNetworkManager : NetworkManager
             Button joinButton = GameObject.Find("JoinButton").GetComponent<Button>();
             joinButton.onClick.RemoveAllListeners();
             joinButton.onClick.AddListener(Joingame);
-        }
     }
 }

@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
-public class FlipUI : NetworkBehaviour
+public class ArrangeUI : NetworkBehaviour
 {
 
     public GameObject[] flip;
+    public GameObject[] aboveAvatar;
     public Image[] reverseFill;
     public Material customShader;
     public void Start()
@@ -26,7 +27,11 @@ public class FlipUI : NetworkBehaviour
                 {
                     a.fillOrigin = 1;
                 }
-            }
+            } // rearange for server\
+            gameObject.GetComponent<MatchUI>().comboDisp = GameObject.FindObjectOfType<UiSetup>().hostInfo[0];
+            gameObject.GetComponent<MatchUI>().chainDisp = GameObject.FindObjectOfType<UiSetup>().hostInfo[1];
+            gameObject.GetComponent<MatchUI>().oppComboDisp = GameObject.FindObjectOfType<UiSetup>().clientInfo[0];
+            gameObject.GetComponent<MatchUI>().oppChainDisp = GameObject.FindObjectOfType<UiSetup>().clientInfo[1];
         }
         else
         {
@@ -42,7 +47,15 @@ public class FlipUI : NetworkBehaviour
                     a.fillOrigin = 1;
                 }
             }
-        }
+            gameObject.GetComponent<MatchUI>().comboDisp = GameObject.FindObjectOfType<UiSetup>().clientInfo[0];
+            gameObject.GetComponent<MatchUI>().chainDisp = GameObject.FindObjectOfType<UiSetup>().clientInfo[1];
+            gameObject.GetComponent<MatchUI>().oppComboDisp = GameObject.FindObjectOfType<UiSetup>().hostInfo[0];
+            gameObject.GetComponent<MatchUI>().oppChainDisp = GameObject.FindObjectOfType<UiSetup>().hostInfo[1];
+        } // rearange for client
+
+#elif UNITY_ANDROID // if on an android platform
+
 #endif
+        
     }
 }

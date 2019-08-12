@@ -217,7 +217,7 @@ public class CombatHandler : NetworkBehaviour
     [ClientRpc]
     void RpcDamage(float Damage, int type)
     {
-        if (hasAuthority)
+        if (isLocalPlayer)
         {
             return;
         }
@@ -229,6 +229,16 @@ public class CombatHandler : NetworkBehaviour
             opponent.defMod = 0;
             opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
         }
+
+        if (opponent.health <= 0)
+        {
+            GetComponent<BlockManager>().hasGameStarted = false;
+            GameObject Stats = GameObject.Instantiate(statUI);
+            Stats.GetComponentsInChildren<Text>()[0].text = "Congratulations you win";
+            didWin = true; // flag the player as winner
+            printStats(Stats); // print stas and update save data
+            this.enabled = false;
+        }
     }
 
     public void Update()
@@ -238,6 +248,14 @@ public class CombatHandler : NetworkBehaviour
             healthBar.fillAmount = health / maxhealth;
             Bar.fillAmount = Current / capacity;
             CmdUpdate(Current, capacity, currentType, health, maxhealth);
+
+            if (health <= 0)
+            {
+                GameObject Stats = GameObject.Instantiate(statUI);
+                Stats.GetComponentsInChildren<Text>()[0].text = "You lose";
+                printStats(Stats); // print stas and update save data
+                this.enabled = false;
+            }
         }
 
         if (Input.GetButtonDown("Jump"))
@@ -274,35 +292,19 @@ public class CombatHandler : NetworkBehaviour
         }
         if(opponent == null && hadOpponent)
         {
+            Debug.Log("closeconnection");
             if (isClient)
             {
                 NetworkManager.singleton.StopClient();
+                NetworkServer.Shutdown();
             }
             else
             {
-                NetworkManager.singleton.StopHost();
+                NetworkManager.singleton.StopServer();
+                NetworkServer.Shutdown();
             }
         }
-
         //check win and lose conditions
-        if (opponent!= null && isLocalPlayer)
-        {
-            if (opponent.health <= 0)
-            {
-                GameObject Stats = GameObject.Instantiate(statUI);
-                Stats.GetComponentsInChildren<Text>()[0].text = "Congratulations you win";
-                didWin = true; // flag the player as winner
-                printStats(Stats); // print stas and update save data
-                this.enabled = false;
-            }
-            else if (health <= 0)
-            {
-                GameObject Stats = GameObject.Instantiate(statUI);
-                Stats.GetComponentsInChildren<Text>()[0].text = "You lose";
-                printStats(Stats); // print stas and update save data
-                this.enabled = false;
-            }
-        }
     }
 
     public void printStats(GameObject stats)
@@ -331,7 +333,6 @@ public class CombatHandler : NetworkBehaviour
                 toPrint += "\n " + (a + 1) + " Combo: " + comboCount[a].ToString();
             }
         }
-        stats.GetComponentsInChildren<Text>()[1].text += toPrint;
 
         //sort and print chains
         Chains.Sort();

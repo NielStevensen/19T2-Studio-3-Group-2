@@ -848,6 +848,7 @@ public class BlockManager : NetworkBehaviour
 				chainDetails[comboDetails[i].chainIndex].chainNumber++;
 
                 atkBar.FillBar(comboDetails[i].comboNumbers, chainDetails[comboDetails[i].chainIndex].chainNumber, comboTotal);
+                mui.UpdateCombo(comboTotal, isLocalPlayer);
             }
 
 			//Memory management. Clear the list after processing the data
@@ -861,6 +862,7 @@ public class BlockManager : NetworkBehaviour
 
 		for (int i = 0; i < chainDetails.Count; i++)
 		{
+            mui.UpdateChains(chainDetails[i].chainNumber, isLocalPlayer);
 			if (chainDetails[i].chainNumber > -1)
 			{
 				isStillChaining = true;

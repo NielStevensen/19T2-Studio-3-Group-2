@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class UiSetup : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class UiSetup : MonoBehaviour
     public SpriteRenderer hostType;
     public SpriteRenderer clientType;
 
+
+    public Text[] hostInfo;
+    public Text[] clientInfo;
     public Sprite[] fighters;
     public TileSet[] sets;
 
