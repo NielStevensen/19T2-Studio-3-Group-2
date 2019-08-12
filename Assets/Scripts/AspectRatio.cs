@@ -13,7 +13,6 @@ public class AspectRatio : MonoBehaviour
     private Canvas MainCanvas;
 
     [Header("General")]
-    [SerializeField] private bool IsMobile = false;
     [SerializeField] private float Aspectratio;
 
     [Header("Main")]
@@ -35,7 +34,7 @@ public class AspectRatio : MonoBehaviour
         Width = Screen.width;
         Height = Screen.height;
 
-        if (IsMobile == true)
+        if (Application.isMobilePlatform == true)
         {
             Debug.Log("mobile");
             Screen.orientation = ScreenOrientation.Portrait;
@@ -151,20 +150,24 @@ public class AspectRatio : MonoBehaviour
             if(SceneManager.GetActiveScene().buildIndex == 1)
             {
                 #region LobbyPanels
-                    LobbyPanels.GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 250);
-                    LobbyPanels.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(-275f, 0f, 275f, 0f);
+                LobbyPanels.GetComponent<GridLayoutGroup>().padding.bottom = 315;
+                LobbyPanels.GetComponent<GridLayoutGroup>().cellSize = new Vector2(125, 150);
+                    LobbyPanels.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(-140f, 0f, 140f, 0f);
                     LobbyPanels.transform.GetChild(0).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(0f, 0f, 0f, 0f);
-                    LobbyPanels.transform.GetChild(0).GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(275f, 0f, -275f, 0f);
+                    LobbyPanels.transform.GetChild(0).GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(140f, 0f, -140f, 0f);
                 #endregion
 
                 #region NetworkButtons
-                    NetworkButtons.GetComponent<GridLayoutGroup>().padding.top = 320;
+                    NetworkButtons.GetComponent<GridLayoutGroup>().padding.top = 0;
                     NetworkButtons.GetComponent<GridLayoutGroup>().cellSize = new Vector2(200, 50);
                     NetworkButtons.GetComponent<GridLayoutGroup>().spacing = new Vector2(25, 0);
+                    NetworkButtons.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(0f, -25f, 0f, 25f);
+                    NetworkButtons.transform.GetChild(0).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(0f, -100f, 0f, 100f);
+                    NetworkButtons.transform.GetChild(0).GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(0f, -175f, 0f, 175f);
                 #endregion
 
                 #region HomeButton
-                    HomeButton.GetComponent<GridLayoutGroup>();
+                    HomeButton.GetComponent<GridLayoutGroup>().padding.top = 550;
                 #endregion
             }
 
@@ -268,6 +271,7 @@ public class AspectRatio : MonoBehaviour
             if (SceneManager.GetActiveScene().buildIndex == 1)
             {
                 #region LobbyPanels
+                    LobbyPanels.GetComponent<GridLayoutGroup>().padding.bottom = 0;
                     LobbyPanels.GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 250);
                     LobbyPanels.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(-275f, 0f, 275f, 0f);
                     LobbyPanels.transform.GetChild(0).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(0f, 0f, 0f, 0f);
@@ -276,12 +280,16 @@ public class AspectRatio : MonoBehaviour
 
                 #region NetworkButtons
                     NetworkButtons.GetComponent<GridLayoutGroup>().padding.top = 320;
-                    NetworkButtons.GetComponent<GridLayoutGroup>().cellSize = new Vector2(200, 50);
+                    NetworkButtons.GetComponent<GridLayoutGroup>().padding.left = 50;
+                    NetworkButtons.GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 50);
                     NetworkButtons.GetComponent<GridLayoutGroup>().spacing = new Vector2(25, 0);
+                    NetworkButtons.transform.GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(-300f, -25f, 250f, 25f);
+                    NetworkButtons.transform.GetChild(0).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(-24f, -25f, -24f, 25f);
+                    NetworkButtons.transform.GetChild(0).GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(250f, -25f, -300f, 25f);
                 #endregion
 
                 #region HomeButton
-                    HomeButton.GetComponent<GridLayoutGroup>();
+                    HomeButton.GetComponent<GridLayoutGroup>().padding.top = 550;
                 #endregion
             }
 
