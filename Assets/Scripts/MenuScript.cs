@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class MenuScript : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class MenuScript : MonoBehaviour
     public GameObject SettingsMenu;
     public GameObject ProfileMenu;
     public GameObject ShopMenu;
+    public GameObject EventSystems;
 
     public AudioClip[] SFX;
     public AudioClip[] Music;
@@ -38,6 +40,7 @@ public class MenuScript : MonoBehaviour
     void Start()
     {
         ColourGradingToggle();
+        EventSystems = GameObject.Find("EventSystem");
     }
 
     public void ColourGradingToggle()
@@ -213,7 +216,10 @@ public class MenuScript : MonoBehaviour
         {
             ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
             ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(false);
+
         }
+
+        EventSystems.GetComponent<EventSystem>().SetSelectedGameObject(null);
 
         Debug.Log(ArrayCounter);
     }
@@ -238,6 +244,8 @@ public class MenuScript : MonoBehaviour
             ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
             ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(true);
         }
+
+        EventSystems.GetComponent<EventSystem>().SetSelectedGameObject(null);
 
         Debug.Log(ArrayCounter);
     }
