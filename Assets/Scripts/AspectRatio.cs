@@ -53,35 +53,42 @@ public class AspectRatio : MonoBehaviour
                 #region Main Menu
                     MainMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                     MainMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
+
                     MainMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
                     MainMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
+
                     MainMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -400);
                     MainMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
+
                     MainMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -600);
                     MainMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
                 #endregion
 
-                //#region Settings Menu
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.left = 550;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 500;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 65);
+                #region Settings Menu
+                    SettingsMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
+                    SettingsMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(600, 150);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().padding.top = 1000;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
+                    SettingsMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 100);
+                    SettingsMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.left = -330;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.right = 0;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 500;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
+                    SettingsMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -200);
+                    SettingsMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().padding.top = 250;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 45);
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().spacing = new Vector2(0, 25);
+                    SettingsMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 200);
+                    SettingsMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().padding.top = 650;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().spacing = new Vector2(75, 0);
-                //#endregion
+                    SettingsMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 100);
+                    SettingsMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+
+                    SettingsMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+                    SettingsMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+
+                    SettingsMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -100);
+                    SettingsMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+
+                    SettingsMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
+                    SettingsMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+                #endregion
 
                 //#region Profile Menu
                 //    ProfileMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 700;
@@ -192,34 +199,42 @@ public class AspectRatio : MonoBehaviour
                 #region Main Menu
                     MainMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                     MainMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+
                     MainMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0,-100);
                     MainMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+
                     MainMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
                     MainMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+
                     MainMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -300);
                     MainMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
                 #endregion
 
-                //#region Settings Menu
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.left = 975;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 525;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<GridLayoutGroup>().cellSize = new Vector2(230, 55);
+                #region Settings Menu
+                    SettingsMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
+                    SettingsMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(600, 150);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().padding.top = 500;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
+                    SettingsMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 100);
+                    SettingsMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.right = 785;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 525;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(2).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
+                    SettingsMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -200);
+                    SettingsMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().padding.bottom = 200;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().cellSize = new Vector2(500, 45);
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(3).GetComponent<GridLayoutGroup>().spacing = new Vector2(0, 25);
+                    SettingsMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 200);
+                    SettingsMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
 
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().padding.top = 250;
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75,75);
-                //    SettingsMenu.transform.GetChild(0).GetChild(0).GetChild(4).GetComponent<GridLayoutGroup>().spacing = new Vector2(75, 0);
-                //#endregion
+                    SettingsMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 100);
+                    SettingsMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+
+                    SettingsMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+                    SettingsMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+
+                    SettingsMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -100);
+                    SettingsMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+
+                    SettingsMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
+                    SettingsMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
+                #endregion
 
                 //#region Profile Menu
                 //ProfileMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 360;

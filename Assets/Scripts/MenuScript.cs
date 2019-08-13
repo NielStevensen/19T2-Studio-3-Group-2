@@ -37,7 +37,7 @@ public class MenuScript : MonoBehaviour
 
 	void Start()
 	{
-		//ColourGradingToggle();
+		ColourGradingToggle();
 	}
 
 	public void ColourGradingToggle()
@@ -62,7 +62,7 @@ public class MenuScript : MonoBehaviour
 		}
 		else
 		{
-			TempColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+            TempColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 			SaturationLevel.gameObject.transform.GetChild(0).GetComponent<Image>().color = TempColour;
 			SaturationLevel.gameObject.transform.GetChild(1).GetChild(0).GetComponent<Image>().enabled = true;
 			SaturationLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;

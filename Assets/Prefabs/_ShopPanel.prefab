@@ -253,6 +253,7 @@ GameObject:
   m_Component:
   - component: {fileID: 319677746595874256}
   - component: {fileID: 7899606302506869891}
+  - component: {fileID: 6253620156600668270}
   m_Layer: 5
   m_Name: _ShopPanel
   m_TagString: Untagged
@@ -294,6 +295,33 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 589023945911695953}
   m_CullTransparentMesh: 0
+--- !u!114 &6253620156600668270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589023945911695953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40e145d39c25541419fc2b6fe2aadead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    profileName: Player
+    fighterIndex: 0
+    tileSetIndex: 0
+    unlockedSets: 01000000
+    isCursorControl: 1
+    HighestCombo: 0
+    HighestChain: 0
+    Wins: 0
+    currency: 0
+  allTileSets: []
+  tileSetImage: {fileID: 0}
+  tilePurchaseButton: {fileID: 0}
+  tilePurchasedImage: {fileID: 0}
+  currencyText: {fileID: 0}
 --- !u!1 &880384992144682438
 GameObject:
   m_ObjectHideFlags: 0

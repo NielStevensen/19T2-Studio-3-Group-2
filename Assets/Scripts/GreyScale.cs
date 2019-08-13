@@ -24,7 +24,6 @@ public class GreyScale : MonoBehaviour
     {
         /*If the GreyScale bool is true then the ColorGrading effect is turned on. While it is turned on any changes to the Saturation, Contrast, or Exposure slider on the gameobject will be directly reflected in the post process stack.*/
         /*If the GreyScale bool is false the ColorGrading effect is turned off and the screen returns to normal.                                                                                                                            */
-
         ColourGrading.saturation.value = Saturation;
         ColourGrading.contrast.value = Contrast;
         ColourGrading.postExposure.value = Exposure;
