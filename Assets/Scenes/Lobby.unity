@@ -663,7 +663,7 @@ MonoBehaviour:
   m_AutoCreatePlayer: 1
   m_PlayerSpawnMethod: 1
   m_OfflineScene: Lobby
-  m_OnlineScene: NetworkField
+  m_OnlineScene: MobileField
   m_SpawnPrefabs:
   - {fileID: 4422444884197150378, guid: 59ec911a164c75d439a9f061eb06eaf7, type: 3}
   m_CustomConfig: 0
