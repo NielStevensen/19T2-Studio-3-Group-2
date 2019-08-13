@@ -10,7 +10,7 @@ EditorBuildSettings:
     guid: 6e0b74d53c506944f80e3fc4cb0951cc
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
-    guid: e448f63b18569544f914e7b562044dd3
+    guid: 281e35be9bdc06f4fb9fde09a855e462
   - enabled: 1
     path: Assets/Scenes/NetworkField.unity
     guid: 62210980909c5454b8392006a433e040
