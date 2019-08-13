@@ -90,49 +90,38 @@ public class AspectRatio : MonoBehaviour
                     SettingsMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
                 #endregion
 
-                //#region Profile Menu
-                //    ProfileMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 700;
-                //    ProfileMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.right = 0;
-                //    ProfileMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().cellSize = new Vector2(200, 50);
+                #region Profile Menu
+                    ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(540, -150);
+                    ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-                //    ProfileMenu.transform.GetChild(1).GetComponent<GridLayoutGroup>().padding.top = 250;
-                //    ProfileMenu.transform.GetChild(1).GetComponent<GridLayoutGroup>().padding.bottom = 0;
-                //    ProfileMenu.transform.GetChild(1).GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 75);
+                    ProfileMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -350);
+                    ProfileMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-                //    ProfileMenu.transform.GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 485;
-                //    ProfileMenu.transform.GetChild(2).GetComponent<GridLayoutGroup>().padding.left = 0;
-                //    ProfileMenu.transform.GetChild(2).GetComponent<GridLayoutGroup>().cellSize = new Vector2(250, 75);
+                    ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(-540, -550);
+                    ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-                //    ProfileMenu.transform.GetChild(3).GetComponent<GridLayoutGroup>().padding.top = 0;
-                //    ProfileMenu.transform.GetChild(3).GetComponent<GridLayoutGroup>().padding.bottom = 170;
-                //    ProfileMenu.transform.GetChild(3).GetComponent<GridLayoutGroup>().padding.left = 200;
-                //    ProfileMenu.transform.GetChild(3).GetComponent<GridLayoutGroup>().cellSize = new Vector2(200, 200);
+                    ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, 0);
+                    ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
 
-                //    ProfileMenu.transform.GetChild(4).GetComponent<GridLayoutGroup>().padding.top = 700;
-                //    ProfileMenu.transform.GetChild(4).GetComponent<GridLayoutGroup>().cellSize = new Vector2(300, 300);
-                //    ProfileMenu.transform.GetChild(4).GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(-206f, 0f, 206f, 0f);
-                //    ProfileMenu.transform.GetChild(4).GetChild(0).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(-208.76f, 95.496f, 208.76f, -95.496f);
-                //    ProfileMenu.transform.GetChild(4).GetChild(0).GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(-58.127f, 205.63f, 58.127f, -205.63f);
-                //    ProfileMenu.transform.GetChild(4).GetChild(0).GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector4(171.25f, 205.63f, -171.25f, -205.63f);
-                //    ProfileMenu.transform.GetChild(4).GetChild(0).GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector4(310f, 95.696f, -310f, -95.696f);
+                    ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+                    ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
+                    ProfileMenu.transform.GetChild(4).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(-400f, -745f, 400f, 745f);
+                    ProfileMenu.transform.GetChild(4).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(-372f, -585f, 372f, 585f);
+                    ProfileMenu.transform.GetChild(4).GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(-96f, -403f, 96f, 403f);
+                    ProfileMenu.transform.GetChild(4).GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector4(310f, -403f, -310f, 403f);
+                    ProfileMenu.transform.GetChild(4).GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector4(580f, -585f, -580f, 585f);
+
+                    ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(300, 0);
+                    ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
+
+                    ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 100);
+                    ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
+
+                    ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, 100);
+                    ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
 
 
-                //    ProfileMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().padding.top = 0;
-                //    ProfileMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().padding.bottom = 170;
-                //    ProfileMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().padding.right = 200;
-                //    ProfileMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().cellSize = new Vector2(200, 200);
-
-                //    ProfileMenu.transform.GetChild(6).GetComponent<GridLayoutGroup>().padding.top = 750;
-                //    ProfileMenu.transform.GetChild(6).GetComponent<GridLayoutGroup>().padding.right = 340;
-                //    ProfileMenu.transform.GetChild(6).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
-
-                //    ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.top = 750;
-                //    ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.left = 340;
-                //    ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
-
-                //    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().padding.top = 750;
-                //    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().cellSize = new Vector2(190, 75);
-                //#endregion
+                #endregion
 
                 //#region Shop Menu
                 //    ShopMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 300;
@@ -236,37 +225,31 @@ public class AspectRatio : MonoBehaviour
                     SettingsMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(800, 45);
                 #endregion
 
-                //#region Profile Menu
-                //ProfileMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 360;
-                //    ProfileMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.right = 610;
+                #region Profile Menu
+                    ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(300, -150);
+                    ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-                //    ProfileMenu.transform.GetChild(1).GetComponent<GridLayoutGroup>().padding.bottom = 360;
+                    ProfileMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -150);
+                    ProfileMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-                //    ProfileMenu.transform.GetChild(2).GetComponent<GridLayoutGroup>().padding.bottom = 360;
-                //    ProfileMenu.transform.GetChild(2).GetComponent<GridLayoutGroup>().padding.left = 610;
+                    ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, -150);
+                    ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-                //    ProfileMenu.transform.GetChild(3).GetComponent<GridLayoutGroup>().padding.top = 20;
-                //    ProfileMenu.transform.GetChild(3).GetComponent<GridLayoutGroup>().padding.left = 700;
-                //    ProfileMenu.transform.GetChild(3).GetComponent<GridLayoutGroup>().cellSize = new Vector2(185, 185);
+                    ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, 0);
+                    ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
 
-                //    ProfileMenu.transform.GetChild(4).GetComponent<GridLayoutGroup>().padding.top = 20;
-                //    ProfileMenu.transform.GetChild(4).GetComponent<GridLayoutGroup>().cellSize = new Vector2(185, 185);
+                    ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+                    ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
 
-                //    ProfileMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().padding.top = 20;
-                //    ProfileMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().padding.right = 700;
-                //    ProfileMenu.transform.GetChild(5).GetComponent<GridLayoutGroup>().cellSize = new Vector2(185, 185);
+                    ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(300, 0);
+                    ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
 
-                //    ProfileMenu.transform.GetChild(6).GetComponent<GridLayoutGroup>().padding.top = 425;
-                //    ProfileMenu.transform.GetChild(6).GetComponent<GridLayoutGroup>().padding.right = 725;
-                //    ProfileMenu.transform.GetChild(6).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
+                    ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 100);
+                    ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
 
-                //    ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.top = 425;
-                //    ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().padding.left = 725;
-                //    ProfileMenu.transform.GetChild(7).GetComponent<GridLayoutGroup>().cellSize = new Vector2(75, 75);
-
-                //    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().padding.top = 420;
-                //    ProfileMenu.transform.GetChild(8).GetComponent<GridLayoutGroup>().cellSize = new Vector2(220, 75);
-                //#endregion
+                    ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, 100);
+                    ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
+                #endregion
 
                 //#region Shop Menu
                 //    ShopMenu.transform.GetChild(0).GetComponent<GridLayoutGroup>().padding.bottom = 150;
