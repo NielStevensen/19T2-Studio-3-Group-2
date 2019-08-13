@@ -26,8 +26,6 @@ public class AspectRatio : MonoBehaviour
     [SerializeField] private GameObject NetworkButtons;
     [SerializeField] private GameObject HomeButton;
 
-    public bool IsMobile = false;
-
     void Start()
     {
         MainCamera = FindObjectOfType<Camera>();
@@ -36,7 +34,7 @@ public class AspectRatio : MonoBehaviour
         Width = Screen.width;
         Height = Screen.height;
 
-        if (IsMobile == true)
+        if (Application.isMobilePlatform == true)
         {
             Debug.Log("mobile");
             Screen.orientation = ScreenOrientation.Portrait;
