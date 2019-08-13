@@ -1439,8 +1439,8 @@ MonoBehaviour:
     type: 3}
   m_AutoCreatePlayer: 1
   m_PlayerSpawnMethod: 1
-  m_OfflineScene: Lobby
-  m_OnlineScene: NetworkField
+  m_OfflineScene: 
+  m_OnlineScene: MobileField
   m_SpawnPrefabs:
   - {fileID: 4422444884197150378, guid: 59ec911a164c75d439a9f061eb06eaf7, type: 3}
   m_CustomConfig: 0
@@ -1790,7 +1790,7 @@ MonoBehaviour:
   LobbyPanels: {fileID: 167021792}
   NetworkButtons: {fileID: 809742712}
   HomeButton: {fileID: 92342751}
-  IsMobile: 0
+  IsMobile: 1
 --- !u!1 &1566293187
 GameObject:
   m_ObjectHideFlags: 0

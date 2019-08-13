@@ -2343,7 +2343,7 @@ MonoBehaviour:
   LobbyPanels: {fileID: 0}
   NetworkButtons: {fileID: 0}
   HomeButton: {fileID: 0}
-  IsMobile: 0
+  IsMobile: 1
 --- !u!114 &874592458
 MonoBehaviour:
   m_ObjectHideFlags: 0
