@@ -263,9 +263,32 @@ public class CombatHandler : NetworkBehaviour
             Attack();
         }
         //abilities
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && Current > 200)
         {
-            Abbilities();
+            //switch based on the ability field of the charecter
+            switch (ability)
+            {
+                case ("Fireball"):
+                    dmgMod = 1.4f;
+                    Attack();
+                    return;
+
+                case ("Leech"):
+                    Attack();
+                    isleech = true;
+                    return;
+
+                case ("DoubleShot"):
+                    float secondatk = Current;
+                    dmgMod = .6f;
+                    Attack();
+                    StartCoroutine(attack2(secondatk)); //coroutine for wait between attacks
+                    return;
+
+                case ("Armour"):
+                    defMod = 15;
+                    return;
+            }
         }
         if(opponent == null && hadOpponent)
         {
@@ -353,7 +376,7 @@ public class CombatHandler : NetworkBehaviour
         }
         if (isLocalPlayer)
         {
-            CmdDamage(Current / 20 * attack * stab * dmgMod, currentType);
+            CmdDamage(Current / 30 * attack * stab * dmgMod, currentType);
             Current = 0;
             currentHighest = 0;
             dmgMod = 1;
@@ -399,36 +422,6 @@ public class CombatHandler : NetworkBehaviour
         Attack();
     }
 
-    public void Abbilities()
-    {
-        if (Current > 200)
-        {
-            //switch based on the ability field of the charecter
-            switch (ability)
-            {
-                case ("Fireball"):
-                    dmgMod = 1.4f;
-                    Attack();
-                    return;
-
-                case ("Leech"):
-                    Attack();
-                    isleech = true;
-                    return;
-
-                case ("DoubleShot"):
-                    float secondatk = Current;
-                    dmgMod = .6f;
-                    Attack();
-                    StartCoroutine(attack2(secondatk)); //coroutine for wait between attacks
-                    return;
-
-                case ("Armour"):
-                    defMod = 15;
-                    return;
-            }
-        }
-    }
     public void UiLayout(int setIndex, int fighterIndex, string name)
     {
         tiles = FindObjectOfType<UiSetup>().sets[setIndex].set;
