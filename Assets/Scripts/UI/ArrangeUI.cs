@@ -67,21 +67,23 @@ public class ArrangeUI : NetworkBehaviour
         {
             gameObject.GetComponent<MatchUI>().comboDisp = GameObject.FindObjectOfType<UiSetup>().clientInfo[0];
             gameObject.GetComponent<MatchUI>().chainDisp = GameObject.FindObjectOfType<UiSetup>().clientInfo[1];
-        } 
-
-        if(isLocalPlayer)
-        {
-            mobileRefrences[0].transform.position = new Vector3(-1.45f, 3.11f, 0);
-            mobileRefrences[1].transform.position = new Vector3(0f, -4.15f, 0);
-            mobileRefrences[1].transform.localScale *= 1.5f;
-            mobileRefrences[2].transform.position = new Vector3(0f, 5.25f, 0);
-        } 
-        else
-        {
-            mobileRefrences[0].transform.position = new Vector3(1.45f, 3.11f, 0);
         }
 
+		if (isLocalPlayer)
+		{
+			mobileRefrences[0].transform.position = new Vector3(-1.45f, 3.11f, 0);
+			mobileRefrences[1].transform.position = new Vector3(0f, -4.15f, 0);
+			mobileRefrences[1].transform.localScale *= 1.5f;
+			mobileRefrences[2].transform.position = new Vector3(0f, 5.25f, 0);
+		}
+		else
+		{
+			mobileRefrences[0].transform.position = new Vector3(1.45f, 3.11f, 0);
+			mobileRefrences[1].transform.position = new Vector3(10f, 10f, 10f);
+			mobileRefrences[2].transform.position = new Vector3(10f, 10f, 10f);
+		}
 #endif
 
-    }
+	}
+
 }

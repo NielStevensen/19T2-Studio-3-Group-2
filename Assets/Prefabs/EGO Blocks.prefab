@@ -764,7 +764,7 @@ MonoBehaviour:
   scriptRefs: []
   statUI: {fileID: 6189224303237009101, guid: bb21e8808fcaacf41b631ddefce4a91b, type: 3}
   barcolourchange: {fileID: 4800000, guid: 9ad34dc96660f2d4fbb82243670494bc, type: 3}
-  attack: 100
+  attack: 10
   defence: 10
   dmgMod: 1
   defMod: 1
@@ -793,6 +793,7 @@ MonoBehaviour:
   Chains: 
   Combos: 
   toPrint: 
+  Stats: {fileID: 0}
   matchUpMatrix:
   - name: Fire
     matchUp:

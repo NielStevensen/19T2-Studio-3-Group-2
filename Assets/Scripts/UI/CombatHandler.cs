@@ -76,6 +76,7 @@ public class CombatHandler : NetworkBehaviour
     public List<int> Combos;
 
     public string toPrint = "";
+	public GameObject Stats = null;
 
     public TwoDimArray[] matchUpMatrix = new TwoDimArray[4];
 
@@ -229,16 +230,6 @@ public class CombatHandler : NetworkBehaviour
             opponent.defMod = 0;
             opponent.healthBar.fillAmount = opponent.health / opponent.maxhealth;
         }
-
-        if (opponent.health <= 0)
-        {
-            GetComponent<BlockManager>().hasGameStarted = false;
-            GameObject Stats = GameObject.Instantiate(statUI);
-            Stats.GetComponentsInChildren<Text>()[0].text = "Congratulations you win";
-            didWin = true; // flag the player as winner
-            printStats(Stats); // print stas and update save data
-            this.enabled = false;
-        }
     }
 
     public void Update()
@@ -248,14 +239,6 @@ public class CombatHandler : NetworkBehaviour
             healthBar.fillAmount = health / maxhealth;
             Bar.fillAmount = Current / capacity;
             CmdUpdate(Current, capacity, currentType, health, maxhealth);
-
-            if (health <= 0)
-            {
-                GameObject Stats = GameObject.Instantiate(statUI);
-                Stats.GetComponentsInChildren<Text>()[0].text = "You lose";
-                printStats(Stats); // print stas and update save data
-                this.enabled = false;
-            }
         }
 
         if (Input.GetButtonDown("Jump"))
@@ -281,64 +264,82 @@ public class CombatHandler : NetworkBehaviour
                 NetworkServer.Shutdown();
             }
         }
-        //check win and lose conditions
-    }
+		//check win and lose conditions
+		if (Stats == null && isLocalPlayer)
+		{
+			if (health <= 0)
+			{
+				Stats = GameObject.Instantiate(statUI);
+				Stats.GetComponentsInChildren<Text>()[0].text = "You lose";
+				printStats(Stats); // print stas and update save data
+			}
 
-    public void printStats(GameObject stats)
-    {
-        //sort and print combos
-        Combos.Sort();
+			else if (opponent.health <= 0)
+			{
+				GetComponent<BlockManager>().hasGameStarted = false;
+				Stats = GameObject.Instantiate(statUI);
+				Stats.GetComponentsInChildren<Text>()[0].text = "Congratulations you win";
+				didWin = true; // flag the player as winner
+				printStats(Stats); // print stas and update save data
+			}
+		}
+	}
 
-        int highestValue = Combos[Combos.Count - 1];
+	public void printStats(GameObject stats)
+	{
+		//sort and print combos
+		Combos.Sort();
 
-        List<int> comboCount = new List<int>();
+		int highestValue = Combos[Combos.Count - 1];
 
-        for (int i = 0; i < highestValue; i++)
-        {
-            comboCount.Add(0);
-        }
+		List<int> comboCount = new List<int>();
 
-        for (int i = 0; i < Combos.Count; i++)
-        {
-            comboCount[Combos[i] - 1]++;
-        }
+		for (int i = 0; i < highestValue; i++)
+		{
+			comboCount.Add(0);
+		}
 
-        if (comboCount.Count > 3)
-        {
-            for (int a = 3; a < comboCount.Count; a++)
-            {
-                toPrint += "\n " + (a + 1) + " Combo: " + comboCount[a].ToString();
-            }
-        }
+		for (int i = 0; i < Combos.Count; i++)
+		{
+			comboCount[Combos[i] - 1]++;
+		}
 
-        //sort and print chains
-        Chains.Sort();
+		if (comboCount.Count > 3)
+		{
+			for (int a = 3; a < comboCount.Count; a++)
+			{
+				toPrint += "\n " + (a + 1) + " Combo: " + comboCount[a].ToString();
+			}
+		}
 
-        highestValue = Chains[Chains.Count - 1];
+		//sort and print chains
+		Chains.Sort();
 
-        List<int> chainCount = new List<int>();
+		highestValue = Chains[Chains.Count - 1];
 
-        for (int i = 0; i < highestValue; i++)
-        {
-            chainCount.Add(0);
-        }
+		List<int> chainCount = new List<int>();
 
-        for (int i = 0; i < Chains.Count; i++)
-        {
-            chainCount[Chains[i] - 1]++;
-        }
+		for (int i = 0; i < highestValue; i++)
+		{
+			chainCount.Add(0);
+		}
 
-        if (chainCount.Count > 3)
-        {
-            for (int a = 3; a < chainCount.Count; a++)
-            {
-                toPrint += "\n " + (a + 1) + " Chain: " + chainCount[a].ToString();
-            }
-        }
-        // print to ui
-        stats.GetComponentsInChildren<Text>()[1].text += toPrint;
-        UpdateSave(); // update save statistics
-    }
+		for (int i = 0; i < Chains.Count; i++)
+		{
+			chainCount[Chains[i] - 1]++;
+		}
+
+		if (chainCount.Count > 3)
+		{
+			for (int a = 3; a < chainCount.Count; a++)
+			{
+				toPrint += "\n " + (a + 1) + " Chain: " + chainCount[a].ToString();
+			}
+		}
+		// print to ui
+		Stats.GetComponentsInChildren<Text>()[1].text += toPrint;
+		UpdateSave(); // update save statistics
+	}
 
     public void Attack()
     {
@@ -353,7 +354,7 @@ public class CombatHandler : NetworkBehaviour
         }
         if (isLocalPlayer)
         {
-            CmdDamage(Current / 20 * attack * stab * dmgMod, currentType);
+            CmdDamage(Current / 10 * attack * stab * dmgMod, currentType);
             Current = 0;
             currentHighest = 0;
             dmgMod = 1;
@@ -436,5 +437,11 @@ public class CombatHandler : NetworkBehaviour
 
         Symbol.sprite = tiles[AvatarStats.allFighters[fighterIndex].element];
         nameField.text = name;
-    }
+		attack = AvatarStats.allFighters[fighterIndex].attack;
+		defence = AvatarStats.allFighters[fighterIndex].defence;
+		ability = AvatarStats.allFighters[fighterIndex].ability;
+		myType = AvatarStats.allFighters[fighterIndex].element;
+		maxhealth = AvatarStats.allFighters[fighterIndex].maxHealth;
+		health = maxhealth;
+	}
 }
