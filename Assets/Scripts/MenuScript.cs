@@ -107,7 +107,15 @@ public class MenuScript : MonoBehaviour
 
 	public void OnPlayClick()
 	{
-		SceneManager.LoadScene(1, LoadSceneMode.Single);
+        if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            SceneManager.LoadScene(2, LoadSceneMode.Single);
+        }
+
+        else
+        {
+            SceneManager.LoadScene(1, LoadSceneMode.Single);
+        }
 	}
 
 	public void OnShopClick()
