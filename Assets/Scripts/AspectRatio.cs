@@ -127,6 +127,8 @@ public class AspectRatio : MonoBehaviour
             ShopMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector4(-150, 100, 150, 150);
 
             ShopMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector4(0, 100, 600, 150);
+            ShopMenu.transform.GetChild(6).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(50, 0, 0, 0);
+            ShopMenu.transform.GetChild(6).GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(-50, 0, 0, 0);
         #endregion
     }
 
