@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 56beb28ba92fbda4c86163e18b6267d5
+guid: 908fadaec5c87444c82dd54864a0dd9b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1245105893125058997
-    second: knightLightning_0
+      213: -2301686479375850960
+    second: FireknightIdle_0
   - first:
-      213: -3878738986317775672
-    second: knightLightning_1
+      213: 4658623547842595925
+    second: FireknightIdle_1
   - first:
-      213: 7212245355715998401
-    second: knightLightning_2
+      213: 3518867687284292345
+    second: FireknightIdle_2
   - first:
-      213: 3499422699648120461
-    second: knightLightning_3
+      213: -9211340937681215786
+    second: FireknightIdle_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -53,7 +53,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -93,7 +93,7 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
-    buildTarget: iPhone
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -104,7 +104,7 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
   - serializedVersion: 2
-    buildTarget: Android
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -118,13 +118,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: knightLightning_0
+      name: FireknightIdle_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 11
-        width: 111
-        height: 106
+        x: 0
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b4594c5a3139dc4cbe2f5f29c343bbb
-      internalID: -1245105893125058997
+      spriteID: 1e48c6fbd7a23ca48ad68b8deb33f56a
+      internalID: -2301686479375850960
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knightLightning_1
+      name: FireknightIdle_1
       rect:
         serializedVersion: 2
-        x: 176
-        y: 11
-        width: 111
-        height: 107
+        x: 160
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 337a6b40465c1ee43aee3cf5fe494334
-      internalID: -3878738986317775672
+      spriteID: 97037c3ffea155448ab2f47e208a485e
+      internalID: 4658623547842595925
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knightLightning_2
+      name: FireknightIdle_2
       rect:
         serializedVersion: 2
-        x: 336
-        y: 11
-        width: 111
-        height: 108
+        x: 320
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +174,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0c8ba9b8c8dfca842bdb39f528114f3a
-      internalID: 7212245355715998401
+      spriteID: 7999b5bb9e93c604a9d88bcedccee3cc
+      internalID: 3518867687284292345
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knightLightning_3
+      name: FireknightIdle_3
       rect:
         serializedVersion: 2
-        x: 496
-        y: 11
-        width: 111
-        height: 107
+        x: 480
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,8 +195,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f1c3804836a57db40b6a228d710dd1d3
-      internalID: 3499422699648120461
+      spriteID: 2e200442e399c3448bc7886ec07c275a
+      internalID: -9211340937681215786
       vertices: []
       indices: 
       edges: []
@@ -204,7 +204,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 78dc31bfc7a5bc548b56da05fcb2ed6f
+    spriteID: d5576f3f1d2b1af489fa1af44ce9b457
     internalID: 0
     vertices: []
     indices: 

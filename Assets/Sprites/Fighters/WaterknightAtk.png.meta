@@ -1,19 +1,16 @@
 fileFormatVersion: 2
-guid: ae58869247b64424280a0b4296fc1200
+guid: 9c39731815bc59a428f3b2ceafca6982
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2546171930021428025
-    second: knight idol 2_0
+      213: 886933610389976748
+    second: WaterknightAtk_0
   - first:
-      213: 6351469221363167410
-    second: knight idol 2_1
+      213: -3438976234276082008
+    second: WaterknightAtk_1
   - first:
-      213: -2605497528287191944
-    second: knight idol 2_2
-  - first:
-      213: -8052308153119991333
-    second: knight idol 2_3
+      213: 2262812940555346676
+    second: WaterknightAtk_2
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -53,7 +50,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -118,13 +115,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: knight idol 2_0
+      name: WaterknightAtk_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 11
-        width: 111
-        height: 106
+        x: 0
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +129,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b25599c1efb963148b1058552ccbeee5
-      internalID: -2546171930021428025
+      spriteID: ac8105f0544c9374d8208a9973a3c35b
+      internalID: 886933610389976748
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 2_1
+      name: WaterknightAtk_1
       rect:
         serializedVersion: 2
-        x: 176
-        y: 11
-        width: 111
-        height: 107
+        x: 160
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3c8cd13d7d8357c4db91a864736d04fa
-      internalID: 6351469221363167410
+      spriteID: 6aa324c312c434a489fcb2156b377018
+      internalID: -3438976234276082008
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 2_2
+      name: WaterknightAtk_2
       rect:
         serializedVersion: 2
-        x: 336
-        y: 11
-        width: 111
-        height: 108
+        x: 320
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,29 +171,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5e153d3ae065f4040b44473b3a922637
-      internalID: -2605497528287191944
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: knight idol 2_3
-      rect:
-        serializedVersion: 2
-        x: 496
-        y: 11
-        width: 111
-        height: 107
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7fdb5f539de34f344a3ac10eae45376e
-      internalID: -8052308153119991333
+      spriteID: 798add973c3f64c449be2851b142bf22
+      internalID: 2262812940555346676
       vertices: []
       indices: 
       edges: []
@@ -204,7 +180,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: d756aecb74e10f14f8052cd7ebe3c763
+    spriteID: 544d17ee73e95874c84f58d18924dbc5
     internalID: 0
     vertices: []
     indices: 

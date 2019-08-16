@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 19e9444d5c1142c43b844f80b961a7d6
+guid: 1341eacd7f2926643bdb80e665a68df3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3019100688035015348
-    second: knight idol 3_0
+      213: 6545946599792863318
+    second: LightningknightIdle_0
   - first:
-      213: -4377500096322325689
-    second: knight idol 3_1
+      213: -7789961394488003357
+    second: LightningknightIdle_1
   - first:
-      213: -5562361202586081170
-    second: knight idol 3_2
+      213: -8701803545914130924
+    second: LightningknightIdle_2
   - first:
-      213: 2798837844146497074
-    second: knight idol 3_3
+      213: -1372633375667051966
+    second: LightningknightIdle_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -53,7 +53,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -118,13 +118,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: knight idol 3_0
+      name: LightningknightIdle_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 11
-        width: 111
-        height: 106
+        x: 0
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fb0b410e1da57a349be8ed7ead335fd0
-      internalID: 3019100688035015348
+      spriteID: 24ae1a47b99b68645b2ce6c14a0ee3e9
+      internalID: 6545946599792863318
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 3_1
+      name: LightningknightIdle_1
       rect:
         serializedVersion: 2
-        x: 176
-        y: 11
-        width: 111
-        height: 107
+        x: 160
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 024764784e8834146b56caacda452b6f
-      internalID: -4377500096322325689
+      spriteID: b388481b35e4d3c488a8b4045e95a978
+      internalID: -7789961394488003357
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 3_2
+      name: LightningknightIdle_2
       rect:
         serializedVersion: 2
-        x: 336
-        y: 11
-        width: 111
-        height: 108
+        x: 320
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +174,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3a3513f1b57d72b46a0a24efdaae4ebc
-      internalID: -5562361202586081170
+      spriteID: 3e96265984a7d134f937ab4e3bd4bdc2
+      internalID: -8701803545914130924
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 3_3
+      name: LightningknightIdle_3
       rect:
         serializedVersion: 2
-        x: 496
-        y: 11
-        width: 111
-        height: 107
+        x: 480
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,8 +195,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c38164dd573e59a42812abd26e2f879b
-      internalID: 2798837844146497074
+      spriteID: 792ccecee31b3c54b9c1e420e9295f96
+      internalID: -1372633375667051966
       vertices: []
       indices: 
       edges: []
@@ -204,7 +204,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: d756aecb74e10f14f8052cd7ebe3c763
+    spriteID: d34983acc3c21084c8015187f43c4012
     internalID: 0
     vertices: []
     indices: 

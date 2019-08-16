@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 0012e11e8f1ad7b47afda461ff7a1129
+guid: f0046affcfbc788439b3b24d51073c38
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7990673575999142852
-    second: knight idol 1_0
+      213: 5403909882504477484
+    second: knightIdle_0
   - first:
-      213: -2755803552031407659
-    second: knight idol 1_1
+      213: -8798524462652380381
+    second: knightIdle_1
   - first:
-      213: 443709956164724250
-    second: knight idol 1_2
+      213: 2386994020559815037
+    second: knightIdle_2
   - first:
-      213: 6618182282048808402
-    second: knight idol 1_3
+      213: 4544468342793767080
+    second: knightIdle_3
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -53,7 +53,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -118,13 +118,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: knight idol 1_0
+      name: knightIdle_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 11
-        width: 111
-        height: 106
+        x: 0
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -132,20 +132,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 64e1f28a9501ceb4b925326f5f735d72
-      internalID: -7990673575999142852
+      spriteID: d34243072a0c92b429fcdbc2ffcf5c90
+      internalID: 5403909882504477484
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 1_1
+      name: knightIdle_1
       rect:
         serializedVersion: 2
-        x: 176
-        y: 11
-        width: 111
-        height: 107
+        x: 160
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,20 +153,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2b1230ba386516f47bcec377d8989cc2
-      internalID: -2755803552031407659
+      spriteID: 4c727d32c0dca28488f1e0ab5453ad17
+      internalID: -8798524462652380381
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 1_2
+      name: knightIdle_2
       rect:
         serializedVersion: 2
-        x: 336
-        y: 11
-        width: 111
-        height: 108
+        x: 320
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -174,20 +174,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5fcadca6ff6b09d43ac8b98621116895
-      internalID: 443709956164724250
+      spriteID: 0d17d5126e708714eba8a3aeaa974c19
+      internalID: 2386994020559815037
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: knight idol 1_3
+      name: knightIdle_3
       rect:
         serializedVersion: 2
-        x: 496
-        y: 11
-        width: 111
-        height: 107
+        x: 480
+        y: 0
+        width: 160
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,8 +195,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d92f72d7dda9b341af7ff719c6fbda5
-      internalID: 6618182282048808402
+      spriteID: 50500043f4c8f2943a2e95a0faf6c87a
+      internalID: 4544468342793767080
       vertices: []
       indices: 
       edges: []
@@ -204,7 +204,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: d756aecb74e10f14f8052cd7ebe3c763
+    spriteID: 5f0df108d2c790844bd79354d7c70015
     internalID: 0
     vertices: []
     indices: 
