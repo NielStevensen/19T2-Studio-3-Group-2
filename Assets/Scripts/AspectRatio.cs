@@ -89,11 +89,11 @@ public class AspectRatio : MonoBehaviour
         #endregion
 
         #region Profile Menu
-            ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(540, -150, 500, 150);
+            ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector4(525, -150, 500, 150);
 
             ProfileMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector4(0, -350, 500, 150);
 
-            ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(-540, -550, 500, 150);
+            ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector4(-520, -550, 500, 150);
 
             ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector4(-300, 0, 500, 500);
 
