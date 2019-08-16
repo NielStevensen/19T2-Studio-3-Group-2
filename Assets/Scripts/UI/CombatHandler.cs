@@ -274,7 +274,7 @@ public class CombatHandler : NetworkBehaviour
 				printStats(Stats); // print stas and update save data
 			}
 
-			else if (opponent.health <= 0)
+			else if (opponent != null && opponent.health <= 0)
 			{
 				GetComponent<BlockManager>().hasGameStarted = false;
 				Stats = GameObject.Instantiate(statUI);
