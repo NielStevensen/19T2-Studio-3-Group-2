@@ -74,6 +74,9 @@ public class CombatHandler : NetworkBehaviour
 
     public List<int> Chains;
     public List<int> Combos;
+     //animator components for host and client fighetrs
+    Animator hostFighter;
+    Animator clientFighter;
 
     public string toPrint = "";
 	public GameObject Stats = null;
@@ -224,6 +227,44 @@ public class CombatHandler : NetworkBehaviour
         }
         else
         {
+            if(isServer)
+            {
+                clientFighter.SetTrigger("Attack");
+                switch (type) // update colour based on the specified index
+                {
+                    case 0:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.red;
+                        break;
+                    case 1:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.yellow;
+                        break;
+                    case 2:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.green;
+                        break;
+                    case 3:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.blue;
+                        break;
+                }
+            }
+            else
+            {
+                hostFighter.SetTrigger("Attack");
+                switch (type) // update colour based on the specified index
+                {
+                    case 0:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.red;
+                        break;
+                    case 1:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.yellow;
+                        break;
+                    case 2:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.green;
+                        break;
+                    case 3:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.blue;
+                        break;
+                }
+            }
             opponent.health -= ((Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100));
             if (isleech) health += (Damage * matchUpMatrix[type].matchUp[myType]) * ((100 - (defence + defMod)) / 100) / 2;
             isleech = false;
@@ -353,7 +394,45 @@ public class CombatHandler : NetworkBehaviour
             stab = 1f;
         }
         if (isLocalPlayer)
-        {
+        { //change bar colour and attack
+            if (!isServer)
+            {
+                clientFighter.SetTrigger("Attack");
+                switch (currentType) // update colour based on the specified index
+                {
+                    case 0:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.red;
+                        break;
+                    case 1:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.yellow;
+                        break;
+                    case 2:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.green;
+                        break;
+                    case 3:
+                        clientFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.blue;
+                        break;
+                }
+            }
+            else
+            {
+                hostFighter.SetTrigger("Attack");
+                switch (currentType) // update colour based on the specified index
+                {
+                    case 0:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.red;
+                        break;
+                    case 1:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.yellow;
+                        break;
+                    case 2:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.green;
+                        break;
+                    case 3:
+                        hostFighter.transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = Color.blue;
+                        break;
+                }
+            }
             CmdDamage(Current / 10 * attack * stab * dmgMod, currentType);
             Current = 0;
             currentHighest = 0;
@@ -432,7 +511,12 @@ public class CombatHandler : NetworkBehaviour
     }
     public void UiLayout(int setIndex, int fighterIndex, string name)
     {
-        tiles = FindObjectOfType<UiSetup>().sets[setIndex].set;
+        UiSetup UI = FindObjectOfType<UiSetup>();
+        tiles = UI.sets[setIndex].set;
+
+        hostFighter = UI.hostFighter;
+        clientFighter = UI.clientFighter;
+
         healthSymbol.sprite = tiles[4];
 
         Symbol.sprite = tiles[AvatarStats.allFighters[fighterIndex].element];

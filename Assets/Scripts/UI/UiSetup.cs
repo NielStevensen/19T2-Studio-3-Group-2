@@ -6,8 +6,8 @@ public class UiSetup : MonoBehaviour
 
     public SpriteRenderer[] hostTileExamples;
     public SpriteRenderer[] clientTileExamples;
-    public SpriteRenderer hostFighter;
-    public SpriteRenderer clientFighter;
+    public Animator hostFighter;
+    public Animator clientFighter;
     public SpriteRenderer hostType;
     public SpriteRenderer clientType;
 
@@ -22,12 +22,12 @@ public class UiSetup : MonoBehaviour
 		//whether or not the host's fighter and type are updated
 		if (isHost)
         {
-            hostFighter.sprite = fighters[figherIndex];
+            hostFighter.SetInteger("Fighter", figherIndex);
             hostType.sprite = sets[setIndex].set[AvatarStats.allFighters[figherIndex].element];
         }
         else
         {
-            clientFighter.sprite = fighters[figherIndex];
+            clientFighter.SetInteger("Fighter", figherIndex);
             clientType.sprite = sets[setIndex].set[AvatarStats.allFighters[figherIndex].element];
         }
 
