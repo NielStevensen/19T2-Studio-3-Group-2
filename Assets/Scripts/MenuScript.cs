@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class MenuScript : MonoBehaviour
 {
@@ -25,17 +26,21 @@ public class MenuScript : MonoBehaviour
 	public AudioSource MusicSource;
 	public AudioSource SFXSource;
 
+    public GameManager Gamemanager = new GameManager();
 	public GreyScale Greyscale;
 	public Canvas MenuCanvas;
-	[SerializeField] private int ArrayCounter = 0;
 
 	public InputField.SubmitEvent SubmitEvent;
 
-	private bool GameOver = false;
 	private string Name;
 	private Color TempColour;
 
-	void Start()
+    private void OnEnable()
+    {
+        LoadSettings();
+    }
+
+    void Start()
 	{
 		ColourGradingToggle();
 	}
@@ -78,31 +83,33 @@ public class MenuScript : MonoBehaviour
 			ExposureLevel.gameObject.transform.GetChild(2).GetChild(0).GetComponent<Image>().color = TempColour;
 			ExposureLevel.GetComponent<Slider>().enabled = true;
 		}
+
+        Gamemanager.ColourGrading = ColourGrading.isOn;
 	}
 
 	public void OnMusicVolumeChange()
 	{
-		MusicSource.volume = MusicVolume.value;
+		Gamemanager.MusicVolume = MusicSource.volume = MusicVolume.value;
 	}
 
 	public void OnSFXVolumeChange()
 	{
-		SFXSource.volume = SFXVolume.value;
+		Gamemanager.SFXVolume =  SFXSource.volume = SFXVolume.value;
 	}
 
 	public void OnSaturationChange()
 	{
-		Greyscale.Saturation = SaturationLevel.value;
+		Gamemanager.Saturation = Greyscale.Saturation = SaturationLevel.value;
 	}
 
 	public void OnContrastChange()
 	{
-		Greyscale.Contrast = ContrastLevel.value;
+		Gamemanager.Contrast =  Greyscale.Contrast = ContrastLevel.value;
 	}
 
 	public void OnExposureChange()
 	{
-		Greyscale.Exposure = ExposureLevel.value;
+		Gamemanager.Exposure = Greyscale.Exposure = ExposureLevel.value;
 	}
 
 	public void OnPlayClick()
@@ -166,6 +173,8 @@ public class MenuScript : MonoBehaviour
 		ProfileMenu.SetActive(false);
 		ShopMenu.SetActive(false);
 		MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
+
+        Save();
 	}
 
 	public void OnBackClick()
@@ -177,83 +186,44 @@ public class MenuScript : MonoBehaviour
 		MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
 	}
 
-	public void OnTileSetLeftClick()
-	{
-
-	}
-
-	public void OnTileSetRightClick()
-	{
-
-	}
-
-	public void OnPortaitLeftClick()
-	{
-
-	}
-
-	public void OnPortraitRightClick()
-	{
-
-	}
-
-	public void OnPurchaseClick()
-	{
-
-	}
-
-	public void OnShopLeftClick()
-	{
-		ArrayCounter--;
-
-		if (ArrayCounter == -1)
-		{
-			ArrayCounter = 7;
-		}
-
-		if (ArrayCounter < 4)
-		{
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(true);
-		}
-
-		else
-		{
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(false);
-		}
-
-		Debug.Log(ArrayCounter);
-	}
-
-	public void OnShopRightClick()
-	{
-		ArrayCounter++;
-
-		if (ArrayCounter == 8)
-		{
-			ArrayCounter = 0;
-		}
-
-		if (ArrayCounter > 3)
-		{
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(false);
-		}
-
-		else
-		{
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
-			ShopMenu.transform.GetChild(0).GetChild(0).GetChild(2).gameObject.SetActive(true);
-		}
-
-		Debug.Log(ArrayCounter);
-	}
-
 	public void OnEnterName()
 	{
 		Name = NameField.text;
 		NameField.onEndEdit = SubmitEvent;
 		Debug.Log(Name);
 	}
+
+    public void Save()
+    {
+        string jsondata = JsonUtility.ToJson(Gamemanager, true); //this line serializes the Gamemanager variables and creates a string
+
+        File.WriteAllText(Application.persistentDataPath + "/GameSettings.json", jsondata); //This line writes the jsondata string to a file at the application path0.
+    }
+
+    public void LoadSettings()
+    {
+        if (File.Exists(Application.persistentDataPath + "/GameSettings.json"))
+        {
+            Gamemanager = JsonUtility.FromJson<GameManager>(File.ReadAllText(Application.persistentDataPath + "/GameSettings.json"));
+
+            ColourGrading.isOn = Gamemanager.ColourGrading;
+            MusicVolume.value = Gamemanager.MusicVolume;
+            SFXVolume.value = Gamemanager.SFXVolume;
+            SaturationLevel.value = Gamemanager.Saturation;
+            ContrastLevel.value = Gamemanager.Contrast;
+            ExposureLevel.value = Gamemanager.Exposure;
+        }
+
+        else
+        {
+            ColourGrading.isOn = false;
+            MusicVolume.value = 0.5f;
+            SFXVolume.value = 0.5f;
+            SaturationLevel.value = 0;
+            ContrastLevel.value = 0;
+            ExposureLevel.value = 0;
+
+            Save();
+        }
+    }
 }
