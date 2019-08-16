@@ -174,7 +174,7 @@ public class MenuScript : MonoBehaviour
 		ShopMenu.SetActive(false);
 		MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
 
-        Save();
+        SaveSettings();
 	}
 
 	public void OnBackClick()
@@ -193,7 +193,7 @@ public class MenuScript : MonoBehaviour
 		Debug.Log(Name);
 	}
 
-    public void Save()
+    public void SaveSettings()
     {
         string jsondata = JsonUtility.ToJson(Gamemanager, true); //this line serializes the Gamemanager variables and creates a string
 
@@ -216,14 +216,14 @@ public class MenuScript : MonoBehaviour
 
         else
         {
-            ColourGrading.isOn = false;
-            MusicVolume.value = 0.5f;
-            SFXVolume.value = 0.5f;
-            SaturationLevel.value = 0;
-            ContrastLevel.value = 0;
-            ExposureLevel.value = 0;
+            Gamemanager.ColourGrading = ColourGrading.isOn = false;
+            Gamemanager.MusicVolume = MusicVolume.value = 0.5f;
+            Gamemanager.SFXVolume = SFXVolume.value = 0.5f;
+            Gamemanager.Saturation = SaturationLevel.value = 0;
+            Gamemanager.Contrast = ContrastLevel.value = 0;
+            Gamemanager.Exposure = ExposureLevel.value = 0;
 
-            Save();
+            SaveSettings();
         }
     }
 }
