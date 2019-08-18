@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 1145860646286630740}
   - component: {fileID: 5280522699735381984}
   - component: {fileID: 6127026837403887581}
+  - component: {fileID: 933000626265051065}
   m_Layer: 5
   m_Name: PortraitImage
   m_TagString: Untagged
@@ -218,7 +219,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 5403909882504477484, guid: f0046affcfbc788439b3b24d51073c38,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -227,6 +229,25 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!95 &933000626265051065
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503852101085808457}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9069d1c68dd01744d8f520d60e90b08e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1244344880598109720
 GameObject:
   m_ObjectHideFlags: 0
@@ -713,12 +734,14 @@ MonoBehaviour:
   - {fileID: 9004119845902690682}
   - {fileID: 173179948373194418}
   - {fileID: 9003384901394906106}
+  Controllers: []
   fighters:
   - {fileID: -1644927792403253410, guid: 6fddf5d3b47999b479017ce26b592ee3, type: 3}
   - {fileID: -7990673575999142852, guid: 0012e11e8f1ad7b47afda461ff7a1129, type: 3}
   - {fileID: -2546171930021428025, guid: ae58869247b64424280a0b4296fc1200, type: 3}
   - {fileID: 3019100688035015348, guid: 19e9444d5c1142c43b844f80b961a7d6, type: 3}
   fighterImage: {fileID: 6127026837403887581}
+  FighterAnimator: {fileID: 0}
   winsText: {fileID: 5299227846845376210}
   comboText: {fileID: 3525231103725234098}
   chainText: {fileID: 757006870711395545}

@@ -22,8 +22,10 @@ public class ShopManager : MonoBehaviour
 	[Tooltip("All tile set images.")]
 	public Purchasable[] allTileSets;
 	[Tooltip("Tile set display image.")]
-	public Image tileSetImage;
-	[Tooltip("Tile set purchase button.")]
+	public Image selectedTileSetImage;
+    public Image previousTileSetImage;
+    public Image nextTileSetImage;
+    [Tooltip("Tile set purchase button.")]
 	public Button tilePurchaseButton;
 	[Tooltip("Tile set purchased overlay image.")]
 	public Image tilePurchasedImage; //An image to overlay above the set if already purchased. like real estate signs
@@ -67,7 +69,27 @@ public class ShopManager : MonoBehaviour
 	//Adjust UI
 	void AdjustSets()
 	{
-		tileSetImage.sprite = allTileSets[setIndex].item;
+		selectedTileSetImage.sprite = allTileSets[setIndex].item;
+
+        if(setIndex - 1 < 0)
+        {
+            previousTileSetImage.sprite = allTileSets[setIndex + (allTileSets.Length - 1)].item;
+        }
+
+        else
+        {
+            previousTileSetImage.sprite = allTileSets[setIndex -1].item;
+        }
+
+        if(setIndex + 1 >= allTileSets.Length)
+        {
+            nextTileSetImage.sprite = allTileSets[setIndex - (allTileSets.Length - 1)].item;
+        }
+
+        else
+        {
+            nextTileSetImage.sprite = allTileSets[setIndex + 1].item;
+        }
 
 		if (data.currency >= allTileSets[setIndex].cost)
 		{

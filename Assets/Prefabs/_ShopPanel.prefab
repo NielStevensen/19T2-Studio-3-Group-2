@@ -318,7 +318,9 @@ MonoBehaviour:
     Wins: 0
     currency: 0
   allTileSets: []
-  tileSetImage: {fileID: 0}
+  selectedTileSetImage: {fileID: 0}
+  previousTileSetImage: {fileID: 0}
+  nextTileSetImage: {fileID: 0}
   tilePurchaseButton: {fileID: 0}
   tilePurchasedImage: {fileID: 0}
   currencyText: {fileID: 0}
@@ -334,7 +336,7 @@ GameObject:
   - component: {fileID: 4588275402305023557}
   - component: {fileID: 3310262528659936143}
   m_Layer: 5
-  m_Name: StatsPanel
+  m_Name: Next
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -387,7 +389,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -408,7 +410,7 @@ GameObject:
   - component: {fileID: 1693479176194768251}
   - component: {fileID: 5531675839512638996}
   m_Layer: 5
-  m_Name: BioPanel
+  m_Name: Previous
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -461,7 +463,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1106,7 +1108,7 @@ GameObject:
   - component: {fileID: 5358412835124919022}
   - component: {fileID: 7670027841920533874}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: Purchased
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1557,7 +1559,7 @@ GameObject:
   - component: {fileID: 8879365222940493186}
   - component: {fileID: 5247706079104802446}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Selected
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -29,6 +29,7 @@ public class ProfileManager : MonoBehaviour
 	public TileSet[] tileSets;
 	[Tooltip("The sprites that display the current tile set.")]
 	public Image[] tileImages;
+    public RuntimeAnimatorController[] Controllers;
 	private int tileIndex;
 	private bool[] tilesUnlocked;
 
@@ -39,6 +40,7 @@ public class ProfileManager : MonoBehaviour
 	public Sprite[] fighters;
 	[Tooltip("The sprite that displays the current fighter.")]
 	public Image fighterImage;
+    public Animator FighterAnimator;
 	private int fighterIndex;
 
 	[Space(10)]
@@ -124,6 +126,7 @@ public class ProfileManager : MonoBehaviour
 		data.fighterIndex = fighterIndex;
 
 		fighterImage.sprite = fighters[fighterIndex];
+        FighterAnimator.runtimeAnimatorController = Controllers[fighterIndex];
 	}
 
 	//Keep values between min and max
