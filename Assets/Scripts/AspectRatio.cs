@@ -215,14 +215,14 @@ public class AspectRatio : MonoBehaviour
             ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, -150);
             ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, 0);
-            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
+            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(-725, 0);
+            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(400, 400);
 
-            ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-            ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
+            ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(-225, 0);
+            ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(400, 400);
 
-            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(300, 0);
-            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
+            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(250, 0);
+            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(400, 400);
 
             ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 100);
             ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
