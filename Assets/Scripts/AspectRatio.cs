@@ -110,8 +110,8 @@ public class AspectRatio : MonoBehaviour
             ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(-520, -550);
             ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, 0);
-            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(400, 400);
+            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(-750, -200);
+            ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
 
             ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             ProfileMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
@@ -121,14 +121,17 @@ public class AspectRatio : MonoBehaviour
             ProfileMenu.transform.GetChild(4).GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector4(310f, -403f, -310f, 403f);
             ProfileMenu.transform.GetChild(4).GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector4(580f, -585f, -580f, 585f);
 
-            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(300, 0);
-            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(400, 400);
+            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(500, 250);
+            ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
 
-            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 100);
-            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
+            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(-300, -200);
+            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 500);
 
-            ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, 100);
+            ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 100);
             ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
+
+            ProfileMenu.transform.GetChild(8).GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, 100);
+            ProfileMenu.transform.GetChild(8).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
         #endregion
 
         #region Shop Menu
@@ -224,11 +227,14 @@ public class AspectRatio : MonoBehaviour
             ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(250, 0);
             ProfileMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(400, 400);
 
-            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 100);
-            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
+            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, 0);
+            ProfileMenu.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new Vector2(400, 400);
 
-            ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, 100);
+            ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 100);
             ProfileMenu.transform.GetChild(7).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
+
+            ProfileMenu.transform.GetChild(8).GetComponent<RectTransform>().anchoredPosition = new Vector2(-200, 100);
+            ProfileMenu.transform.GetChild(8).GetComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
         #endregion
 
         #region Shop Menu
