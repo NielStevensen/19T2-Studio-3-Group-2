@@ -2695,6 +2695,64 @@ PrefabInstance:
       propertyPath: Controllers.Array.data[3]
       value: 
       objectReference: {fileID: 9100000, guid: 65238340ef6c21842b48f92c09803d61, type: 2}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[1].name
+      value: Mahjong
+      objectReference: {fileID: 0}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[1].set.Array.data[0]
+      value: 
+      objectReference: {fileID: -8355268372246084696, guid: 080c19bd140988f43b1a9d3d7bec301c,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[1].set.Array.data[1]
+      value: 
+      objectReference: {fileID: 1104065979913749090, guid: f2269571dc86cc640822a919e30baadc,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[1].set.Array.data[2]
+      value: 
+      objectReference: {fileID: -1199668799770702024, guid: bdcc00dc982bc534c84fbd8b010bcf2c,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[1].set.Array.data[3]
+      value: 
+      objectReference: {fileID: 3644309823784994051, guid: 626e8bc94651df64c93b41c5b517d7f4,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[1].set.Array.data[4]
+      value: 
+      objectReference: {fileID: 7279368570806825734, guid: 8f8276a31d9b60b46bebf06a470d59d8,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[2].name
+      value: Kanji
+      objectReference: {fileID: 0}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[2].set.Array.data[0]
+      value: 
+      objectReference: {fileID: 253887949819411191, guid: a4c92a160a2674a4d85e535c0a608ac0,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[2].set.Array.data[1]
+      value: 
+      objectReference: {fileID: 6758792209320105693, guid: 366d62a78579d974cbf8ad01cdaf4883,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[2].set.Array.data[3]
+      value: 
+      objectReference: {fileID: -7317816923104928561, guid: 17cce8d13e6a277459e4853de0e1634b,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[2].set.Array.data[2]
+      value: 
+      objectReference: {fileID: -1067895255112804024, guid: 13572d69f398a0343b02937ea36f72a3,
+        type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: tileSets.Array.data[2].set.Array.data[4]
+      value: 
+      objectReference: {fileID: 6125342910814820455, guid: 867beafe4f9e5424db50fe380f22a017,
+        type: 3}
     - target: {fileID: 6127026837403887581, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
         type: 3}
       propertyPath: m_Sprite
