@@ -176,22 +176,22 @@ public class AspectRatio : MonoBehaviour
     {
         #region Main Menu
             MainMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 25);
-            MainMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+            MainMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(240, 80);
 
             MainMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -75);
-            MainMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+            MainMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(240, 80);
 
             MainMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -175);
-            MainMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+            MainMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(240, 80);
 
             MainMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -275);
-            MainMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+            MainMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(240, 80);
 
             MainMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -375);
-            MainMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+            MainMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(240, 80);
 
             MainMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -475);
-            MainMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+            MainMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(240, 80);
         #endregion
 
         #region Settings Menu
