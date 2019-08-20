@@ -168,6 +168,13 @@ public class BlockManager : NetworkBehaviour
 	//UI objects
 	private MatchUI mui;
     private CombatHandler atkBar;
+
+	[Space(10)]
+
+	//Audio
+	[Tooltip("Block breaking sound.")]
+	public AudioClip blockBreakSound;
+	private AudioSource audioSource;
 	#endregion
 
 	//Initialise arrays
@@ -260,6 +267,8 @@ public class BlockManager : NetworkBehaviour
 
 		mui = gameObject.GetComponent<MatchUI>();
 		atkBar = gameObject.GetComponent<CombatHandler>();
+
+		audioSource = GameObject.Find("Audio Source").GetComponent<AudioSource>();
 
 		//Delay to ensure that the boards generate and input is read after both players have connected
 		if (isLocalPlayer)
@@ -836,6 +845,8 @@ public class BlockManager : NetworkBehaviour
 
 		if (comboCount > 0)
 		{
+			audioSource.PlayOneShot(blockBreakSound);
+
 			int comboTotal = 0;
 
 			for (int i = 0; i < comboCount; i++)

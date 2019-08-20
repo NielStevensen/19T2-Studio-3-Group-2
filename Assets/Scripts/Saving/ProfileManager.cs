@@ -29,7 +29,6 @@ public class ProfileManager : MonoBehaviour
 	public TileSet[] tileSets;
 	[Tooltip("The sprites that display the current tile set.")]
 	public Image[] tileImages;
-    public RuntimeAnimatorController[] Controllers;
 	private int tileIndex;
 	private bool[] tilesUnlocked;
 
@@ -41,7 +40,22 @@ public class ProfileManager : MonoBehaviour
 	[Tooltip("The sprite that displays the current fighter.")]
 	public Image fighterImage;
     public Animator FighterAnimator;
+	public RuntimeAnimatorController[] Controllers;
 	private int fighterIndex;
+
+	//Fighter stat display
+	[Tooltip("Fighter element text.")]
+	public Text fighterElement;
+	[Tooltip("Fighter health text.")]
+	public Text fighterHealth;
+	[Tooltip("Fighter attack text.")]
+	public Text fighterAttack;
+	[Tooltip("Fighter defence text.")]
+	public Text fighterDefence;
+	[Tooltip("Fighter ability text.")]
+	public Text fighterAbility;
+	//[Tooltip("Fighter element text.")]
+	//public Text fighterElement;
 
 	[Space(10)]
 
@@ -79,6 +93,9 @@ public class ProfileManager : MonoBehaviour
 		//Set current fighter
 		fighterIndex = data.fighterIndex;
 		fighterImage.sprite = fighters[fighterIndex];
+		//FighterAnimator.runtimeAnimatorController = Controllers[fighterIndex];
+
+		UpdateFighterStats();
 
 		//Set stats display
 		winsText.text = data.Wins.ToString();
@@ -127,6 +144,40 @@ public class ProfileManager : MonoBehaviour
 
 		fighterImage.sprite = fighters[fighterIndex];
         FighterAnimator.runtimeAnimatorController = Controllers[fighterIndex];
+
+		UpdateFighterStats();
+	}
+
+	//Display the current fighter's stats
+	void UpdateFighterStats()
+	{
+		switch (fighterIndex)
+		{
+			case 0:
+				fighterElement.text = "Earth";
+				fighterAbility.text = "Armour\nGreatly increase defence for the next attack.";
+
+				break;
+			case 1:
+				fighterElement.text = "Lightning";
+				fighterAbility.text = "Double Shot\nSend over 2 weaker attacks.";
+
+				break;
+			case 2:
+				fighterElement.text = "Water";
+				fighterAbility.text = "Leech\nHeal half of the damage inflicted.";
+
+				break;
+			case 3:
+				fighterElement.text = "Fire";
+				fighterAbility.text = "Fireball\nSend over a very powerfull attack.";
+
+				break;
+		}
+
+		fighterHealth.text = AvatarStats.allFighters[fighterIndex].maxHealth.ToString();
+		fighterAttack.text = AvatarStats.allFighters[fighterIndex].attack.ToString();
+		fighterDefence.text = AvatarStats.allFighters[fighterIndex].defence.ToString();
 	}
 
 	//Keep values between min and max

@@ -307,6 +307,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 25}
   m_SizeDelta: {x: 240, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &119621759 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3594919888298544566, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1095433903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &142733475 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114578454409658722, guid: ca0ec1630db7d524ba56d17e22102d48,
@@ -369,6 +381,30 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &281453524 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5337812244959107039, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1095433903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &323254083 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 43610622049769510, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1095433903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &350854092
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,9 +475,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Steven Neilson
+  m_Text: 'Steven Nielsen
 
-    Nathan'
+    Nathan Viengkhou'
 --- !u!222 &350854095
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2251,6 +2287,18 @@ MonoBehaviour:
   m_Script: {fileID: -113659843, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &749209991 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1303093217416324176, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1095433903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &770315644
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3017,7 +3065,7 @@ PrefabInstance:
     - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
       propertyPath: Controllers.Array.data[1]
       value: 
-      objectReference: {fileID: 9100000, guid: d8f71e582016f6f4da0da8a3176666b8, type: 2}
+      objectReference: {fileID: 9100000, guid: 65238340ef6c21842b48f92c09803d61, type: 2}
     - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
       propertyPath: FightAnimator
       value: 
@@ -3029,7 +3077,7 @@ PrefabInstance:
     - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
       propertyPath: Controllers.Array.data[2]
       value: 
-      objectReference: {fileID: 9100000, guid: e79decd4e5df7b84da0f4b5e7e0ff902, type: 2}
+      objectReference: {fileID: 9100000, guid: d8f71e582016f6f4da0da8a3176666b8, type: 2}
     - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
       propertyPath: fighters.Array.data[0]
       value: 
@@ -3053,7 +3101,7 @@ PrefabInstance:
     - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
       propertyPath: Controllers.Array.data[3]
       value: 
-      objectReference: {fileID: 9100000, guid: 65238340ef6c21842b48f92c09803d61, type: 2}
+      objectReference: {fileID: 9100000, guid: e79decd4e5df7b84da0f4b5e7e0ff902, type: 2}
     - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
       propertyPath: tileSets.Array.data[1].name
       value: Mahjong
@@ -3112,6 +3160,26 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6125342910814820455, guid: 867beafe4f9e5424db50fe380f22a017,
         type: 3}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: fighterElement
+      value: 
+      objectReference: {fileID: 749209991}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: fighterHealth
+      value: 
+      objectReference: {fileID: 281453524}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: fighterAttack
+      value: 
+      objectReference: {fileID: 323254083}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: fighterDefence
+      value: 
+      objectReference: {fileID: 1887520099}
+    - target: {fileID: 1095433916, guid: ba1445be2ea0eef489a7fd7e60cbe99b, type: 3}
+      propertyPath: fighterAbility
+      value: 
+      objectReference: {fileID: 119621759}
     - target: {fileID: 6127026837403887581, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
         type: 3}
       propertyPath: m_Sprite
@@ -4543,6 +4611,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1887520099 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6877239985361914610, guid: ba1445be2ea0eef489a7fd7e60cbe99b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1095433903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1894196108
 GameObject:
   m_ObjectHideFlags: 0
