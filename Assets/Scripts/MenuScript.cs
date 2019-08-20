@@ -19,6 +19,8 @@ public class MenuScript : MonoBehaviour
 	public GameObject SettingsMenu;
 	public GameObject ProfileMenu;
 	public GameObject ShopMenu;
+    public GameObject CreditsMenu;
+    public GameObject InstructionsMenu;
 
 	public AudioClip[] SFX;
 	public AudioClip[] Music;
@@ -125,13 +127,35 @@ public class MenuScript : MonoBehaviour
         }
 	}
 
-	public void OnShopClick()
+    public void OnCreditsClick()
+    {
+        MainMenu.SetActive(false);
+        SettingsMenu.SetActive(false);
+        ProfileMenu.SetActive(false);
+        ShopMenu.SetActive(false);
+        CreditsMenu.SetActive(true);
+        InstructionsMenu.SetActive(false);
+    }
+
+    public void OnInstructionsClick()
+    {
+        MainMenu.SetActive(false);
+        SettingsMenu.SetActive(false);
+        ProfileMenu.SetActive(false);
+        ShopMenu.SetActive(false);
+        CreditsMenu.SetActive(false);
+        InstructionsMenu.SetActive(true);
+    }
+
+    public void OnShopClick()
 	{
 		MenuCanvas.transform.GetChild(1).gameObject.SetActive(false);
 		MainMenu.SetActive(false);
 		SettingsMenu.SetActive(false);
 		ProfileMenu.SetActive(false);
 		ShopMenu.SetActive(true);
+        CreditsMenu.SetActive(false);
+        InstructionsMenu.SetActive(false);
 	}
 
 	public void OnSettingsClick()
@@ -141,7 +165,9 @@ public class MenuScript : MonoBehaviour
 		SettingsMenu.SetActive(true);
 		ProfileMenu.SetActive(false);
 		ShopMenu.SetActive(false);
-	}
+        CreditsMenu.SetActive(false);
+        InstructionsMenu.SetActive(false);
+    }
 
 	public void OnQuitClick()
 	{
@@ -155,7 +181,9 @@ public class MenuScript : MonoBehaviour
 		MainMenu.SetActive(false);
 		SettingsMenu.SetActive(false);
 		ShopMenu.SetActive(false);
-	}
+        CreditsMenu.SetActive(false);
+        InstructionsMenu.SetActive(false);
+    }
 
 	public void OnProfileClose()
 	{
@@ -164,7 +192,9 @@ public class MenuScript : MonoBehaviour
 		MainMenu.SetActive(false);
 		SettingsMenu.SetActive(true);
 		ShopMenu.SetActive(false);
-	}
+        CreditsMenu.SetActive(false);
+        InstructionsMenu.SetActive(false);
+    }
 
 	public void OnSaveClick()
 	{
@@ -172,7 +202,9 @@ public class MenuScript : MonoBehaviour
 		SettingsMenu.SetActive(false);
 		ProfileMenu.SetActive(false);
 		ShopMenu.SetActive(false);
-		MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
+        CreditsMenu.SetActive(false);
+        InstructionsMenu.SetActive(false);
+        MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
 
         SaveSettings();
 	}
@@ -183,7 +215,9 @@ public class MenuScript : MonoBehaviour
 		SettingsMenu.SetActive(false);
 		ProfileMenu.SetActive(false);
 		ShopMenu.SetActive(false);
-		MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
+        CreditsMenu.SetActive(false);
+        InstructionsMenu.SetActive(false);
+        MenuCanvas.transform.GetChild(1).gameObject.SetActive(true);
 	}
 
 	public void OnEnterName()

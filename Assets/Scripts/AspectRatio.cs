@@ -61,17 +61,23 @@ public class AspectRatio : MonoBehaviour
     private void Mobile()
     {
         #region Main Menu
-            MainMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            MainMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 200);
             MainMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
 
-            MainMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
+            MainMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             MainMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
 
-            MainMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -400);
+            MainMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
             MainMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
 
-            MainMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -600);
+            MainMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -400);
             MainMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
+
+            MainMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -600);
+            MainMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
+
+            MainMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -800);
+            MainMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(300, 150);
         #endregion
 
         #region Settings Menu
@@ -169,17 +175,23 @@ public class AspectRatio : MonoBehaviour
     private void Desktop()
     {
         #region Main Menu
-            MainMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            MainMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 25);
             MainMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
 
-            MainMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -100);
+            MainMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -75);
             MainMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
 
-            MainMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -200);
+            MainMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -175);
             MainMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
 
-            MainMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -300);
+            MainMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -275);
             MainMenu.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+
+            MainMenu.transform.GetChild(4).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -375);
+            MainMenu.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
+
+            MainMenu.transform.GetChild(5).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -475);
+            MainMenu.transform.GetChild(5).GetComponent<RectTransform>().sizeDelta = new Vector2(180, 80);
         #endregion
 
         #region Settings Menu
