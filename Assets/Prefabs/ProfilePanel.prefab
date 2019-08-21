@@ -894,8 +894,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.45, y: 0}
   m_AnchorMax: {x: 1, y: 0.2}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -25}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4055505771925605970
 CanvasRenderer:
@@ -932,7 +932,7 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 5
+    m_Alignment: 0
     m_AlignByGeometry: 1
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -1051,7 +1051,6 @@ MonoBehaviour:
   - {fileID: 9004119845902690682}
   - {fileID: 173179948373194418}
   - {fileID: 9003384901394906106}
-  Controllers: []
   fighters:
   - {fileID: -1644927792403253410, guid: 6fddf5d3b47999b479017ce26b592ee3, type: 3}
   - {fileID: -7990673575999142852, guid: 0012e11e8f1ad7b47afda461ff7a1129, type: 3}
@@ -1059,6 +1058,12 @@ MonoBehaviour:
   - {fileID: 3019100688035015348, guid: 19e9444d5c1142c43b844f80b961a7d6, type: 3}
   fighterImage: {fileID: 6127026837403887581}
   FighterAnimator: {fileID: 0}
+  Controllers: []
+  fighterElement: {fileID: 0}
+  fighterHealth: {fileID: 0}
+  fighterAttack: {fileID: 0}
+  fighterDefence: {fileID: 0}
+  fighterAbility: {fileID: 0}
   winsText: {fileID: 5299227846845376210}
   comboText: {fileID: 3525231103725234098}
   chainText: {fileID: 757006870711395545}

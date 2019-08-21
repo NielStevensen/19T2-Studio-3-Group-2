@@ -43,6 +43,10 @@ public class AspectRatio : MonoBehaviour
 
             Mobile();
 
+            MainCanvas.transform.GetChild(7).GetChild(1).GetComponent<Text>().text = string.Format("Drag blocks into rows of three or more to build up attack energy. \n") +
+                string.Format("Tap the attack icon to attack the opponent. \n The attack type depends on the last blocks to pop.") +
+                string.Format("Tap the icon to the right of the attack bar to attack your opponent. \n Tap the icon to the right of the attack bar for a special attack.");
+
             MainCamera.aspect = Aspectratio;
         }
 
@@ -52,6 +56,10 @@ public class AspectRatio : MonoBehaviour
             Screen.orientation = ScreenOrientation.Landscape;
 
             Desktop();
+
+            MainCanvas.transform.GetChild(7).GetChild(1).GetComponent<Text>().text = string.Format("WASD to move the cursor. \n") +
+            string.Format("Arrow keys to move blocks into groups of three or more. \n") +
+            string.Format("The attack type depends on the last blocks to pop. \n") + string.Format("Spacebar to attack your opponent. \n Q for a special attack.");
 
             MainCamera.aspect = (Width / Height) * (Screen.width / Screen.height);
         }
@@ -107,13 +115,13 @@ public class AspectRatio : MonoBehaviour
         #endregion
 
         #region Profile Menu
-            ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(525, -150);
+            ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(515, -150);
             ProfileMenu.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
             ProfileMenu.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -350);
             ProfileMenu.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
-            ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(-520, -550);
+            ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector2(-515, -550);
             ProfileMenu.transform.GetChild(2).GetComponent<RectTransform>().sizeDelta = new Vector2(500, 150);
 
             ProfileMenu.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector2(-750, -200);

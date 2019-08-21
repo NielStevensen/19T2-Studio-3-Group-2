@@ -812,8 +812,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 677181608149692039, guid: 97d4e2259ef63cb4a96471b5064ca5f9,
+        type: 3}
+      propertyPath: volumeTrigger
+      value: 
+      objectReference: {fileID: 535904252}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97d4e2259ef63cb4a96471b5064ca5f9, type: 3}
+--- !u!4 &535904252 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6519991399674603311, guid: 97d4e2259ef63cb4a96471b5064ca5f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 535904251}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &535904253 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 6519991399674603306, guid: 97d4e2259ef63cb4a96471b5064ca5f9,
+    type: 3}
+  m_PrefabInstance: {fileID: 535904251}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &561748020
 GameObject:
   m_ObjectHideFlags: 0
@@ -1763,7 +1780,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 535904253}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
