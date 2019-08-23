@@ -1869,6 +1869,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2154701534006493068, guid: 66be26b7d2ce7324aa9f4c4394448038,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1973500456502300263, guid: 66be26b7d2ce7324aa9f4c4394448038,
         type: 3}
       propertyPath: ShopArray.Array.size
@@ -2547,7 +2552,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 874592456}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5431d40dc6916dc4bbfc50d79b79d601, type: 3}
   m_Name: 
@@ -4543,24 +4548,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3294611848155597454, guid: 97d4e2259ef63cb4a96471b5064ca5f9,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 677181608149692039, guid: 97d4e2259ef63cb4a96471b5064ca5f9,
-        type: 3}
-      propertyPath: volumeTrigger
-      value: 
-      objectReference: {fileID: 1804415829}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97d4e2259ef63cb4a96471b5064ca5f9, type: 3}
---- !u!4 &1804415829 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6519991399674603311, guid: 97d4e2259ef63cb4a96471b5064ca5f9,
-    type: 3}
-  m_PrefabInstance: {fileID: 1804415828}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1811671679
 GameObject:
   m_ObjectHideFlags: 0
