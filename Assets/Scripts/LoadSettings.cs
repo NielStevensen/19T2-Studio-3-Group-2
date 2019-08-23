@@ -14,16 +14,8 @@ public class LoadSettings : MonoBehaviour
     {
         Gamemanager = JsonUtility.FromJson<GameManager>(File.ReadAllText(Application.persistentDataPath + "/GameSettings.json"));
 
-        if (SFX != null)
-        {
-            SFX.volume = Gamemanager.SFXVolume;
-        }
-
-        if (Music != null)
-        {
-            Music.volume = Gamemanager.MusicVolume;
-        }
-
+        SFX.volume = Gamemanager.SFXVolume;
+        Music.volume = Gamemanager.MusicVolume;
         Greyscale.Saturation = Gamemanager.Saturation;
         Greyscale.Contrast = Gamemanager.Contrast;
         Greyscale.Exposure = Gamemanager.Exposure;
