@@ -268,7 +268,7 @@ public class BlockManager : NetworkBehaviour
 		mui = gameObject.GetComponent<MatchUI>();
 		atkBar = gameObject.GetComponent<CombatHandler>();
 
-		audioSource = GameObject.Find("Audio Source").GetComponent<AudioSource>();
+		audioSource = GameObject.Find("SFXSource").GetComponent<AudioSource>();
 
 		//Delay to ensure that the boards generate and input is read after both players have connected
 		if (isLocalPlayer)

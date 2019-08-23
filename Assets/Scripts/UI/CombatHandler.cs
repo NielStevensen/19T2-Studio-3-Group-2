@@ -489,34 +489,43 @@ public class CombatHandler : NetworkBehaviour
 
     public void Abbilities()
     {
-        if (Current > 200)
-        {
             //switch based on the ability field of the charecter
             switch (ability)
             {
                 case ("Fireball"):
-                    dmgMod = 1.4f;
-                    Attack(sounds[1]);
-                    return;
+                    if (Current >= 300)
+                    {
+                        dmgMod = 1.4f;
+                        Attack(sounds[1]);
+                    }
+                return;
 
                 case ("Leech"):
+                    if (Current > 150)
+                    {
                     Attack(sounds[2]);
                     isleech = true;
-                    return;
+                    }
+               return;
 
                 case ("DoubleShot"):
+                    if (Current > 200)
+                    {
                     float secondatk = Current;
                     dmgMod = .6f;
                     Attack(sounds[0]);
                     StartCoroutine(attack2(secondatk)); //coroutine for wait between attacks
-                    return;
+                    }
+               return;
 
                 case ("Armour"):
+                    if (Current > 200)
+                    {
                     sfxSource.PlayOneShot(sounds[3]);
                     defMod = 15;
-                    return;
+                    }
+              return;
             }
-        }
     }
     public void UiLayout(int setIndex, int fighterIndex, string name)
     {
