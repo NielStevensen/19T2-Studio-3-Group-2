@@ -837,6 +837,11 @@ MonoBehaviour:
     - 0.5
     - 1
   didWin: 0
+  sounds:
+  - {fileID: 8300000, guid: 7f4c31769baa0444d9d69c03d8c3aa25, type: 3}
+  - {fileID: 8300000, guid: 57af6ac0f345ac74bbe2b83b91c9dbb3, type: 3}
+  - {fileID: 8300000, guid: 9709f492cd2e84df1bb6bc612a600d14, type: 3}
+  - {fileID: 8300000, guid: 05bb82c8b43184921981779808b74a9b, type: 3}
 --- !u!114 &1951292527200229196
 MonoBehaviour:
   m_ObjectHideFlags: 0
