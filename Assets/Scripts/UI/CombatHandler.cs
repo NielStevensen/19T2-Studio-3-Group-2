@@ -523,6 +523,15 @@ public class CombatHandler : NetworkBehaviour
                     {
                     sfxSource.PlayOneShot(sounds[3]);
                     defMod = 15;
+                    // empty bar
+                    float newtotal = Current - 200;
+                    for (int a = 0; a < 4; a++)
+                    {
+                        Counts[a] *= (newtotal / Current);
+                    }
+                    Current -= 200;
+                    currentHighest = 0;
+                    CmdUpdate(Current, capacity, currentType, health, maxhealth);
                     }
               return;
             }
