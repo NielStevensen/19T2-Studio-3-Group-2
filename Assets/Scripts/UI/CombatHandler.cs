@@ -85,9 +85,15 @@ public class CombatHandler : NetworkBehaviour
 
     bool isleech = false;
     public bool didWin; // has the player won
+
+    AudioSource sfxSource;
+    public AudioClip[] sounds;
+
     #endregion;
     private void Start()
     {
+        sfxSource = GameObject.Find("SFXSource").GetComponent<AudioSource>();
+
         Bar.material = new Material(barcolourchange);
         Bar.material.renderQueue = 2001;
         Bar.material.SetTexture("_TexTure", Bar.sprite.texture);
@@ -227,7 +233,8 @@ public class CombatHandler : NetworkBehaviour
         }
         else
         {
-            if(isServer)
+            sfxSource.PlayOneShot(sounds[0]);
+            if (isServer)
             {
                 clientFighter.SetTrigger("Attack");
                 switch (type) // update colour based on the specified index
@@ -284,7 +291,7 @@ public class CombatHandler : NetworkBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            Attack();
+            Attack(sounds[0]);
         }
         //abilities
         if (Input.GetKeyDown(KeyCode.Q))
@@ -382,8 +389,9 @@ public class CombatHandler : NetworkBehaviour
 		UpdateSave(); // update save statistics
 	}
 
-    public void Attack()
+    public void Attack(AudioClip attackSound)
     {
+        sfxSource.PlayOneShot(attackSound);
         float stab;
         if (currentType == myType)
         {
@@ -476,7 +484,7 @@ public class CombatHandler : NetworkBehaviour
         yield return new WaitForSeconds(2);
         Counts[myType] = secondatk; // set power for second attack
         dmgMod = .6f;
-        Attack();
+        Attack(sounds[0]);
     }
 
     public void Abbilities()
@@ -488,22 +496,23 @@ public class CombatHandler : NetworkBehaviour
             {
                 case ("Fireball"):
                     dmgMod = 1.4f;
-                    Attack();
+                    Attack(sounds[1]);
                     return;
 
                 case ("Leech"):
-                    Attack();
+                    Attack(sounds[2]);
                     isleech = true;
                     return;
 
                 case ("DoubleShot"):
                     float secondatk = Current;
                     dmgMod = .6f;
-                    Attack();
+                    Attack(sounds[0]);
                     StartCoroutine(attack2(secondatk)); //coroutine for wait between attacks
                     return;
 
                 case ("Armour"):
+                    sfxSource.PlayOneShot(sounds[3]);
                     defMod = 15;
                     return;
             }
