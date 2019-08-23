@@ -43,9 +43,9 @@ public class AspectRatio : MonoBehaviour
 
             Mobile();
 
-            MainCanvas.transform.GetChild(7).GetChild(1).GetComponent<Text>().text = string.Format("Drag blocks into rows of three or more to build up attack energy. \n") +
-                string.Format("Tap the attack icon to attack the opponent. \n The attack type depends on the last blocks to pop.") +
-                string.Format("Tap the icon to the right of the attack bar to attack your opponent. \n Tap the icon to the right of the attack bar for a special attack.");
+            MainCanvas.transform.GetChild(7).GetChild(1).GetComponent<Text>().text = string.Format("Drag blocks into rows of three or more to build up attack energy. Swaps do not need to match\n") +
+            string.Format("Match blocks to charge the attack meter. The type of the attack is the element that was most matched.") +
+            string.Format("Tap the icon to the left of the attack bar to attack your opponent. \n Tap the icon to the right of the attack bar to use your ability.");
 
             MainCamera.aspect = Aspectratio;
         }
@@ -57,9 +57,9 @@ public class AspectRatio : MonoBehaviour
 
             Desktop();
 
-            MainCanvas.transform.GetChild(7).GetChild(1).GetComponent<Text>().text = string.Format("WASD to move the cursor. \n") +
-            string.Format("Arrow keys to move blocks into groups of three or more. \n") +
-            string.Format("The attack type depends on the last blocks to pop. \n") + string.Format("Spacebar to attack your opponent. \n Q for a special attack.");
+            MainCanvas.transform.GetChild(7).GetChild(1).GetComponent<Text>().text = string.Format("WASD to move the cursor and the arrow keys to swap the blocks. Swaps do not need to make a match.\n") +
+            string.Format("Match blocks to charge the attack meter. The type of the attack is the element that was most matched.") +
+            string.Format("Press spacebar to attack your opponent. \n If your meter is full enough, press Q to use your ability.");
 
             MainCamera.aspect = (Width / Height) * (Screen.width / Screen.height);
         }
